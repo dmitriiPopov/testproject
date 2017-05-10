@@ -1,16 +1,18 @@
 <?php
-$params = require(__DIR__ . '/params.php');
-$dbParams = require(__DIR__ . '/test_db.php');
+$params      = require(__DIR__ . '/params.php');
+$paramsLocal = require(__DIR__ . '/local/params.php');
 
 /**
  * Application configuration shared by all test types
  */
 return [
-    'id' => 'basic-tests',
+    'id'       => 'testProjectBasic-tests',
     'basePath' => dirname(__DIR__),    
     'language' => 'en-US',
     'components' => [
-        'db' => $dbParams,
+        'db' => [
+            'class' => 'yii\db\Connection',
+        ],
         'mailer' => [
             'useFileTransport' => true,
         ],
@@ -34,5 +36,5 @@ return [
             */
         ],        
     ],
-    'params' => $params,
+    'params' => array_merge($params, $paramsLocal),
 ];

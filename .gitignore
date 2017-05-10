@@ -28,3 +28,11 @@ phpunit.phar
 
 tests/_output/*
 tests/_support/_generated
+
+# local config files
+config/local/local.php
+config/local/params.php
+config/local/test.php
+
+# composer
+composer.lock

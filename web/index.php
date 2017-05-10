@@ -7,6 +7,8 @@ defined('YII_ENV') or define('YII_ENV', 'dev');
 require(__DIR__ . '/../vendor/autoload.php');
 require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
 
-$config = require(__DIR__ . '/../config/web.php');
+$config      = require(__DIR__ . '/../config/web.php');
+$configLocal = require(__DIR__ . '/../config/local/local.php');
+$config      = \yii\helpers\ArrayHelper::merge($config, $configLocal);
 
 (new yii\web\Application($config))->run();

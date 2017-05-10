@@ -1,10 +1,12 @@
 <?php
 
-$params = require(__DIR__ . '/params.php');
+$params      = require(__DIR__ . '/params.php');
+$paramsLocal = require(__DIR__ . '/local/params.php');
 
 $config = [
-    'id' => 'basic',
-    'basePath' => dirname(__DIR__),
+    'id'        => 'testProjectBasic',
+    'name'      => 'Test Project',
+    'basePath'  => dirname(__DIR__),
     'bootstrap' => ['log'],
     'components' => [
         'request' => [
@@ -22,22 +24,12 @@ $config = [
             'errorAction' => 'site/error',
         ],
         'mailer' => [
-            'class' => 'yii\swiftmailer\Mailer',
-            'viewPath' => '@app/mail',
+            'class'     => 'yii\swiftmailer\Mailer',
+            'viewPath'  => '@app/mail',
             'transport' => [
                 'class' => 'Swift_SmtpTransport',
-                'host' => 'smtp.gmail.com',
-                // from email
-                'username' => 'test@gmail.com',
-                // from email password
-                'password' => 'testpassword',
-                'port' => 465,
-                'encryption' => 'ssl',
             ],
-            // send all mails to a file by default. You have to set
-            // 'useFileTransport' to false and configure a transport
-            // for the mailer to send real emails.
-            'useFileTransport' => false,
+            'useFileTransport' => true,
         ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
@@ -48,7 +40,9 @@ $config = [
                 ],
             ],
         ],
-        'db' => require(__DIR__ . '/db.php'),
+        'db' => [
+            'class' => 'yii\db\Connection',
+        ],
 
         'urlManager' => [
             'enablePrettyUrl' => true,
@@ -63,7 +57,7 @@ $config = [
         ],
 
     ],
-    'params' => $params,
+    'params' => array_merge($params, $paramsLocal),
 ];
 
 if (YII_ENV_DEV) {

@@ -1,0 +1,13 @@
+<?php
+
+/* local test config file */
+return [
+    'components' => [
+        'db' => [
+            'dsn'      => 'mysql:host=HOST;dbname=DATABASENAME',
+            'username' => 'USERNAME',
+            'password' => 'PASSWORD',
+            'charset'  => 'utf8',
+        ],
+    ],
+];

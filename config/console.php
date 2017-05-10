@@ -1,11 +1,11 @@
 <?php
 
-$params = require(__DIR__ . '/params.php');
-$db = require(__DIR__ . '/db.php');
+$params      = require(__DIR__ . '/params.php');
+$paramsLocal = require(__DIR__ . '/local/params.php');
 
 $config = [
-    'id' => 'basic-console',
-    'basePath' => dirname(__DIR__),
+    'id'        => 'testProjectBasic-console',
+    'basePath'  => dirname(__DIR__),
     'bootstrap' => ['log'],
     'controllerNamespace' => 'app\commands',
     'components' => [
@@ -20,9 +20,11 @@ $config = [
                 ],
             ],
         ],
-        'db' => $db,
+        'db' => [
+            'class' => 'yii\db\Connection',
+        ],
     ],
-    'params' => $params,
+    'params' => array_merge($params, $paramsLocal),
     /*
     'controllerMap' => [
         'fixture' => [ // Fixture generation command line.
