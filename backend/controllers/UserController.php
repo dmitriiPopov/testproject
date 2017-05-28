@@ -99,9 +99,14 @@ class UserController extends Controller
      */
     public function actionUpdate($id)
     {
+
+        ////TODO: To uncomment and use code below !
+        /// and continue...
+        /////init form model instance
+       //// $formModel = new UserForm(['scenario' => UserForm::SCENARIO_UPDATE]);
+
         $model = $this->findModel($id);
 
-        //
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);

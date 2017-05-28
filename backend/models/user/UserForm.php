@@ -17,6 +17,8 @@ use yii\base\NotSupportedException;
  * @package backend\models\user
  *
  * @property \common\models\User $model
+ *
+ * Business logic for creating/updating user via backend CRUD
  */
 class UserForm extends BaseForm
 {
@@ -66,10 +68,19 @@ class UserForm extends BaseForm
     {
         //set attributes to AR model
         $this->model->setAttributes($this->attributes);
-        //set specific attributes
-        $this->model->generateAuthKey();
-        $this->model->setPassword($this->password);
-        $this->model->generatePasswordResetToken();
+
+        //do operations for CREATE scenario
+        if (in_array($this->scenario, [self::SCENARIO_CREATE])) {
+            //generate specific attributes
+            $this->model->generateAuthKey();
+            $this->model->generatePasswordResetToken();
+        }
+
+        //set new password
+        //ATTENTION: in view file this field must be empty at form input
+        if (!empty($this->password)) {
+            $this->model->setPassword($this->password);
+        }
 
         //save AR model
         if (!$this->model->save($runValidation, $attributeNames)) {
