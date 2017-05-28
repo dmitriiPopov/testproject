@@ -15,6 +15,8 @@ use yii\base\NotSupportedException;
 /**
  * Class UserForm
  * @package backend\models\user
+ *
+ * @property \common\models\User $model
  */
 class UserForm extends BaseForm
 {
@@ -39,124 +41,46 @@ class UserForm extends BaseForm
     public function rules()
     {
         return [
-            [['username','password','email'], 'required'],
-            [['username', 'password'], 'string', 'max' => 255],
-            [['email'], 'email'],
+            [['username','password','email'], 'required', 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE]],
+            [['username', 'password'], 'string', 'max' => 255, 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE]],
+            [['email'], 'email', 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE]],
         ];
     }
 
+    /**
+     * @return array
+     */
     public function attributeLabels()
     {
         return [
-            'password' => 'Password',
+            'password' => Yii::t('app', 'Password'),
         ];
     }
 
     /**
-     * @inheritdoc
-     */
-    public function getId()
-    {
-        return $this->getPrimaryKey();
-    }
-    /**
-     * Generates password hash from password and sets it to the model
-     *
-     * @param string $password
-     */
-    public function setPassword($password)
-    {
-        $this->password_hash = Yii::$app->security->generatePasswordHash($password);
-    }
-    /**
-     * Generates "remember me" authentication key
-     */
-    public function generateAuthKey()
-    {
-        $this->auth_key = Yii::$app->security->generateRandomString();
-    }
-    /**
-     * @inheritdoc
-     */
-    public function getAuthKey()
-    {
-        return $this->auth_key;
-    }
-
-    /**
-     * Generates new password reset token
-     */
-    public function generatePasswordResetToken()
-    {
-        $this->password_reset_token = Yii::$app->security->generateRandomString() . '_' . time();
-    }
-    /**
-     * @inheritdoc
-     */
-    public function validateAuthKey($authKey)
-    {
-        return $this->getAuthKey() === $authKey;
-    }
-
-    /**
-     * Validates password
-     *
-     * @param string $password password to validate
-     * @return bool if password provided is valid for current user
-     */
-    public function validatePassword($password)
-    {
-        return Yii::$app->security->validatePassword($password, $this->password_hash);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public static function findIdentity($id)
-    {
-        return static::findOne(['id' => $id, 'status' => self::STATUS_ACTIVE]);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public static function findIdentityByAccessToken($token, $type = null)
-    {
-        throw new NotSupportedException('"findIdentityByAccessToken" is not implemented.');
-    }
-
-    /**
-     * Finds user by password reset token
-     *
-     * @param string $token password reset token
-     * @return static|null
-     */
-    public static function findByPasswordResetToken($token)
-    {
-        if (!static::isPasswordResetTokenValid($token)) {
-            return null;
-        }
-
-        return static::findOne([
-            'password_reset_token' => $token,
-            'status' => self::STATUS_ACTIVE,
-        ]);
-    }
-
-    /**
-     * Finds out if password reset token is valid
-     *
-     * @param string $token password reset token
+     * @param bool|true $runValidation
+     * @param array|null $attributeNames
      * @return bool
      */
-    public static function isPasswordResetTokenValid($token)
+    public function save($runValidation = true, $attributeNames = null)
     {
-        if (empty($token)) {
+        //set attributes to AR model
+        $this->model->setAttributes($this->attributes);
+        //set specific attributes
+        $this->model->generateAuthKey();
+        $this->model->setPassword($this->password);
+        $this->model->generatePasswordResetToken();
+
+        //save AR model
+        if (!$this->model->save($runValidation, $attributeNames)) {
+
+            //get AR model errors and set it to form
+            $this->addErrors($this->model->errors);
+
             return false;
         }
 
-        $timestamp = (int) substr($token, strrpos($token, '_') + 1);
-        $expire = Yii::$app->params['user.passwordResetTokenExpire'];
-        return $timestamp + $expire >= time();
+        return true;
     }
+
 }

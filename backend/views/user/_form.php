@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model backend\models\user\UserForm */
+/* @var $formModel backend\models\user\UserForm */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
@@ -12,15 +12,15 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'username')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($formModel, 'username')->textInput(['maxlength' => true]) ?>
 
     <?php //= $form->field($model, 'auth_key')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'password')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($formModel, 'password')->textInput(['maxlength' => true]) ?>
 
     <?php //= $form->field($model, 'password_reset_token')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'email')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($formModel, 'email')->textInput(['maxlength' => true]) ?>
 
     <?php //= $form->field($model, 'status')->textInput() ?>
 
@@ -29,7 +29,7 @@ use yii\widgets\ActiveForm;
     <?php //= $form->field($model, 'updated_at')->textInput() ?>
 
     <div class="form-group">
-        <?= Html::submitButton($model->model->isNewRecord ? 'Create' : 'Update', ['class' => $model->model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+        <?= Html::submitButton($formModel->model->isNewRecord ? 'Create' : 'Update', ['class' => $formModel->model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use common\models\User;
 use Yii;
 use backend\models\user\UserForm;
 use backend\models\user\UserSearch;
@@ -74,16 +75,18 @@ class UserController extends Controller
      */
     public function actionCreate()
     {
-        $model = new UserForm();
-        //$model->generateAuthKey();
-        //$model->setPassword($model->password);
-        //$model->generatePasswordResetToken();
+        //init form model instance
+        $formModel = new UserForm(['scenario' => UserForm::SCENARIO_CREATE]);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        //set AR model to form
+        $formModel->setModel(new User());
+
+
+        if ($formModel->load(Yii::$app->request->post()) && $formModel->save()) {
+            return $this->redirect(['view', 'id' => $formModel->model->id]);
         } else {
             return $this->render('create', [
-                'model' => $model,
+                'formModel' => $formModel,
             ]);
         }
     }

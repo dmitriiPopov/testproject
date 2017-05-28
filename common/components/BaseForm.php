@@ -5,8 +5,11 @@ namespace common\components;
  * Class BaseForm
  * @package common\components
  */
-class BaseForm extends \yii\base\Component
+class BaseForm extends \yii\base\Model
 {
+    const SCENARIO_CREATE  = 'create';
+    const SCENARIO_UPDATE  = 'update';
+
     /**
      * @var \yii\db\ActiveRecord
      */
@@ -28,7 +31,5 @@ class BaseForm extends \yii\base\Component
     {
         return $this->model;
     }
-
-
 
 }
