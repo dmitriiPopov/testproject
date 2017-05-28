@@ -36,3 +36,6 @@ config/local/test.php
 
 # composer
 composer.lock
+
+#data dir
+/data

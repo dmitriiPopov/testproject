@@ -7,11 +7,11 @@ use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
-use common\models\LoginForm;
-use frontend\models\PasswordResetRequestForm;
-use frontend\models\ResetPasswordForm;
-use frontend\models\SignupForm;
-use frontend\models\ContactForm;
+use frontend\components\forms\LoginForm;
+use frontend\components\forms\PasswordResetRequestForm;
+use frontend\components\forms\ResetPasswordForm;
+use frontend\components\forms\SignupForm;
+use frontend\components\forms\ContactForm;
 
 /**
  * Site controller
@@ -149,12 +149,16 @@ class SiteController extends Controller
     public function actionSignup()
     {
         $model = new SignupForm();
+
         if ($model->load(Yii::$app->request->post())) {
+
             if ($user = $model->signup()) {
+
                 if (Yii::$app->getUser()->login($user)) {
                     return $this->goHome();
                 }
             }
+
         }
 
         return $this->render('signup', [
