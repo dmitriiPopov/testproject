@@ -38,6 +38,11 @@ class UserForm extends BaseForm
     public $password;
 
     /**
+     * @var string
+     */
+    public $status;
+
+    /**
      * @return array
      */
     public function rules()
@@ -46,6 +51,7 @@ class UserForm extends BaseForm
             [['username','password','email'], 'required', 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE]],
             [['username', 'password'], 'string', 'max' => 255, 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE]],
             [['email'], 'email', 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE]],
+            [['status'], 'string', 'on' => [self::SCENARIO_UPDATE]],
         ];
     }
 

@@ -54,8 +54,5 @@ class Admin extends \common\models\AdminUser implements IdentityInterface
         return $this->getAuthKey() === $authKey;
     }
 
-    public function validatePassword($password)
-    {
-        return Yii::$app->security->validatePassword($password, $this->password_hash);
-    }
+
 }

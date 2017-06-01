@@ -3,11 +3,11 @@
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
-/* @var $model backend\models\user\User */
+/* @var $formModel backend\models\user\UserForm */
 
-$this->title = 'Update User: ' . $model->id;
+$this->title = 'Update User: ' . $formModel->model->username;
 $this->params['breadcrumbs'][] = ['label' => 'Users', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
+$this->params['breadcrumbs'][] = ['label' => $formModel->model->username, 'url' => ['view', 'id' => $formModel->model->id]];
 $this->params['breadcrumbs'][] = 'Update';
 ?>
 <div class="user-update">
@@ -15,7 +15,7 @@ $this->params['breadcrumbs'][] = 'Update';
     <h1><?= Html::encode($this->title) ?></h1>
 
     <?= $this->render('_form', [
-        'model' => $model,
+        'formModel' => $formModel,
     ]) ?>
 
 </div>

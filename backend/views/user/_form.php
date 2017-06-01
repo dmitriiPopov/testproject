@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use \common\models\User;
 
 /* @var $this yii\web\View */
 /* @var $formModel backend\models\user\UserForm */
@@ -22,7 +23,22 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($formModel, 'email')->textInput(['maxlength' => true]) ?>
 
-    <?php //= $form->field($model, 'status')->textInput() ?>
+    <?php
+
+        if (in_array($formModel->scenario, [$formModel::SCENARIO_UPDATE])){
+
+            $userStatus = $formModel->model->status;
+            $itemsActive = array(User::STATUS_ACTIVE =>'Active', User::STATUS_DELETED => 'Deleted');
+            $itemsDeleted = array(User::STATUS_DELETED => 'Deleted', User::STATUS_ACTIVE =>'Active');
+
+            if($userStatus==User::STATUS_ACTIVE){
+                echo $form->field($formModel, 'status')->dropDownList($itemsActive);
+            }else{
+                echo $form->field($formModel, 'status')->dropDownList($itemsDeleted);
+            }
+        }
+
+     ?>
 
     <?php //= $form->field($model, 'created_at')->textInput() ?>
 

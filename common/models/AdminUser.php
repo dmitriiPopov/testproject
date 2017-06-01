@@ -2,7 +2,7 @@
 
 namespace common\models;
 
-
+use Yii;
 /**
  * This is the model class for table "admin_user".
  *
@@ -75,5 +75,10 @@ class AdminUser extends \yii\db\ActiveRecord
     public static function findByUsername($username)
     {
         return static::findOne(['username' => $username, 'status' => self::STATUS_ACTIVE]);
+    }
+
+    public function validatePassword($password)
+    {
+        return Yii::$app->security->validatePassword($password, $this->password_hash);
     }
 }
