@@ -13,7 +13,7 @@ use \common\models\User;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($formModel, 'username')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($formModel, 'username')->textInput(['maxlength' => true, 'value'=>$formModel->model->username]) ?>
 
     <?php //= $form->field($model, 'auth_key')->textInput(['maxlength' => true]) ?>
 
@@ -21,7 +21,7 @@ use \common\models\User;
 
     <?php //= $form->field($model, 'password_reset_token')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($formModel, 'email')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($formModel, 'email')->textInput(['maxlength' => true, 'value'=>$formModel->model->email]) ?>
 
     <?php
 
@@ -31,7 +31,7 @@ use \common\models\User;
             $itemsActive = array(User::STATUS_ACTIVE =>'Active', User::STATUS_DELETED => 'Deleted');
             $itemsDeleted = array(User::STATUS_DELETED => 'Deleted', User::STATUS_ACTIVE =>'Active');
 
-            if($userStatus==User::STATUS_ACTIVE){
+            if($userStatus===User::STATUS_ACTIVE){
                 echo $form->field($formModel, 'status')->dropDownList($itemsActive);
             }else{
                 echo $form->field($formModel, 'status')->dropDownList($itemsDeleted);

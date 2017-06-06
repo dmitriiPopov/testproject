@@ -30,9 +30,12 @@ $this->params['breadcrumbs'][] = $this->title;
             //'password_hash',
             //'password_reset_token',
             'email:email',
-            'status',
-            'created_at',
-            'updated_at',
+            [
+                'attribute' => 'status',
+                'value' => function ($data) { return $data->status === 10 ? 'Active' : 'Deleted'; },
+            ],
+            'created_at:datetime',
+            'updated_at:datetime',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],
