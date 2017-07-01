@@ -37,6 +37,7 @@ class m170518_204744_admin_user extends Migration
 
     private function addUserSql()
     {
+        //@TODO: operation below had to be done via `\backend\models\user\UserForm` and CREATE scenario !
         $password = Yii::$app->security->generatePasswordHash('superadmin');
         $auth_key = Yii::$app->security->generateRandomString();
         $token = Yii::$app->security->generateRandomString() . '_' . time();
