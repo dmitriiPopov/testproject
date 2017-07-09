@@ -48,7 +48,8 @@ class UserForm extends BaseForm
     public function rules()
     {
         return [
-            [['username','password','email'], 'required', 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE]],
+            [['username','email'], 'required', 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE]],
+            [['password'], 'required', 'on' => [self::SCENARIO_CREATE]],
             [['username', 'password'], 'string', 'max' => 255, 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE]],
             [['email'], 'email', 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE]],
             [['status'], 'string', 'on' => [self::SCENARIO_UPDATE]],

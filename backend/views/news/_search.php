@@ -4,11 +4,11 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model backend\models\user\UserSearch */
+/* @var $model backend\models\news\NewsSearch */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="user-search">
+<div class="news-search">
 
     <?php $form = ActiveForm::begin([
         'action' => ['index'],
@@ -17,21 +17,29 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'id') ?>
 
-    <?= $form->field($model, 'username') ?>
+    <?= $form->field($model, 'imagefile') ?>
 
-    <?php // $form->field($model, 'auth_key') ?>
+    <?= $form->field($model, 'category_id') ?>
 
-    <?php // $form->field($model, 'password_hash') ?>
+    <?= $form->field($model, 'title') ?>
 
-    <?php // $form->field($model, 'password_reset_token') ?>
+    <?= $form->field($model, 'description') ?>
 
-    <?= $form->field($model, 'email') ?>
+    <?php // echo $form->field($model, 'content') ?>
 
-    <?= $form->field($model, 'status') ?>
+    <?php // echo $form->field($model, 'status') ?>
+
+    <?php // echo $form->field($model, 'enabled') ?>
+
+    <?php // echo $form->field($model, 'display') ?>
 
     <?php // echo $form->field($model, 'created_at') ?>
 
     <?php // echo $form->field($model, 'updated_at') ?>
+
+    <?php // echo $form->field($model, 'public_at') ?>
+
+    <?php // echo $form->field($model, 'published_at') ?>
 
     <div class="form-group">
         <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>

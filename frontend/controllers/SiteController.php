@@ -1,6 +1,7 @@
 <?php
 namespace frontend\controllers;
 
+use common\models\Category;
 use Yii;
 use yii\base\InvalidParamException;
 use yii\web\BadRequestHttpException;
@@ -12,6 +13,7 @@ use frontend\components\forms\PasswordResetRequestForm;
 use frontend\components\forms\ResetPasswordForm;
 use frontend\components\forms\SignupForm;
 use frontend\components\forms\ContactForm;
+use common\models\News;
 
 /**
  * Site controller
@@ -67,12 +69,18 @@ class SiteController extends Controller
 
     /**
      * Displays homepage.
-     *
      * @return mixed
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        $data = News::getAll();
+        $categories = Category::getAll();
+
+        return $this->render('index', [
+            'articles' => $data['articles'],
+            'pagination' => $data['pagination'],
+            'categories' => $categories,
+        ]);
     }
 
     /**

@@ -2,7 +2,6 @@
 
 namespace backend\models\user;
 
-use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use \common\models\User;
@@ -18,8 +17,8 @@ class UserSearch extends \common\models\User
     public function rules()
     {
         return [
-            [['id', 'status', 'created_at', 'updated_at'], 'integer'],
-            [['username', 'auth_key', 'password_hash', 'password_reset_token', 'email'], 'safe'],
+            [['id', 'status'], 'integer'],
+            [['username', 'auth_key', 'password_hash', 'password_reset_token', 'email', 'created_at', 'updated_at'], 'safe'],
         ];
     }
 
@@ -30,6 +29,32 @@ class UserSearch extends \common\models\User
     {
         // bypass scenarios() implementation in the parent class
         return Model::scenarios();
+    }
+
+    /**
+     * Create date interval at UNIX time
+     *
+     * @param $searchDate
+     *
+     * @return array
+     */
+    public function dateFilter($searchDate)
+    {
+        // date to search
+        $date = \DateTime::createFromFormat('Y-m-d', $searchDate);
+        $date->setTime(0,0,0);
+
+        // set lowest date value
+        $unixDateStart = $date->getTimestamp();
+
+        // add 1 day and substract 1 second
+        $date->add(new \DateInterval('P1D'));
+        $date->sub(new \DateInterval('PT1S'));
+
+        // set highest date value
+        $unixDateEnd = $date->getTimeStamp();
+
+        return array($unixDateStart, $unixDateEnd);
     }
 
     /**
@@ -61,15 +86,42 @@ class UserSearch extends \common\models\User
         $query->andFilterWhere([
             'id' => $this->id,
             'status' => $this->status,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
         ]);
+
+        //if create and update date filtering
+        if($this->created_at || $this->updated_at) {
+
+            if ($this->created_at && $this->updated_at) {
+                //set date at UNIX time
+                $unixDateCreate = $this->dateFilter($this->created_at);
+                $unixDateUpdate = $this->dateFilter($this->updated_at);
+
+                $query->andFilterWhere(['between', 'created_at', $unixDateCreate[0], $unixDateCreate[1]])
+                    ->andFilterWhere(['between', 'updated_at', $unixDateUpdate[0], $unixDateUpdate[1]]);
+
+            } elseif (!$this->updated_at) {
+
+                //set date at UNIX time
+                $unixDateCreate = $this->dateFilter($this->created_at);
+
+                $query->andFilterWhere(['between', 'created_at', $unixDateCreate[0], $unixDateCreate[1]]);
+
+            } elseif (!$this->created_at) {
+
+                //set date at UNIX time
+                $unixDateUpdate = $this->dateFilter($this->updated_at);
+
+                $query->andFilterWhere(['between', 'updated_at', $unixDateUpdate[0], $unixDateUpdate[1]]);
+            }
+        }
 
         $query->andFilterWhere(['like', 'username', $this->username])
             ->andFilterWhere(['like', 'auth_key', $this->auth_key])
             ->andFilterWhere(['like', 'password_hash', $this->password_hash])
             ->andFilterWhere(['like', 'password_reset_token', $this->password_reset_token])
             ->andFilterWhere(['like', 'email', $this->email]);
+
+
 
         return $dataProvider;
     }

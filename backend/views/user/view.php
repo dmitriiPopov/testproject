@@ -36,7 +36,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'email:email',
             [
                 'attribute' => 'status',
-                'value' => function ($data) { return $data->status === 10 ? 'Active' : 'Deleted'; },
+                'value' => function ($data) { return $data->status === \common\models\User::STATUS_ACTIVE ? Yii::t('app', 'Active') : Yii::t('app', 'Deleted'); },
             ],
             'created_at:datetime',
             'updated_at:datetime',

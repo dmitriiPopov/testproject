@@ -13,7 +13,7 @@ use \common\models\User;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($formModel, 'username')->textInput(['maxlength' => true, 'value'=>$formModel->model->username]) ?>
+    <?= $form->field($formModel, 'username')->textInput(['maxlength' => true]) ?>
 
     <?php //= $form->field($model, 'auth_key')->textInput(['maxlength' => true]) ?>
 
@@ -21,17 +21,17 @@ use \common\models\User;
 
     <?php //= $form->field($model, 'password_reset_token')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($formModel, 'email')->textInput(['maxlength' => true, 'value'=>$formModel->model->email]) ?>
+    <?= $form->field($formModel, 'email')->textInput(['maxlength' => true]) ?>
 
     <?php
 
         if (in_array($formModel->scenario, [$formModel::SCENARIO_UPDATE])){
 
-            $userStatus = $formModel->model->status;
-            $itemsActive = array(User::STATUS_ACTIVE =>'Active', User::STATUS_DELETED => 'Deleted');
-            $itemsDeleted = array(User::STATUS_DELETED => 'Deleted', User::STATUS_ACTIVE =>'Active');
+            $userStatus   = $formModel->status;
+            $itemsActive  = array(User::STATUS_ACTIVE  => Yii::t('app', 'Active'),  User::STATUS_DELETED => Yii::t('app', 'Deleted'));
+            $itemsDeleted = array(User::STATUS_DELETED => Yii::t('app', 'Deleted'), User::STATUS_ACTIVE  => Yii::t('app', 'Active'));
 
-            if($userStatus===User::STATUS_ACTIVE){
+            if($userStatus === User::STATUS_ACTIVE){
                 echo $form->field($formModel, 'status')->dropDownList($itemsActive);
             }else{
                 echo $form->field($formModel, 'status')->dropDownList($itemsDeleted);

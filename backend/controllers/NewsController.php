@@ -2,19 +2,18 @@
 
 namespace backend\controllers;
 
-use common\models\User;
 use Yii;
-use backend\models\user\UserForm;
-use backend\models\user\UserSearch;
+use common\models\News;
+use backend\models\news\NewsSearch;
+use backend\models\news\NewsForm;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 
 /**
- * UserController implements the CRUD actions for User model.
+ * NewsController implements the CRUD actions for News model.
  */
-class UserController extends Controller
+class NewsController extends Controller
 {
     /**
      * @inheritdoc
@@ -22,16 +21,6 @@ class UserController extends Controller
     public function behaviors()
     {
         return [
-            'access' => [
-                'class' => AccessControl::className(),
-                'rules' => [
-                    [
-                        'actions' => ['create', 'update', 'delete', 'view', 'index'],
-                        'allow' => true,
-                        'roles' => ['@'],
-                    ],
-                ],
-            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -42,12 +31,12 @@ class UserController extends Controller
     }
 
     /**
-     * Lists all User models.
+     * Lists all News models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new UserSearch();
+        $searchModel = new NewsSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -57,7 +46,7 @@ class UserController extends Controller
     }
 
     /**
-     * Displays a single User model.
+     * Displays a single News model.
      * @param integer $id
      * @return mixed
      */
@@ -69,18 +58,15 @@ class UserController extends Controller
     }
 
     /**
-     * Creates a new User model.
+     * Creates a new News model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        //init form model instance
-        $formModel = new UserForm(['scenario' => UserForm::SCENARIO_CREATE]);
+        $formModel = new NewsForm(['scenario' => NewsForm::SCENARIO_CREATE]);
 
-        //set AR model to form
-        $formModel->setModel(new User());
-
+        $formModel->setModel(new News());
 
         if ($formModel->load(Yii::$app->request->post()) && $formModel->save()) {
             return $this->redirect(['view', 'id' => $formModel->model->id]);
@@ -92,18 +78,16 @@ class UserController extends Controller
     }
 
     /**
-     * Updates an existing User model.
+     * Updates an existing News model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
      */
     public function actionUpdate($id)
     {
-        //init form model instance
-        $formModel = new UserForm(['scenario' => UserForm::SCENARIO_UPDATE]);
+        $formModel = new NewsForm(['scenario' => NewsForm::SCENARIO_UPDATE]);
 
         $formModel->setModel($this->findModel($id), true);
-
 
         if ($formModel->load(Yii::$app->request->post()) && $formModel->save()) {
             return $this->redirect(['view', 'id' => $formModel->model->id]);
@@ -115,7 +99,7 @@ class UserController extends Controller
     }
 
     /**
-     * Deletes an existing User model.
+     * Deletes an existing News model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -128,15 +112,15 @@ class UserController extends Controller
     }
 
     /**
-     * Finds the User model based on its primary key value.
+     * Finds the News model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return User the loaded model
+     * @return News the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = User::findOne($id)) !== null) {
+        if (($model = News::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
