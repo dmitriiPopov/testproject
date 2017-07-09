@@ -27,14 +27,33 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'id',
-            'username',
+            //'id',
+            [
+                'attribute' => 'id',
+                'headerOptions' => ['style' => 'text-align: center; vertical-align: middle;'],
+                'contentOptions' => ['style' => 'text-align: center; vertical-align: middle;'],
+            ],
+            //'username',
+            [
+                'attribute' => 'username',
+                'headerOptions' => ['style' => 'text-align: center; vertical-align: middle;'],
+                'contentOptions' => ['style' => 'text-align: center; vertical-align: middle;'],
+            ],
             //'auth_key',
             //'password_hash',
             //'password_reset_token',
-            'email:email',
+            //'email:email',
+            [
+                'attribute' => 'email',
+                'format' => 'email',
+                'headerOptions' => ['style' => 'text-align: center; vertical-align: middle;'],
+                'contentOptions' => ['style' => 'text-align: center; vertical-align: middle;'],
+            ],
             [
                 'attribute' => 'status',
+                'headerOptions' => ['style' => 'text-align: center; vertical-align: middle;'],
+                'filterOptions' => ['style' => 'text-align: center; vertical-align: middle;'],
+                'contentOptions' => ['style' => 'text-align: center; vertical-align: middle;'],
                 'value' => function ($data) { return $data->status === User::STATUS_ACTIVE ? Yii::t('app', 'Active') : Yii::t('app', 'Deleted'); },
                 'filter' => Html::activeDropDownList($searchModel, 'status', ArrayHelper::map(User::find()->all(), 'status',
                     function ($data) { return $data->status === User::STATUS_ACTIVE ? Yii::t('app', 'Active') : Yii::t('app', 'Deleted'); }),
@@ -43,6 +62,8 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'created_at',
                 'value' => 'created_at',
+                'headerOptions' => ['style' => 'text-align: center; vertical-align: middle;'],
+                'contentOptions' => ['style' => 'text-align: center; vertical-align: middle;'],
                 'format' => 'datetime',
                 'filter' => DatePicker::widget([
                     'model' => $searchModel,
@@ -58,6 +79,8 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'updated_at',
                 'value' => 'updated_at',
+                'headerOptions' => ['style' => 'text-align: center; vertical-align: middle;'],
+                'contentOptions' => ['style' => 'text-align: center; vertical-align: middle;'],
                 'format' => 'datetime',
                 'filter' => DatePicker::widget([
                     'model' => $searchModel,

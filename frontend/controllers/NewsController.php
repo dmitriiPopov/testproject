@@ -38,6 +38,11 @@ class NewsController extends Controller
     public function actionView($id)
     {
         $article = News::findOne($id);
+        //if article not found or not "publish"
+        if (!$article || $article->status !== 'published')
+        {
+            return $this->goHome();
+        }
 
         return $this->render('view', [
             'article' => $article,
@@ -45,13 +50,18 @@ class NewsController extends Controller
     }
 
     /**
-     * Displays all articles at category
+     * Displays all articles at some category
      * @param integer $id
      */
     public function actionCategory($id)
     {
         $articles = News::findAtCategory($id);
         $category = Category::findOne($id);
+        //if category not found
+        if(!$category)
+        {
+            return $this->goHome();
+        }
 
         return $this->render('category', [
             'articles' => $articles,

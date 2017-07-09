@@ -34,6 +34,8 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'category_id',
                 'value' => 'category.title',
+                'headerOptions' => ['style' => 'text-align: center; vertical-align: middle;'],
+                'contentOptions' => ['style' => 'text-align: center;'],
                 'filter' => Html::activeDropDownList($searchModel, 'category_id',
                     ArrayHelper::map(News::find()->all(), 'category_id', 'category.title'),
                     ['prompt' => 'All']),
@@ -41,18 +43,22 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'title',
                 'value' => 'title',
-                'contentOptions'=>['style'=>'white-space: normal;']
+                'headerOptions' => ['style' => 'text-align: center; vertical-align: middle;'],
+                'contentOptions' => ['style' => 'white-space: normal;']
             ],
             //'description',
             [
                 'attribute' => 'description',
                 'value' => 'description',
-                'contentOptions'=>['style'=>'white-space: normal;'],
+                'headerOptions' => ['style' => 'text-align: center; vertical-align: middle;'],
+                'contentOptions' => ['style' => 'white-space: normal;'],
             ],
             // 'content:ntext',
             [
                 'attribute' => 'status',
                 'value' => 'status',
+                'headerOptions' => ['style' => 'text-align: center; vertical-align: middle;'],
+                'contentOptions' => ['style' => 'text-align: center; vertical-align: middle;'],
                 'filter' => Html::activeDropDownList($searchModel, 'status',
                     ArrayHelper::map(News::find()->all(), 'status', 'status'),
                     ['prompt' => 'Select']),
@@ -60,6 +66,8 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'enabled',
                 'value' => function ($data) { return $data->enabled ? Yii::t('app', 'Yes') : Yii::t('app', 'No'); },
+                'headerOptions' => ['style' => 'text-align: center; vertical-align: middle;'],
+                'contentOptions' => ['style' => 'text-align: center; vertical-align: middle;'],
                 'filter' => Html::activeDropDownList($searchModel, 'enabled', ArrayHelper::map(News::find()->all(), 'enabled',
                     function ($data) { return $data->enabled ? Yii::t('app', 'Yes') : Yii::t('app', 'No'); }),
                     ['prompt' => 'Select']),
@@ -67,6 +75,8 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'display',
                 'value' => function ($data) { return $data->display ? Yii::t('app', 'Yes') : Yii::t('app', 'No'); },
+                'headerOptions' => ['style' => 'text-align: center; vertical-align: middle;'],
+                'contentOptions' => ['style' => 'text-align: center; vertical-align: middle;'],
                 'filter' => Html::activeDropDownList($searchModel, 'display', ArrayHelper::map(News::find()->all(), 'display',
                     function ($data) { return $data->display ? Yii::t('app', 'Yes') : Yii::t('app', 'No'); }),
                     ['prompt' => 'Select']),
@@ -74,6 +84,8 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'created_at',
                 'value' => 'created_at',
+                'headerOptions' => ['style' => 'text-align: center; vertical-align: middle;'],
+                'contentOptions' => ['style' => 'text-align: center; vertical-align: middle;'],
                 'filter' => DatePicker::widget([
                     'model' => $searchModel,
                     'attribute' => 'created_at',
@@ -99,6 +111,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'color' => 'red',
                     ]
                 ]),
+                'contentOptions' => ['style' => 'text-align: center; vertical-align: middle;'],
             ],
         ],
     ]); ?>

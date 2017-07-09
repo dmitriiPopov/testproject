@@ -23,7 +23,7 @@ class NewsController extends \yii\console\Controller
        //Console::output('Start...');
 
        //GET news with `to publicate` status with publish date less then current datetime, and enabled/displayed
-       $articlesToPublish = News::find()->andWhere(['status' => 'publicate'])->all();
+       $articlesToPublish = News::find()->andWhere(['status' => 'publicate'])->andWhere(['display' => 1])->all();
        //for each object do...
        foreach ($articlesToPublish as $article) {
            //SET status to 'publish'

@@ -30,17 +30,28 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
             //'id',
-            'title',
+            //'title',
+            [
+                'attribute' => 'title',
+                'headerOptions' => ['style' => 'text-align: center; vertical-align: middle;'],
+                'contentOptions' => ['style' => 'text-align: center; vertical-align: middle;'],
+            ],
             [
                 'attribute' => 'enabled',
                 'value' => function ($data) { return $data->enabled ? Yii::t('app', 'Yes') : Yii::t('app', 'No'); },
+                'headerOptions' => ['style' => 'text-align: center; vertical-align: middle;'],
+                'filterOptions' => ['style' => 'text-align: center; vertical-align: middle;'],
+                'contentOptions' => ['style' => 'text-align: center; vertical-align: middle;'],
                 'filter' => Html::activeDropDownList($searchModel, 'enabled', ArrayHelper::map(Category::find()->all(), 'enabled',
                     function ($data) { return $data->enabled ? Yii::t('app', 'Yes') : Yii::t('app', 'No'); }),
-                    ['prompt' => 'Select']),
+                    ['prompt' => 'Select', ]),
             ],
             [
                 'attribute' => 'display',
                 'value' => function ($data) { return $data->display ? Yii::t('app', 'Yes') : Yii::t('app', 'No'); },
+                'headerOptions' => ['style' => 'text-align: center; vertical-align: middle;'],
+                'filterOptions' => ['style' => 'text-align: center; vertical-align: middle;'],
+                'contentOptions' => ['style' => 'text-align: center; vertical-align: middle;'],
                 'filter' => Html::activeDropDownList($searchModel, 'display', ArrayHelper::map(Category::find()->all(), 'display',
                     function ($data) { return $data->display ? Yii::t('app', 'Yes') : Yii::t('app', 'No'); }),
                     ['prompt' => 'Select']),
@@ -48,6 +59,8 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'created_at',
                 'value' => 'created_at',
+                'headerOptions' => ['style' => 'text-align: center; vertical-align: middle;'],
+                'contentOptions' => ['style' => 'text-align: center; vertical-align: middle;'],
                 'filter' => DatePicker::widget([
                     'model' => $searchModel,
                     'attribute' => 'created_at',
@@ -71,6 +84,8 @@ $this->params['breadcrumbs'][] = $this->title;
                         'color' => 'red',
                     ]
                 ]),
+                'headerOptions' => ['style' => 'text-align: center; vertical-align: middle;'],
+                'contentOptions' => ['style' => 'text-align: center; vertical-align: middle;'],
             ],
         ],
     ]); ?>
