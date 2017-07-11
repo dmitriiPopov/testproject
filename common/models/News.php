@@ -26,6 +26,18 @@ use yii\data\Pagination;
  */
 class News extends \yii\db\ActiveRecord
 {
+    //variables of `status`
+    const STATUS_NEW       = 'new';
+    const STATUS_PUBLICATE = 'publicate';
+    const STATUS_PUBLISHED = 'published';
+
+    const ENABLED_ON  = 1;
+    const ENABLED_OFF = 0;
+
+    const DISPLAY_ON  = 1;
+    const DISPLAY_OFF = 0;
+
+
     /**
      * @inheritdoc
      */

@@ -10,6 +10,7 @@ namespace backend\models\news;
 
 
 use common\components\BaseForm;
+use common\models\News;
 
 /**
  * Class NewsForm
@@ -105,12 +106,12 @@ class NewsForm extends BaseForm
             //generate date attributes
             $this->model->created_at = date('Y-m-d H:i:s', time());
             //generate date attributes
-            if ($this->status === 'publicate')
+            if ($this->status === News::STATUS_PUBLICATE)
             {
                 $this->model->public_at = date('Y-m-d H:i:s', time());
             }
             //generate date attributes
-            if ($this->status === 'published')
+            if ($this->status === News::STATUS_PUBLISHED)
             {
                 $this->model->published_at = date('Y-m-d H:i:s', time());
             }
@@ -127,7 +128,7 @@ class NewsForm extends BaseForm
                 $this->model->published_at = null;
             }
             //generate date attributes
-            if ($this->status === 'publicate')
+            if ($this->status === News::STATUS_PUBLICATE)
             {
                 $this->model->public_at = date('Y-m-d H:i:s', time());
                 $this->model->published_at = null;

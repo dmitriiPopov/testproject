@@ -20,23 +20,34 @@ class NewsController extends \yii\console\Controller
      */
    public function actionPublish()
    {
-       //Console::output('Start...');
+       Console::output('Start...');
 
        //GET news with `to publicate` status with publish date less then current datetime, and enabled/displayed
-       $articlesToPublish = News::find()->andWhere(['status' => 'publicate'])->andWhere(['display' => 1])->all();
+       $articlesToPublish = News::find()
+           ->andWhere(['status'  => News::STATUS_PUBLICATE])
+           ->andWhere(['display' => News::DISPLAY_ON])
+           ->all();
+
        //for each object do...
-       foreach ($articlesToPublish as $article) {
+       //loop begin...
+       foreach ($articlesToPublish as $article) {/**@var $article News*/
+
            //SET status to 'publish'
-           $article->status = 'published';
+           $article->status       = News::STATUS_PUBLISHED;
            //SET datetime (published_at)
-           if($article->status === 'published')
-           {
-               $article->published_at = date('Y-m-d H:i:s', time());
-           }
+           $article->published_at = date('Y-m-d H:i:s', time());
+
            //SAVE selected model
-           $article->save();
-           //loop end
+           if ($article->save()) {
+               Console::output(sprintf('Topic #%d has been published!', $article->id));
+           //if article hasn't been saved than to throw notification
+           } else {
+               Console::output(sprintf('Topic #%d has NOT been published!', $article->id));
+           }
+
        }
-       //Console::output('Finish.');
+       //loop end
+
+       Console::output('Finish.');
    }
 }

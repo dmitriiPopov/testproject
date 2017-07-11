@@ -20,7 +20,7 @@ class m170608_201452_create_news_table extends Migration
               `title` varchar(127) NOT NULL DEFAULT '',
               `description` varchar(255) NOT NULL DEFAULT '',
               `content` text,
-              `status` enum('new','publicate','published') DEFAULT 'new',
+              `status` enum('new','" . \common\models\News::STATUS_PUBLICATE . "','published') DEFAULT 'new',
               `enabled` tinyint(1) unsigned NOT NULL DEFAULT '0',
               `display` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '''aggregated flag''',
               `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,

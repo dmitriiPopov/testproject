@@ -27,7 +27,7 @@ use common\models\Category;
 
     <?= $form->field($formModel, 'content')->widget(\yii\redactor\widgets\Redactor::className()) ?>
 
-    <?= $form->field($formModel, 'status')->dropDownList([ 'new' => 'New', 'publicate' => 'Publicate', 'published' => 'Published' ], ['prompt' => 'Select status']) ?>
+    <?= $form->field($formModel, 'status')->dropDownList([ 'new' => 'New', \common\models\News::STATUS_PUBLICATE => 'Publicate', 'published' => 'Published' ], ['prompt' => 'Select status']) ?>
 
     <?= $form->field($formModel, 'enabled')->checkbox(['id' => 'enabled']) ?>
 
