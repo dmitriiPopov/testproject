@@ -3,6 +3,7 @@
 namespace common\models;
 
 use Yii;
+use common\components\behaviors\CreatedAtUpdatedAtBehavior;
 use yii\data\Pagination;
 
 /**
@@ -86,6 +87,18 @@ class News extends \yii\db\ActiveRecord
     }
 
     /**
+     * @return array
+     */
+    public function behaviors()
+    {
+        return [
+            'createdAtUpdatedAtBehavior' => [
+                'class' => CreatedAtUpdatedAtBehavior::className(),
+            ]
+        ];
+    }
+
+    /**
      * @return \yii\db\ActiveQuery
      */
     public function getCategory()
@@ -94,43 +107,16 @@ class News extends \yii\db\ActiveRecord
     }
 
     /**
-     * Build a DB query to get all articles and
-     * create a pagination object with the total count
-     * @param int $display
-     * @param $status
-     * @param int $pageSize
+     * Return statuses with labels
+     * @param array $params
      * @return array
      */
-    public static function getAll($display = 1, $status = 'published', $pageSize = 2)
+    public static function getStatuses($params = [])
     {
-        // build a DB query to get all articles with display = 1
-        $query = News::find()->andWhere(['display' => $display])->andWhere(['status' => $status])->orderBy(['published_at' => SORT_DESC]);
-
-        // get the total number of articles (but do not fetch the article data yet)
-        $count = $query->count();
-
-        // create a pagination object with the total count
-        $pagination = new Pagination(['totalCount' => $count, 'pageSize' => $pageSize]);
-
-        // limit the query using the pagination and retrieve the articles
-        $articles = $query->offset($pagination->offset)
-            ->limit($pagination->limit)
-            ->all();
-
-        $data['articles'] = $articles;
-        $data['pagination'] = $pagination;
-
-        return $data;
-    }
-
-    /**
-     * Find all articles at category
-     * @param $id
-     * @param $status
-     * @return array|\yii\db\ActiveRecord[]
-     */
-    public static function findAtCategory($id, $status = 'published')
-    {
-        return News::find()->andWhere(['category_id' => $id])->andWhere(['status' => $status])->all();
+        return [
+            self::STATUS_NEW => Yii::t('app', 'New'),
+            self::STATUS_PUBLICATE => Yii::t('app', 'publicate'),
+            self::STATUS_PUBLISHED => Yii::t('app', 'published'),
+        ];
     }
 }

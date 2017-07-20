@@ -2,6 +2,7 @@
 
 namespace common\models;
 
+use common\components\behaviors\CreatedAtUpdatedAtBehavior;
 use Yii;
 
 /**
@@ -13,9 +14,19 @@ use Yii;
  * @property integer $display
  * @property string $created_at
  * @property string $updated_at
+ *
+ *
+ * @property News[] $news
+ * @property News[] $publishedNews
  */
 class Category extends \yii\db\ActiveRecord
 {
+    const ENABLED_ON  = 1;
+    const ENABLED_OFF = 0;
+
+    const DISPLAY_ON  = 1;
+    const DISPLAY_OFF = 0;
+
     /**
      * @inheritdoc
      */
@@ -52,11 +63,33 @@ class Category extends \yii\db\ActiveRecord
     }
 
     /**
+     * @return array
+     */
+    public function behaviors()
+    {
+        return [
+            'createdAtUpdatedAtBehavior' => [
+                'class' => CreatedAtUpdatedAtBehavior::className(),
+            ]
+        ];
+    }
+
+    /**
      * @return \yii\db\ActiveQuery
      */
-    public function getNewsCategory()
+    public function getNews()
     {
         return $this->hasMany(News::className(), ['category_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPublishedNews()
+    {
+        return $this->getNews()
+            ->alias('publishedNews')
+            ->onCondition(['publishedNews.display' => News::DISPLAY_ON]);
     }
 
     /*
@@ -64,7 +97,17 @@ class Category extends \yii\db\ActiveRecord
      */
     public function getArticlesCount()
     {
-        return $this->getNewsCategory()->andWhere(['status' => 'published'])->count();
+        return $this->getNews()->andWhere(['status' => News::STATUS_PUBLISHED])->count();
+    }
+
+
+    public function beforeSave($insert)
+    {
+        if ($this->enabled == self::ENABLED_ON) {
+            $this->display = self::DISPLAY_ON;
+        } else {
+            $this->display = self::DISPLAY_OFF;
+        }
     }
 
     /**
@@ -72,8 +115,8 @@ class Category extends \yii\db\ActiveRecord
      * @param int $display
      * @return array|\yii\db\ActiveRecord[]
      */
-    public static function getAll($display = 1)
+    /*public static function getAll($display = 1)
     {
         return Category::find()->andWhere(['display' => $display])->all();
-    }
+    }*/
 }

@@ -1,19 +1,20 @@
 <?php
 namespace frontend\controllers;
 
-use common\models\Category;
 use Yii;
 use yii\base\InvalidParamException;
 use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
+use yii\data\ActiveDataProvider;
 use frontend\components\forms\LoginForm;
 use frontend\components\forms\PasswordResetRequestForm;
 use frontend\components\forms\ResetPasswordForm;
 use frontend\components\forms\SignupForm;
 use frontend\components\forms\ContactForm;
 use common\models\News;
+use common\models\Category;
 
 /**
  * Site controller
@@ -73,13 +74,20 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        $data = News::getAll();
-        $categories = Category::getAll();
+        //List of news
+        $dataProvider = new ActiveDataProvider([
+            'query' => News::find()->andWhere(['display' => News::DISPLAY_ON])->orderBy('published_at DESC'),
+            'pagination' => [
+                'pageSize' => 4,
+            ],
+        ]);
+
+        //array of categories
+        $categories = Category::find()->andWhere(['display' => Category::DISPLAY_ON])->all();
 
         return $this->render('index', [
-            'articles' => $data['articles'],
-            'pagination' => $data['pagination'],
-            'categories' => $categories,
+            'dataProvider' => $dataProvider,
+            'categories'   => $categories,
         ]);
     }
 

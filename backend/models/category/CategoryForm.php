@@ -40,6 +40,7 @@ class CategoryForm extends BaseForm
     /**
      * @return array
      */
+    //@TODO: add validation display/enabled here (from js)
     public function rules()
     {
         return [
@@ -55,7 +56,7 @@ class CategoryForm extends BaseForm
         $this->model->setAttributes($this->attributes);
 
         //do operations for CREATE scenario
-        if (in_array($this->scenario, [self::SCENARIO_CREATE])) {
+        /*if (in_array($this->scenario, [self::SCENARIO_CREATE])) {
             //generate date attributes
             //@TODO: move to behavior
             $this->model->created_at = date('Y-m-d H:i:s', time());
@@ -66,7 +67,7 @@ class CategoryForm extends BaseForm
             //generate date attributes
             //@TODO: move to behavior
             $this->model->updated_at = date('Y-m-d H:i:s', time());
-        }
+        }*/
 
         //save AR model
         if (!$this->model->save($runValidation, $attributeNames)) {

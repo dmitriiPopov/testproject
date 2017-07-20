@@ -12,40 +12,32 @@ use common\models\Category;
 use common\models\News;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
+use yii\data\ActiveDataProvider;
 
 class NewsController extends Controller
 {
-    /**
-     * @inheritdoc
-     */
-    public function behaviors()
-    {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
-            ],
-        ];
-    }
-
     /**
      * Displays article
      * @param integer $id
      */
     public function actionView($id)
     {
-        $article = News::findOne($id);
-        //if article not found or not "publish"
-        if (!$article || $article->status !== 'published')
-        {
-            return $this->goHome();
+        $article = News::find()->andWhere(['id' => $id, 'display' => News::DISPLAY_ON])->one();
+        //if it isn't found
+        if (!$article) {
+            throw new NotFoundHttpException();
         }
 
+        //array of categories
+        $categories = Category::find()->andWhere(['display' => Category::DISPLAY_ON])->all();
+
+        //selected category
+        $selectedCategory = $article->category;
+
         return $this->render('view', [
-            'article' => $article,
+            'article'          => $article,
+            'categories'       => $categories,
+            'selectedCategory' => $selectedCategory,
         ]);
     }
 
@@ -55,17 +47,36 @@ class NewsController extends Controller
      */
     public function actionCategory($id)
     {
-        $articles = News::findAtCategory($id);
-        $category = Category::findOne($id);
+        //selected category
+        $category = Category::find()
+            ->with('publishedNews')
+            ->andWhere(['category.id' => $id, 'category.display' => Category::DISPLAY_ON])
+            ->one();
+
         //if category not found
-        if(!$category)
-        {
-            return $this->goHome();
+        if(!$category) {
+            throw new NotFoundHttpException();
         }
 
+        //array of categories
+        $categories = Category::find()
+            ->andWhere(['display' => Category::DISPLAY_ON])
+            ->all();
+
+        //List of news
+        $dataProvider = new ActiveDataProvider([
+            'query'      => News::find()
+                ->andWhere(['category_id' => $id,'display' => News::DISPLAY_ON])
+                ->orderBy('published_at DESC'),
+            'pagination' => [
+                'pageSize' => 4,
+            ],
+        ]);
+
         return $this->render('category', [
-            'articles' => $articles,
-            'category' => $category,
+            'dataProvider' => $dataProvider,
+            'category'     => $category,
+            'categories'   => $categories,
         ]);
     }
 

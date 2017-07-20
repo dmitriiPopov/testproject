@@ -104,14 +104,19 @@ class NewsForm extends BaseForm
 
         if (in_array($this->scenario, [self::SCENARIO_CREATE])) {
             //generate date attributes
-            $this->model->created_at = date('Y-m-d H:i:s', time());
+            //@TODO: move to behavior
+            //$this->model->created_at = date('Y-m-d H:i:s', time());
             //generate date attributes
-            if ($this->status === News::STATUS_PUBLICATE)
+            if ($this->status == News::STATUS_PUBLICATE)
             {
+                //@TODO - refactor
+                //instead of this logic add field with calendar on view
+                //if data is set -> set that date to field public_at
+                //if date isn't set -> add default current date (date('Y-m-d H:i:s', time());)
                 $this->model->public_at = date('Y-m-d H:i:s', time());
             }
             //generate date attributes
-            if ($this->status === News::STATUS_PUBLISHED)
+            if ($this->status == News::STATUS_PUBLISHED)
             {
                 $this->model->published_at = date('Y-m-d H:i:s', time());
             }
@@ -120,21 +125,27 @@ class NewsForm extends BaseForm
         //do operations for UPDATE scenario
         if (in_array($this->scenario, [self::SCENARIO_UPDATE])) {
             //generate date attributes
-            $this->model->updated_at = date('Y-m-d H:i:s', time());
+            //@TODO: move to behavior
+            //$this->model->updated_at = date('Y-m-d H:i:s', time());
             //generate date attributes
             if ($this->status === 'new')
             {
-                $this->model->public_at = null;
+                $this->model->public_at    = null;
                 $this->model->published_at = null;
             }
             //generate date attributes
-            if ($this->status === News::STATUS_PUBLICATE)
+            elseif ($this->status === News::STATUS_PUBLICATE)
             {
+                //@TODO - refactor
+                //instead of this logic add field with calendar on view
+                //if data is set -> set that date to field public_at
+                //if date isn't set -> add default current date (date('Y-m-d H:i:s', time());)
                 $this->model->public_at = date('Y-m-d H:i:s', time());
+
                 $this->model->published_at = null;
             }
             //generate date attributes
-            if ($this->status === 'published')
+            elseif ($this->status == 'published')
             {
                 $this->model->published_at = date('Y-m-d H:i:s', time());
             }

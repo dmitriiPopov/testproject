@@ -14,9 +14,9 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($formModel, 'title')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($formModel, 'enabled')->checkbox(['id' => 'enabled']) ?>
+    <?= $form->field($formModel, 'enabled')->checkbox() ?>
 
-    <?= $form->field($formModel, 'display')->checkbox(['id' => 'display', 'disabled' => true]) ?>
+    <?= $form->field($formModel, 'display')->checkbox() ?>
 
     <?php //= $form->field($formModel, 'created_at')->textInput() ?>
 
@@ -32,7 +32,7 @@ use yii\widgets\ActiveForm;
 
 <?php
 //JS for enabled and display checkboxes
-$script = <<< JS
+/*$script = <<< JS
 
     setInterval(function() {
       //if enabled is check
@@ -45,5 +45,9 @@ $script = <<< JS
       }
     }, 10);
 JS;
-$this->registerJs($script);
+$this->registerJs("
+
+.........
+
+");*/
 ?>

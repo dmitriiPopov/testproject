@@ -3,7 +3,9 @@
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use yii\widgets\ActiveForm;
+use yii\redactor\widgets\Redactor;
 use common\models\Category;
+use common\models\News;
 
 /* @var $this yii\web\View */
 /* @var $formModel backend\models\news\NewsForm */
@@ -25,13 +27,13 @@ use common\models\Category;
 
     <?= $form->field($formModel, 'description')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($formModel, 'content')->widget(\yii\redactor\widgets\Redactor::className()) ?>
+    <?= $form->field($formModel, 'content')->widget(Redactor::className()) ?>
 
-    <?= $form->field($formModel, 'status')->dropDownList([ 'new' => 'New', \common\models\News::STATUS_PUBLICATE => 'Publicate', 'published' => 'Published' ], ['prompt' => 'Select status']) ?>
+    <?= $form->field($formModel, 'status')->dropDownList(News::getStatuses(), ['prompt' => 'Select status']) ?>
 
-    <?= $form->field($formModel, 'enabled')->checkbox(['id' => 'enabled']) ?>
+    <?= $form->field($formModel, 'enabled')->checkbox() ?>
 
-    <?= $form->field($formModel, 'display')->checkbox(['id' => 'display', 'disabled' => true]) ?>
+    <?= $form->field($formModel, 'display')->checkbox() ?>
 
     <?php //$form->field($model, 'created_at')->textInput() ?>
 
@@ -51,18 +53,18 @@ use common\models\Category;
 
 <?php
 //JS for enabled and display checkboxes
-$script = <<< JS
-
-    setInterval(function() {
-      //if enabled is check
-      if($('#enabled').is(':checked')){
-        //display checkbox is enable
-        $('#display').attr('disabled', false);
-      }else{
-        //display checkbox is disable and unchecked
-        $('#display').attr('disabled', true).attr('checked', false);
-      }
-    }, 10);
-JS;
-$this->registerJs($script);
+//$script = <<< JS
+//
+//    setInterval(function() {
+//      //if enabled is check
+//      if($('#enabled').is(':checked')){
+//        //display checkbox is enable
+//        $('#display').attr('disabled', false);
+//      }else{
+//        //display checkbox is disable and unchecked
+//        $('#display').attr('disabled', true).attr('checked', false);
+//      }
+//    }, 10);
+//JS;
+//$this->registerJs($script);
 ?>
