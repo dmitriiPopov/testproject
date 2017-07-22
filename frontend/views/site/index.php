@@ -12,7 +12,11 @@ $this->title = 'My Yii Application';
 
 ?>
 
-<!-- List of news -->
+<!-- Header BEGIN -->
+<h1 class="page-header text-justify">News</h1>
+<!-- Header END -->
+
+<!-- List of news BEGIN -->
 <?= ListView::widget([
     'dataProvider' => $dataProvider,
     'summary'      => false,
@@ -30,8 +34,12 @@ $this->title = 'My Yii Application';
         ],
     ],
 ]); ?>
+<!-- List of news END -->
 
-<!-- List of categories -->
+
+<!-- List of categories BEGIN -->
 <?= $this->render('_partial/newsHeader', [
-    'categories'       => $categories,
+    'categories' => $categories,
 ]); ?>
+<!-- List of categories END -->
+

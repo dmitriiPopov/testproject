@@ -24,7 +24,7 @@ class NewsController extends \yii\console\Controller
 
        //GET news with `to publicate` status with publish date less then current datetime, and enabled/displayed
        $articlesToPublish = News::find()
-           ->andWhere(['status'  => News::STATUS_PUBLICATE])
+           ->andWhere(['status'  => News::STATUS_PUBLICATE, 'enabled' => News::ENABLED_ON])
            ->andWhere(['display' => News::DISPLAY_OFF])
            //@TODO: add new `andWhere()` condition - get news before `public_at`
            ->all();

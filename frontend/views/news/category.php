@@ -14,7 +14,11 @@ $this->params['breadcrumbs'][] = $this->title;
 
 ?>
 
-<!-- List of news -->
+<!-- Header BEGIN -->
+<h1 class="page-header text-justify" style="color: #337ab7">News from category "<?= $category->title; ?>"</h1>
+<!-- Header END -->
+
+<!-- List of news BEGIN -->
 <?= ListView::widget([
     'dataProvider' => $dataProvider,
     'summary'      => false,
@@ -32,9 +36,12 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
     ],
 ]); ?>
+<!-- List of news END -->
 
-<!-- List of categories -->
+
+<!-- List of categories BEGIN -->
 <?= $this->render('../site/_partial/newsHeader', [
     'categories'       => $categories,
     'selectedCategory' => $category,
 ]); ?>
+<!-- List of categories END -->

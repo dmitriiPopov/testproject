@@ -14,6 +14,12 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\data\ActiveDataProvider;
 
+/**
+ * Class NewsController
+ * @package frontend\controllers
+ *
+ * Show news with categories
+ */
 class NewsController extends Controller
 {
     /**
@@ -22,22 +28,21 @@ class NewsController extends Controller
      */
     public function actionView($id)
     {
+        //get data for selected article (by `id`)
         $article = News::find()->andWhere(['id' => $id, 'display' => News::DISPLAY_ON])->one();
+
         //if it isn't found
-        if (!$article) {
+        if ( ! $article) {
             throw new NotFoundHttpException();
         }
 
         //array of categories
         $categories = Category::find()->andWhere(['display' => Category::DISPLAY_ON])->all();
 
-        //selected category
-        $selectedCategory = $article->category;
-
         return $this->render('view', [
             'article'          => $article,
             'categories'       => $categories,
-            'selectedCategory' => $selectedCategory,
+            'selectedCategory' => $article->category,
         ]);
     }
 
@@ -49,12 +54,11 @@ class NewsController extends Controller
     {
         //selected category
         $category = Category::find()
-            ->with('publishedNews')
-            ->andWhere(['category.id' => $id, 'category.display' => Category::DISPLAY_ON])
+            ->andWhere(['id' => $id, 'display' => Category::DISPLAY_ON])
             ->one();
 
         //if category not found
-        if(!$category) {
+        if( ! $category) {
             throw new NotFoundHttpException();
         }
 

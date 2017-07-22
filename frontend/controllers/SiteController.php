@@ -76,7 +76,9 @@ class SiteController extends Controller
     {
         //List of news
         $dataProvider = new ActiveDataProvider([
-            'query' => News::find()->andWhere(['display' => News::DISPLAY_ON])->orderBy('published_at DESC'),
+            'query' => News::find()
+                ->andWhere(['display' => News::DISPLAY_ON])
+                ->orderBy('published_at DESC'),
             'pagination' => [
                 'pageSize' => 4,
             ],

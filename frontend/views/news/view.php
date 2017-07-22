@@ -12,6 +12,7 @@ $this->params['breadcrumbs'][] = ['label' => $article->category->title, 'url' =>
 $this->params['breadcrumbs'][] = $this->title;
 
 ?>
+
 <div class="main-container">
     <div class="row">
         <div class="col-md-9">

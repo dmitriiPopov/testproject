@@ -114,9 +114,23 @@ class News extends \yii\db\ActiveRecord
     public static function getStatuses($params = [])
     {
         return [
-            self::STATUS_NEW => Yii::t('app', 'New'),
+            self::STATUS_NEW       => Yii::t('app', 'New'),
             self::STATUS_PUBLICATE => Yii::t('app', 'publicate'),
             self::STATUS_PUBLISHED => Yii::t('app', 'published'),
         ];
+    }
+
+    /**
+     * @param bool $insert
+     */
+    public function beforeSave($insert)
+    {
+        if ($this->enabled == self::ENABLED_ON && $this->status == self::STATUS_PUBLISHED) {
+            $this->display = self::DISPLAY_ON;
+        } else {
+            $this->display = self::DISPLAY_OFF;
+        }
+
+        return true;
     }
 }

@@ -84,23 +84,29 @@ class Category extends \yii\db\ActiveRecord
 
     /**
      * @return \yii\db\ActiveQuery
+     *
+     * TODO REMOVE AFTER CHECKING
      */
-    public function getPublishedNews()
+    /*public function getPublishedNews()
     {
         return $this->getNews()
             ->alias('publishedNews')
             ->onCondition(['publishedNews.display' => News::DISPLAY_ON]);
-    }
+    }*/
 
-    /*
-     * @return Articles count in Category
+    /**
+     * @return integer Articles count in Category
+     *
+     * TODO REFACTOR WITH DIMA (LATER)
      */
     public function getArticlesCount()
     {
         return $this->getNews()->andWhere(['status' => News::STATUS_PUBLISHED])->count();
     }
 
-
+    /**
+     * @param bool $insert
+     */
     public function beforeSave($insert)
     {
         if ($this->enabled == self::ENABLED_ON) {
@@ -108,15 +114,8 @@ class Category extends \yii\db\ActiveRecord
         } else {
             $this->display = self::DISPLAY_OFF;
         }
+
+        return true;
     }
 
-    /**
-     * Build a DB query to get all categories
-     * @param int $display
-     * @return array|\yii\db\ActiveRecord[]
-     */
-    /*public static function getAll($display = 1)
-    {
-        return Category::find()->andWhere(['display' => $display])->all();
-    }*/
 }

@@ -33,7 +33,7 @@ use common\models\News;
 
     <?= $form->field($formModel, 'enabled')->checkbox() ?>
 
-    <?= $form->field($formModel, 'display')->checkbox() ?>
+    <?php //= $form->field($formModel, 'display')->checkbox() ?>
 
     <?php //$form->field($model, 'created_at')->textInput() ?>
 
