@@ -6,7 +6,7 @@ namespace common\components\behaviors;
  * Class CreatedAtUpdatedAtBehavior
  * @package common\components\behaviors
  *
- * Behavior for insert/update datetime in format Y-m-d- H:i:s for different ActiveRecords
+ * Behavior for insert/update datetime in format Y-m-d H:i:s for different ActiveRecords
  */
 
 

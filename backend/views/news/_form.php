@@ -6,6 +6,7 @@ use yii\widgets\ActiveForm;
 use yii\redactor\widgets\Redactor;
 use common\models\Category;
 use common\models\News;
+use kartik\datetime\DateTimePicker;
 
 /* @var $this yii\web\View */
 /* @var $formModel backend\models\news\NewsForm */
@@ -39,7 +40,15 @@ use common\models\News;
 
     <?php //$form->field($model, 'updated_at')->textInput() ?>
 
-    <?php //$form->field($model, 'public_at')->textInput() ?>
+    <?= $form->field($formModel, 'public_at')->widget(DateTimePicker::classname(), [
+        'options'       => [
+            'placeholder'    => 'Enter event time ...',
+        ],
+        'pluginOptions' => [
+            'autoclose'      => true,
+            'todayHighlight' => true,
+        ]
+    ]); ?>
 
     <?php //$form->field($model, 'published_at')->textInput() ?>
 

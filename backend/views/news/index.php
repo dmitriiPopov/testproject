@@ -39,7 +39,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 'filterOptions' => ['style' => 'text-align: center; vertical-align: middle;'],
                 'filter' => Html::activeDropDownList($searchModel, 'category_id',
                     ArrayHelper::map(News::find()->all(), 'category_id', 'category.title'),
-                    ['prompt' => 'All', 'style' => 'text-align: center; vertical-align: middle;']),
+                    [
+                        'prompt' => 'Select',
+                        'style'  => 'text-align: center; vertical-align: middle;',
+                        'class'  => 'btn btn-info',
+                    ]),
             ],
             [
                 'attribute' => 'title',
@@ -63,7 +67,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 'filterOptions' => ['style' => 'text-align: center; vertical-align: middle;'],
                 'filter' => Html::activeDropDownList($searchModel, 'status',
                     ArrayHelper::map(News::find()->all(), 'status', 'status'),
-                    ['prompt' => 'Select', 'style' => 'text-align: center; vertical-align: middle;']),
+                    [
+                        'prompt' => 'Select',
+                        'style'  => 'text-align: center; vertical-align: middle;',
+                        'class'  => 'btn btn-info',
+                    ]),
             ],
             [
                 'attribute' => 'enabled',
@@ -73,7 +81,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 'filterOptions' => ['style' => 'text-align: center; vertical-align: middle;'],
                 'filter' => Html::activeDropDownList($searchModel, 'enabled', ArrayHelper::map(News::find()->all(), 'enabled',
                     function ($data) { return $data->enabled ? Yii::t('app', 'Yes') : Yii::t('app', 'No'); }),
-                    ['prompt' => 'Select', 'style' => 'text-align: center; vertical-align: middle;']),
+                    [
+                        'prompt' => 'Select',
+                        'style'  => 'text-align: center; vertical-align: middle;',
+                        'class'  => 'btn btn-info',
+                    ]),
             ],
             [
                 'attribute' => 'display',
@@ -83,7 +95,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 'filterOptions' => ['style' => 'text-align: center; vertical-align: middle;'],
                 'filter' => Html::activeDropDownList($searchModel, 'display', ArrayHelper::map(News::find()->all(), 'display',
                     function ($data) { return $data->display ? Yii::t('app', 'Yes') : Yii::t('app', 'No'); }),
-                    ['prompt' => 'Select', 'style' => 'text-align: center; vertical-align: middle;']),
+                    [
+                        'prompt' => 'Select',
+                        'style'  => 'text-align: center; vertical-align: middle;',
+                        'class'  => 'btn btn-info',
+                    ]),
             ],
             [
                 'attribute' => 'created_at',

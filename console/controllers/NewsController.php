@@ -26,7 +26,7 @@ class NewsController extends \yii\console\Controller
        $articlesToPublish = News::find()
            ->andWhere(['status'  => News::STATUS_PUBLICATE, 'enabled' => News::ENABLED_ON])
            ->andWhere(['display' => News::DISPLAY_OFF])
-           //@TODO: add new `andWhere()` condition - get news before `public_at`
+           ->andWhere(['<=','public_at', date('Y-m-d H:i:s')])
            ->all();
 
        //for each object do...
@@ -36,7 +36,9 @@ class NewsController extends \yii\console\Controller
            //SET status to 'publish'
            $article->status       = News::STATUS_PUBLISHED;
            //SET datetime (published_at)
-           $article->published_at = date('Y-m-d H:i:s', time());
+           $article->published_at = date('Y-m-d H:i:s');
+           //RESET datetime (public_at)
+           $article->public_at    = null;
 
            //SAVE selected model
            if ($article->save()) {

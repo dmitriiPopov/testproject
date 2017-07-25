@@ -44,7 +44,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 'contentOptions' => ['style' => 'text-align: center; vertical-align: middle;'],
                 'filter' => Html::activeDropDownList($searchModel, 'enabled', ArrayHelper::map(Category::find()->all(), 'enabled',
                     function ($data) { return $data->enabled ? Yii::t('app', 'Yes') : Yii::t('app', 'No'); }),
-                    ['prompt' => 'Select', 'style' => 'text-align: center; vertical-align: middle;']),
+                    [
+                        'prompt' => 'Select',
+                        'style'  => 'text-align: center; vertical-align: middle;',
+                        'class'  => 'btn btn-info',
+                    ]),
             ],
             [
                 'attribute' => 'display',
@@ -54,7 +58,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 'contentOptions' => ['style' => 'text-align: center; vertical-align: middle;'],
                 'filter' => Html::activeDropDownList($searchModel, 'display', ArrayHelper::map(Category::find()->all(), 'display',
                     function ($data) { return $data->display ? Yii::t('app', 'Yes') : Yii::t('app', 'No'); }),
-                    ['prompt' => 'Select', 'style' => 'text-align: center; vertical-align: middle;']),
+                    [
+                        'prompt' => 'Select',
+                        'style'  => 'text-align: center; vertical-align: middle;',
+                        'class'  => 'btn btn-info',
+                    ]),
             ],
             [
                 'attribute' => 'created_at',

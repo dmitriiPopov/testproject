@@ -40,7 +40,6 @@ class CategoryForm extends BaseForm
     /**
      * @return array
      */
-    //@TODO: add validation display/enabled here (from js)
     public function rules()
     {
         return [

@@ -63,12 +63,17 @@ class NewsForm extends BaseForm
      */
     public $display;
 
+    /**
+     * @var string
+     */
+    public $public_at;
+
 
     public function rules()
     {
         return [
-            [['category_id', 'title', 'description', 'content', 'status'], 'required', 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE]],
-            [['title', 'description', 'content'], 'string'],
+            [['category_id', 'title', 'description', 'content', 'status'], 'required'],
+            [['title', 'description', 'content', 'public_at'], 'string', 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE]],
             [['category_id', 'enabled', 'display'], 'integer', 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE]],
         ];
     }
@@ -97,8 +102,8 @@ class NewsForm extends BaseForm
         }
     }*/
 
-    public function save($runValidation = true, $attributeNames = null){
-
+    public function save($runValidation = true, $attributeNames = null)
+    {
         //set attributes to AR model
         $this->model->setAttributes($this->attributes);
 
@@ -109,16 +114,20 @@ class NewsForm extends BaseForm
             //generate date attributes
             if ($this->status == News::STATUS_PUBLICATE)
             {
-                //@TODO - refactor
                 //instead of this logic add field with calendar on view
                 //if data is set -> set that date to field public_at
+                if($this->public_at){
+                    $this->model->public_at = $this->public_at;
+                }
                 //if date isn't set -> add default current date (date('Y-m-d H:i:s', time());)
-                $this->model->public_at = date('Y-m-d H:i:s', time());
+                else{
+                    $this->model->public_at = date('Y-m-d H:i:s');
+                }
             }
             //generate date attributes
             if ($this->status == News::STATUS_PUBLISHED)
             {
-                $this->model->published_at = date('Y-m-d H:i:s', time());
+                $this->model->published_at = date('Y-m-d H:i:s');
             }
         }
 
@@ -128,26 +137,30 @@ class NewsForm extends BaseForm
             //@TODO: move to behavior
             //$this->model->updated_at = date('Y-m-d H:i:s', time());
             //generate date attributes
-            if ($this->status === 'new')
+            if ($this->status == News::STATUS_NEW)
             {
                 $this->model->public_at    = null;
                 $this->model->published_at = null;
             }
             //generate date attributes
-            elseif ($this->status === News::STATUS_PUBLICATE)
+            elseif ($this->status == News::STATUS_PUBLICATE)
             {
-                //@TODO - refactor
+                $this->model->published_at = null;
+
                 //instead of this logic add field with calendar on view
                 //if data is set -> set that date to field public_at
+                if($this->public_at){
+                    $this->model->public_at = $this->public_at;
+                }
                 //if date isn't set -> add default current date (date('Y-m-d H:i:s', time());)
-                $this->model->public_at = date('Y-m-d H:i:s', time());
-
-                $this->model->published_at = null;
+                else{
+                    $this->model->public_at = date('Y-m-d H:i:s');
+                }
             }
             //generate date attributes
-            elseif ($this->status == 'published')
+            elseif ($this->status == News::STATUS_PUBLISHED)
             {
-                $this->model->published_at = date('Y-m-d H:i:s', time());
+                $this->model->published_at = date('Y-m-d H:i:s');
             }
         }
 

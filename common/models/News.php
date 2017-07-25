@@ -4,7 +4,6 @@ namespace common\models;
 
 use Yii;
 use common\components\behaviors\CreatedAtUpdatedAtBehavior;
-use yii\data\Pagination;
 
 /**
  * This is the model class for table "news".
@@ -125,6 +124,7 @@ class News extends \yii\db\ActiveRecord
      */
     public function beforeSave($insert)
     {
+        //CHECK 'enabled' and 'status' for DISPLAY news
         if ($this->enabled == self::ENABLED_ON && $this->status == self::STATUS_PUBLISHED) {
             $this->display = self::DISPLAY_ON;
         } else {

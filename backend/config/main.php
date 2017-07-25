@@ -7,20 +7,20 @@ $params = array_merge(
 );
 
 return [
-    'id'   => 'app-backend',
-    'name' => 'Backend',
-    'basePath' => dirname(__DIR__),
+    'id'                  => 'app-backend',
+    'name'                => 'Backend',
+    'basePath'            => dirname(__DIR__),
     'controllerNamespace' => 'backend\controllers',
-    'bootstrap' => ['log'],
-    'modules' => [],
-    'components' => [
+    'bootstrap'           => ['log'],
+    'modules'             => [],
+    'components'          => [
         'request' => [
             'csrfParam' => '_csrf-backend',
         ],
         'user' => [
-            'identityClass' => 'backend\models\Admin',
+            'identityClass'   => 'backend\models\Admin',
             'enableAutoLogin' => true,
-            'identityCookie' => ['name' => '_identity-backend', 'httpOnly' => true],
+            'identityCookie'  => ['name' => '_identity-backend', 'httpOnly' => true],
         ],
         'session' => [
             // this is the name of the session cookie used for login on the backend
@@ -28,32 +28,34 @@ return [
         ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
-            'targets' => [
+            'targets'    => [
                 [
-                    'class' => 'yii\log\FileTarget',
+                    'class'  => 'yii\log\FileTarget',
                     'levels' => ['error', 'warning'],
                 ],
             ],
         ],
         'formatter' => [
-            'class' => 'yii\i18n\Formatter',
-            'dateFormat' => 'php:Y-m-d',
-            'datetimeFormat' => 'php:Y-m-d H:i:s',
-            'timeFormat' => 'php:H:i:s',
+            'class'           => 'yii\i18n\Formatter',
+//            'defaultTimeZone' => 'Europe/Moscow',
+//            'timeZone'        => 'GMT+3',
+            'dateFormat'      => 'php:Y-m-d',
+            'datetimeFormat'  => 'php:Y-m-d H:i:s',
+            'timeFormat'      => 'php:H:i:s',
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
         'urlManager' => [
-            'enablePrettyUrl' => true,
-            'showScriptName' => false,
+            'enablePrettyUrl'     => true,
+            'showScriptName'      => false,
             'enableStrictParsing' => true,
             'rules' => [
-                '/' => 'site/index',
-                '<action>' => 'site/<action>',
-                '<controller:\w+>/<id:\d+>'=>'<controller>/view',
+                '/'                                     => 'site/index',
+                '<action>'                              => 'site/<action>',
+                '<controller:\w+>/<id:\d+>'             =>'<controller>/view',
                 '<controller:\w+>/<action:\w+>/<id:\d+>'=>'<controller>/<action>',
-                '<controller:\w+>/<action:\w+>'=>'<controller>/<action>'
+                '<controller:\w+>/<action:\w+>'         =>'<controller>/<action>'
             ],
         ],
     ],
