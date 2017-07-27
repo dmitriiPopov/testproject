@@ -44,18 +44,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value' => function ($data) { return $data->display ? Yii::t('app', 'Yes') : Yii::t('app', 'No'); },
             ],
             'created_at',
-            [
-                'attribute' => 'updated_at',
-                'value' => function ($data) { return $data->updated_at ? $data->updated_at : Yii::t('app','Not updated'); },
-            ],
-            [
-                'attribute' => 'public_at',
-                'value' => function ($data) { return $data->public_at ? $data->public_at : Yii::t('app','Not public'); },
-            ],
-            [
-                'attribute' => 'published_at',
-                'value' => function ($data) { return $data->published_at ? $data->published_at : Yii::t('app','Not published'); },
-            ],
+            'updated_at',
+            'public_at',
+            'published_at',
         ],
     ]) ?>
 

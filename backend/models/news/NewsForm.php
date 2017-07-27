@@ -72,7 +72,7 @@ class NewsForm extends BaseForm
     public function rules()
     {
         return [
-            [['category_id', 'title', 'description', 'content', 'status'], 'required'],
+            [['category_id', 'title', 'description', 'content', 'status'], 'required', 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE]],
             [['title', 'description', 'content', 'public_at'], 'string', 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE]],
             [['category_id', 'enabled', 'display'], 'integer', 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE]],
         ];
@@ -104,63 +104,39 @@ class NewsForm extends BaseForm
 
     public function save($runValidation = true, $attributeNames = null)
     {
-        //set attributes to AR model
-        $this->model->setAttributes($this->attributes);
 
-        if (in_array($this->scenario, [self::SCENARIO_CREATE])) {
-            //generate date attributes
-            //@TODO: move to behavior
-            //$this->model->created_at = date('Y-m-d H:i:s', time());
-            //generate date attributes
-            if ($this->status == News::STATUS_PUBLICATE)
-            {
-                //instead of this logic add field with calendar on view
-                //if data is set -> set that date to field public_at
-                if($this->public_at){
-                    $this->model->public_at = $this->public_at;
-                }
-                //if date isn't set -> add default current date (date('Y-m-d H:i:s', time());)
-                else{
-                    $this->model->public_at = date('Y-m-d H:i:s');
-                }
-            }
-            //generate date attributes
-            if ($this->status == News::STATUS_PUBLISHED)
-            {
-                $this->model->published_at = date('Y-m-d H:i:s');
+        if ($runValidation) {
+            //validate form attributes. If attributes aren't valid then to break saving and return false
+            if (!$this->validate($attributeNames)) {
+                return false;
             }
         }
 
-        //do operations for UPDATE scenario
-        if (in_array($this->scenario, [self::SCENARIO_UPDATE])) {
-            //generate date attributes
-            //@TODO: move to behavior
-            //$this->model->updated_at = date('Y-m-d H:i:s', time());
-            //generate date attributes
-            if ($this->status == News::STATUS_NEW)
-            {
-                $this->model->public_at    = null;
-                $this->model->published_at = null;
-            }
-            //generate date attributes
-            elseif ($this->status == News::STATUS_PUBLICATE)
-            {
-                $this->model->published_at = null;
+        //set attributes to AR model
+        $this->model->setAttributes($this->attributes);
 
+        //check selected scenario and do appropriated operations below...
+        if (in_array($this->scenario, [self::SCENARIO_CREATE, self::SCENARIO_UPDATE])) {
+
+            //check status `PUBLICATE` and do appropriated operations
+            if ($this->status == News::STATUS_PUBLICATE) {
                 //instead of this logic add field with calendar on view
                 //if data is set -> set that date to field public_at
-                if($this->public_at){
-                    $this->model->public_at = $this->public_at;
-                }
                 //if date isn't set -> add default current date (date('Y-m-d H:i:s', time());)
-                else{
-                    $this->model->public_at = date('Y-m-d H:i:s');
-                }
+                $this->model->public_at = ($this->public_at) ? $this->public_at : date('Y-m-d H:i:s');
+            } else {
+                //reset public_at date
+                $this->model->public_at = null;
             }
-            //generate date attributes
-            elseif ($this->status == News::STATUS_PUBLISHED)
-            {
+
+            //check status `PUBLISHED` and do appropriated operations
+            if ($this->status == News::STATUS_PUBLISHED && empty($this->model->published_at)) {
+                //set current `published_at` date
                 $this->model->published_at = date('Y-m-d H:i:s');
+                //check status NOT `PUBLISHED` and do appropriated operations
+            } elseif ($this->status != News::STATUS_PUBLISHED ) {
+                //reset `published_at` date
+                $this->model->published_at = null;
             }
         }
 

@@ -91,6 +91,7 @@ class News extends \yii\db\ActiveRecord
     public function behaviors()
     {
         return [
+
             'createdAtUpdatedAtBehavior' => [
                 'class' => CreatedAtUpdatedAtBehavior::className(),
             ]
@@ -121,16 +122,21 @@ class News extends \yii\db\ActiveRecord
 
     /**
      * @param bool $insert
+     * @return boolean
      */
     public function beforeSave($insert)
     {
-        //CHECK 'enabled' and 'status' for DISPLAY news
-        if ($this->enabled == self::ENABLED_ON && $this->status == self::STATUS_PUBLISHED) {
-            $this->display = self::DISPLAY_ON;
-        } else {
-            $this->display = self::DISPLAY_OFF;
+        if (parent::beforeSave($insert)) {
+            //CHECK 'enabled' and 'status' for DISPLAY news
+            if ($this->enabled == self::ENABLED_ON && $this->status == self::STATUS_PUBLISHED) {
+                $this->display = self::DISPLAY_ON;
+            } else {
+                $this->display = self::DISPLAY_OFF;
+            }
+
+            return true;
         }
 
-        return true;
+        return false;
     }
 }

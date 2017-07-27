@@ -1,19 +1,16 @@
 <?php
 namespace common\components\behaviors;
 
+use yii\db\ActiveRecord;
 
 /**
  * Class CreatedAtUpdatedAtBehavior
  * @package common\components\behaviors
  *
  * Behavior for insert/update datetime in format Y-m-d H:i:s for different ActiveRecords
+ *
+ * @property \yii\db\ActiveRecord $owner
  */
-
-
-//TODO add to behaviors function in active records Category and News
-
-use yii\db\ActiveRecord;
-
 class CreatedAtUpdatedAtBehavior extends \yii\base\Behavior
 {
     /**
@@ -35,7 +32,7 @@ class CreatedAtUpdatedAtBehavior extends \yii\base\Behavior
     /**
      * @return void
      */
-    public function beforeInsert()
+    public function beforeInsert($event)
     {
         $this->owner->created_at = date($this->datetimeFormat);
     }
@@ -43,7 +40,7 @@ class CreatedAtUpdatedAtBehavior extends \yii\base\Behavior
     /**
      * @return void
      */
-    public function beforeUpdate()
+    public function beforeUpdate($event)
     {
         $this->owner->updated_at = date($this->datetimeFormat);
     }
