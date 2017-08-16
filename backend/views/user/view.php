@@ -42,7 +42,11 @@ $this->params['breadcrumbs'][] = $this->title;
             'updated_at:datetime',
             [
                 'attribute' => 'imagefile',
-                'value'     => \Yii::$app->params['absoluteStaticBasePath'].\Yii::$app->params['staticPathUserAvatar'].$model->imagefile,
+                'value'     => sprintf('%s/%s/%s',
+                    \Yii::$app->params['staticBaseUrl'],
+                    \Yii::$app->params['staticPathUserAvatar'],
+                    $model->imagefile
+                ),
                 'format'    => ['image', ['width'=>'230']],
             ]
         ],

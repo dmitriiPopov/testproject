@@ -103,7 +103,11 @@ class UserForm extends BaseForm
         $this->model->imagefile = $this->username."_avatar.".$this->avatar->extension;
 
         //save avatar
-        $this->avatar->saveAs(\Yii::$app->params['absoluteStaticBasePath'].\Yii::$app->params['staticPathUserAvatar'].$this->model->imagefile);
+        $this->avatar->saveAs(
+            \Yii::$app->params['absoluteStaticBasePath'] . '/'
+            . \Yii::$app->params['staticPathUserAvatar'] . '/'
+            . $this->model->imagefile
+        );
 
         //save AR model
         if (!$this->model->save($runValidation, $attributeNames)) {
