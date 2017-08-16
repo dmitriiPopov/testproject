@@ -10,6 +10,7 @@ namespace backend\models\user;
 
 use common\components\BaseForm;
 use Yii;
+use yii\web\UploadedFile;
 use yii\base\NotSupportedException;
 
 /**
@@ -43,6 +44,11 @@ class UserForm extends BaseForm
     public $status;
 
     /**
+     * @var
+     */
+    public $avatar;
+
+    /**
      * @return array
      */
     public function rules()
@@ -53,6 +59,7 @@ class UserForm extends BaseForm
             [['username', 'password'], 'string', 'max' => 255, 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE]],
             [['email'], 'email', 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE]],
             [['status'], 'string', 'on' => [self::SCENARIO_UPDATE]],
+            [['avatar'], 'image', 'skipOnEmpty' => false, 'extensions' => 'png, jpg, jpeg', 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE]],
         ];
     }
 
@@ -88,6 +95,15 @@ class UserForm extends BaseForm
         if (!empty($this->password)) {
             $this->model->setPassword($this->password);
         }
+
+        //get the instance of uploaded file
+        $this->avatar           = UploadedFile::getInstance($this, 'avatar');
+
+        //set the name of avatar for database
+        $this->model->imagefile = $this->username."_avatar.".$this->avatar->extension;
+
+        //save avatar
+        $this->avatar->saveAs(\Yii::$app->params['absoluteStaticBasePath'].\Yii::$app->params['staticPathUserAvatar'].$this->model->imagefile);
 
         //save AR model
         if (!$this->model->save($runValidation, $attributeNames)) {

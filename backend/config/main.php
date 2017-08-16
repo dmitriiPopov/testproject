@@ -37,8 +37,6 @@ return [
         ],
         'formatter' => [
             'class'           => 'yii\i18n\Formatter',
-//            'defaultTimeZone' => 'Europe/Moscow',
-//            'timeZone'        => 'GMT+3',
             'dateFormat'      => 'php:Y-m-d',
             'datetimeFormat'  => 'php:Y-m-d H:i:s',
             'timeFormat'      => 'php:H:i:s',

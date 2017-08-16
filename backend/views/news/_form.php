@@ -43,6 +43,7 @@ use kartik\datetime\DateTimePicker;
     <?= $form->field($formModel, 'public_at')->widget(DateTimePicker::classname(), [
         'options'       => [
             'placeholder'    => 'Enter event time ...',
+
         ],
         'pluginOptions' => [
             'autoclose'      => true,

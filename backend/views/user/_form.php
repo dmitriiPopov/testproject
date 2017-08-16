@@ -11,7 +11,7 @@ use \common\models\User;
 
 <div class="user-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
 
     <?= $form->field($formModel, 'username')->textInput(['maxlength' => true]) ?>
 
@@ -22,6 +22,8 @@ use \common\models\User;
     <?php //= $form->field($model, 'password_reset_token')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($formModel, 'email')->textInput(['maxlength' => true]) ?>
+
+    <?= $form->field($formModel, 'avatar')->fileInput() ?>
 
     <?php
 

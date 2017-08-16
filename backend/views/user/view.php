@@ -20,13 +20,13 @@ $this->params['breadcrumbs'][] = $this->title;
             'class' => 'btn btn-danger',
             'data' => [
                 'confirm' => 'Are you sure you want to delete this item?',
-                'method' => 'post',
+                'method'  => 'post',
             ],
         ]) ?>
     </p>
 
     <?= DetailView::widget([
-        'model' => $model,
+        'model'      => $model,
         'attributes' => [
             'id',
             'username',
@@ -36,10 +36,15 @@ $this->params['breadcrumbs'][] = $this->title;
             'email:email',
             [
                 'attribute' => 'status',
-                'value' => function ($data) { return $data->status === \common\models\User::STATUS_ACTIVE ? Yii::t('app', 'Active') : Yii::t('app', 'Deleted'); },
+                'value'     => function ($data) { return $data->status === \common\models\User::STATUS_ACTIVE ? Yii::t('app', 'Active') : Yii::t('app', 'Deleted'); },
             ],
             'created_at:datetime',
             'updated_at:datetime',
+            [
+                'attribute' => 'imagefile',
+                'value'     => \Yii::$app->params['absoluteStaticBasePath'].\Yii::$app->params['staticPathUserAvatar'].$model->imagefile,
+                'format'    => ['image', ['width'=>'230']],
+            ]
         ],
     ]) ?>
 
