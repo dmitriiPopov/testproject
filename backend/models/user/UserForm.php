@@ -10,7 +10,7 @@ namespace backend\models\user;
 
 use common\components\BaseForm;
 use Yii;
-use yii\web\UploadedFile;
+use common\components\helpers\UploadedHelper;
 use yii\base\NotSupportedException;
 
 /**
@@ -97,7 +97,7 @@ class UserForm extends BaseForm
         }
 
         //get the instance of uploaded file
-        $this->avatar           = UploadedFile::getInstance($this, 'avatar');
+        $this->avatar           = UploadedHelper::getInstance($this, 'avatar');
 
         //set the name of avatar for database
         $this->model->imagefile = $this->username."_avatar.".$this->avatar->extension;
@@ -108,6 +108,8 @@ class UserForm extends BaseForm
             . \Yii::$app->params['staticPathUserAvatar'] . '/'
             . $this->model->imagefile
         );
+
+
 
         //save AR model
         if (!$this->model->save($runValidation, $attributeNames)) {

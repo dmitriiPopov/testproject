@@ -47,7 +47,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     \Yii::$app->params['staticPathUserAvatar'],
                     $model->imagefile
                 ),
-                'format'    => ['image', ['width'=>'230']],
+                'format'    => ['image', ['width'=>'250', 'class'=>'img-rounded']],
             ]
         ],
     ]) ?>

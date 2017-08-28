@@ -49,6 +49,11 @@ AppAsset::register($this);
                 'Logout (' . Yii::$app->user->identity->username . ')',
                 ['class' => 'btn btn-link logout']
             )
+            . Html::img(sprintf('%s/%s/%s',
+                \Yii::$app->params['staticBaseUrl'],
+                \Yii::$app->params['staticPathUserAvatar'],
+                \Yii::$app->user->identity->imagefile
+            ), ['width'=>'40', 'height'=>'40', 'class'=>'img-circle'])
             . Html::endForm()
             . '</li>';
     }
