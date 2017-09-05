@@ -168,4 +168,21 @@ class User extends \yii\db\ActiveRecord
         $this->auth_key = Yii::$app->security->generateRandomString();
     }
 
+    /**
+     * @return string
+     */
+    public function getImageFileLink()
+    {
+        return ($this->imagefile && file_exists($this->getImageFileAbsolutePath()))
+            ? sprintf('%s/%s/%s',  Yii::$app->params['staticBaseUrl'],  Yii::$app->params['staticPathUserAvatar'], $this->imagefile)
+            : sprintf('%s/%s',  Yii::$app->params['staticHost'],  Yii::$app->params['staticUserAvatarDefault']);
+    }
+
+    /**
+     * @return string
+     */
+    public function getImageFileAbsolutePath()
+    {
+        return sprintf('%s/%s/%s',  Yii::$app->params['absoluteStaticBasePath'],  Yii::$app->params['staticPathUserAvatar'], $this->imagefile);
+    }
 }

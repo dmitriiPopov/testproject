@@ -9,8 +9,8 @@
 namespace backend\models\user;
 
 use common\components\BaseForm;
+use common\components\UploadedFile;
 use Yii;
-use common\components\helpers\UploadedHelper;
 use yii\base\NotSupportedException;
 
 /**
@@ -97,7 +97,7 @@ class UserForm extends BaseForm
         }
 
         //get the instance of uploaded file
-        $this->avatar           = UploadedHelper::getInstance($this, 'avatar');
+        $this->avatar           = UploadedFile::getInstance($this, 'avatar');
 
         //set the name of avatar for database
         $this->model->imagefile = $this->username."_avatar.".$this->avatar->extension;

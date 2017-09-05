@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
-/* @var $model backend\models\user\UserForm */
+/* @var $model common\models\User */
 
 $this->title = $model->username;
 $this->params['breadcrumbs'][] = ['label' => 'Users', 'url' => ['index']];
@@ -42,11 +42,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'updated_at:datetime',
             [
                 'attribute' => 'imagefile',
-                'value'     => sprintf('%s/%s/%s',
-                    \Yii::$app->params['staticBaseUrl'],
-                    \Yii::$app->params['staticPathUserAvatar'],
-                    $model->imagefile
-                ),
+                'value'     => $model->getImageFileLink(),
                 'format'    => ['image', ['width'=>'250', 'class'=>'img-rounded']],
             ]
         ],

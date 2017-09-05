@@ -39,3 +39,6 @@ composer.lock
 
 #data dir
 /data
+
+# static directory
+/statics/web/uploads/*
