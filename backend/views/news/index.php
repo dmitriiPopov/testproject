@@ -126,9 +126,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 'header' => Html::a('Reset', 'index', [
                     'class' => ['btn btn-reset'],
                     'style' => [
-                        'border' => 'solid 1px red',
+                        'border' => 'solid 1px #ddd',
                         'padding' => '5px',
-                        'color' => 'red',
+                        'color' => '#337ab7',
                     ]
                 ]),
                 'contentOptions' => ['style' => 'text-align: center; vertical-align: middle;'],

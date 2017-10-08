@@ -185,4 +185,25 @@ class User extends \yii\db\ActiveRecord
     {
         return sprintf('%s/%s/%s',  Yii::$app->params['absoluteStaticBasePath'],  Yii::$app->params['staticPathUserAvatar'], $this->imagefile);
     }
+
+    /**
+     * @param bool $insert
+     * @param array $changedAttributes
+     */
+    public function afterSave($insert, $changedAttributes)
+    {
+        foreach ($changedAttributes as $key => $value){
+            //check old attribute 'imagefile'
+            if($key == 'imagefile' && $value != ''){
+                //set absolute path with old image
+                $oldImage = sprintf('%s/%s/%s',  Yii::$app->params['absoluteStaticBasePath'],  Yii::$app->params['staticPathUserAvatar'], $value);
+                //check image on server
+                if(file_exists($oldImage)){
+                    //delete image
+                    unlink($oldImage);
+                }
+            }
+        }
+        parent::afterSave($insert, $changedAttributes);
+    }
 }

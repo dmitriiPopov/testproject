@@ -26,7 +26,7 @@ class UserController extends Controller
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['create', 'update', 'delete', 'view', 'index'],
+                        'actions' => ['create', 'update', 'delete', 'view', 'index', 'avatardelete'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -140,6 +140,36 @@ class UserController extends Controller
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
+        }
+    }
+
+    /**
+     * @param integer $id
+     * @return mixed
+     */
+    public function actionAvatardelete($id)
+    {
+        //init form model instance
+        $formModel = new UserForm(['scenario' => UserForm::SCENARIO_UPDATE]);
+
+        $formModel->setModel($this->findModel($id), true);
+        //get absolute path avatar
+        $image = $formModel->model->getImageFileAbsolutePath();
+        //check exist avatar
+        if(file_exists($image)){
+            //delete file from server
+            unlink($image);
+            //remove filename from db
+            $formModel->model->imagefile = '';
+        }else{
+            $formModel->model->imagefile = '';
+        }
+        //save model
+        if ($formModel->load(Yii::$app->request->post()) && $formModel->save()) {
+            //redirect to update
+            return $this->redirect(['update', 'id' => $formModel->model->id]);
+        }else{
+            return $this->redirect(['index']);
         }
     }
 }

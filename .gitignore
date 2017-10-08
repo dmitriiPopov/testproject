@@ -41,4 +41,4 @@ composer.lock
 /data
 
 # static directory
-/statics/web/uploads/*
+/statics/web/*

@@ -59,7 +59,7 @@ class UserForm extends BaseForm
             [['username', 'password'], 'string', 'max' => 255, 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE]],
             [['email'], 'email', 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE]],
             [['status'], 'string', 'on' => [self::SCENARIO_UPDATE]],
-            [['avatar'], 'image', 'skipOnEmpty' => false, 'extensions' => 'png, jpg, jpeg', 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE]],
+            [['avatar'], 'image', 'skipOnEmpty' => true, 'extensions' => 'png, jpg, jpeg', 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE]],
         ];
     }
 
@@ -97,19 +97,20 @@ class UserForm extends BaseForm
         }
 
         //get the instance of uploaded file
-        $this->avatar           = UploadedFile::getInstance($this, 'avatar');
+        $this->avatar = UploadedFile::getInstance($this, 'avatar');
 
-        //set the name of avatar for database
-        $this->model->imagefile = $this->username."_avatar.".$this->avatar->extension;
+        //if file uploaded
+        if($this->avatar) {
+            //set the name of avatar for database
+            $this->model->imagefile = md5(uniqid() . time()) . $this->avatar->extension;
 
-        //save avatar
-        $this->avatar->saveAs(
-            \Yii::$app->params['absoluteStaticBasePath'] . '/'
-            . \Yii::$app->params['staticPathUserAvatar'] . '/'
-            . $this->model->imagefile
-        );
-
-
+            //save avatar
+            $this->avatar->saveAs(
+                \Yii::$app->params['absoluteStaticBasePath'] . '/'
+                . \Yii::$app->params['staticPathUserAvatar'] . '/'
+                . $this->model->imagefile
+            );
+        }
 
         //save AR model
         if (!$this->model->save($runValidation, $attributeNames)) {

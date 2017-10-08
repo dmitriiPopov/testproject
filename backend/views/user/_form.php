@@ -23,6 +23,26 @@ use \common\models\User;
 
     <?= $form->field($formModel, 'email')->textInput(['maxlength' => true]) ?>
 
+    <?php
+        if(in_array($formModel->scenario, [$formModel::SCENARIO_UPDATE])){
+           echo Html::img($formModel->model->getImageFileLink(), ['width'=>'120', 'height'=>'120', 'class'=>'img-circle']);
+           //add button 'delete' if avatar aren't default
+           if($formModel->model->imagefile && file_exists($formModel->model->getImageFileAbsolutePath())){
+               echo ' '.Html::a(Yii::t('app', 'Delete'), ['avatardelete', 'id' => $formModel->model->id], [
+                   'class' => 'btn btn-danger',
+                   'data'  => [
+                       'confirm' => 'Are you sure you want to remove this avatar?',
+                       'method'  => 'post',
+                   ],
+                   'style' => [
+                       //'vertical-align' => 'top',
+                   ],
+               ]);
+           }
+        }
+
+    ?>
+
     <?= $form->field($formModel, 'avatar')->fileInput() ?>
 
     <?php

@@ -15,7 +15,7 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <!-- Header BEGIN -->
-<h1 class="page-header text-justify" style="color: #337ab7">News from category "<?= $category->title; ?>"</h1>
+<h1 class="page-header text-justify" style="color: #333; margin-top: 0;">News from category "<?= $category->title; ?>"</h1>
 <!-- Header END -->
 
 <!-- List of news BEGIN -->

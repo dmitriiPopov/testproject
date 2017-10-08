@@ -101,11 +101,11 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => 'yii\grid\ActionColumn',
                 'header' => Html::a('Reset', 'index', [
-                    'class' => ['btn btn-reset'],
+                    'class' => ['btn btn-default'],
                     'style' => [
-                        'border' => 'solid 1px red',
+                        'border' => 'solid 1px #ddd',
                         'padding' => '5px',
-                        'color' => 'red',
+                        'color' => '#337ab7',
                     ]
                 ]),
             ],
