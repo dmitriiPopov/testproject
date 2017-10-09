@@ -192,9 +192,9 @@ class User extends \yii\db\ActiveRecord
      */
     public function afterSave($insert, $changedAttributes)
     {
-        foreach ($changedAttributes as $key => $value){
+        foreach ($changedAttributes as $attribute => $value){
             //check old attribute 'imagefile'
-            if($key == 'imagefile' && $value != ''){
+            if($attribute == 'imagefile' && empty($value)){
                 //set absolute path with old image
                 $oldImage = sprintf('%s/%s/%s',  Yii::$app->params['absoluteStaticBasePath'],  Yii::$app->params['staticPathUserAvatar'], $value);
                 //check image on server

@@ -102,7 +102,7 @@ class UserForm extends BaseForm
         //if file uploaded
         if($this->avatar) {
             //set the name of avatar for database
-            $this->model->imagefile = md5(uniqid() . time()) . $this->avatar->extension;
+            $this->model->imagefile = md5(uniqid() . time()) . '.' . $this->avatar->extension;
 
             //save avatar
             $this->avatar->saveAs(

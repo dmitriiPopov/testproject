@@ -146,6 +146,9 @@ class UserController extends Controller
     /**
      * @param integer $id
      * @return mixed
+     *
+     * TODO: should do the same operation without redirect (because another form fields will be changed).
+     * TODO: should do it in AJAX request and in response callback to remove image from html.
      */
     public function actionAvatardelete($id)
     {
@@ -154,17 +157,18 @@ class UserController extends Controller
 
         $formModel->setModel($this->findModel($id), true);
         //get absolute path avatar
-        $image = $formModel->model->getImageFileAbsolutePath();
+        $imageFile = $formModel->model->getImageFileAbsolutePath();
         //check exist avatar
-        if(file_exists($image)){
+        if (file_exists($imageFile)) {
             //delete file from server
-            unlink($image);
-            //remove filename from db
-            $formModel->model->imagefile = '';
-        }else{
-            $formModel->model->imagefile = '';
+            unlink($imageFile);
         }
+        //remove filename from model
+        //TODO: should use insert/update operations ONLY VIA form object. E.g. `$model->imagefile = null;` AND then update model IN FORM.
+        $formModel->model->imagefile = '';
+
         //save model
+        //TODO: in this case all another fields will be submitted BUT user doesn't want do it
         if ($formModel->load(Yii::$app->request->post()) && $formModel->save()) {
             //redirect to update
             return $this->redirect(['update', 'id' => $formModel->model->id]);

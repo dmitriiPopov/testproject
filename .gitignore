@@ -40,5 +40,5 @@ composer.lock
 #data dir
 /data
 
-# static directory
-/statics/web/*
+# logs etc
+runtime

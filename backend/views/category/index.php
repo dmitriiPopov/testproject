@@ -84,12 +84,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => 'yii\grid\ActionColumn',
                 'header' => Html::a('Reset', 'index', [
-                    'class' => ['btn btn-reset'],
-                    'style' => [
-                        'border' => 'solid 1px #ddd',
-                        'padding' => '5px',
-                        'color' => '#337ab7',
-                    ]
+                    'class' => ['btn btn-default btn-danger'],
                 ]),
                 'headerOptions' => ['style' => 'text-align: center; vertical-align: middle;'],
                 'contentOptions' => ['style' => 'text-align: center; vertical-align: middle;'],
