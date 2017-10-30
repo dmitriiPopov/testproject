@@ -28,7 +28,24 @@ use kartik\datetime\DateTimePicker;
 
     <?= $form->field($formModel, 'description')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($formModel, 'content')->widget(Redactor::className()) ?>
+
+    <?php
+        echo \vova07\imperavi\Widget::widget([
+            'id' => 'content',
+            'model' => $formModel,
+            'attribute' => 'content',
+            //'selector' => '#my-textarea-id',
+            'settings' => [
+                'lang' => 'ru',
+                'minHeight' => 200,
+                'imageUpload' => \yii\helpers\Url::to(['/news/fileupload']),
+                'fileManagerJson' => \yii\helpers\Url::to(['/news/fileget']),
+                'plugins' => [
+                    'filemanager'
+                ]
+            ]
+        ]);
+    ?>
 
     <?= $form->field($formModel, 'status')->dropDownList(News::getStatuses(), ['prompt' => 'Select status']) ?>
 

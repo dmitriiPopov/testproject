@@ -43,6 +43,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'display',
                 'value' => function ($data) { return $data->display ? Yii::t('app', 'Yes') : Yii::t('app', 'No'); },
             ],
+
+            'content:raw',
+
             'created_at',
             'updated_at',
             'public_at',

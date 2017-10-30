@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use vova07\imperavi\actions\GetAction;
 use Yii;
 use common\models\News;
 use backend\models\news\NewsSearch;
@@ -15,6 +16,27 @@ use yii\filters\VerbFilter;
  */
 class NewsController extends Controller
 {
+
+    // DefaultController.php
+    public function actions()
+    {
+        //var_dump(Yii::$app->params['staticBaseUrl']);
+        return [
+            'fileupload' => [
+                'class'           => 'vova07\imperavi\actions\UploadAction',
+                'url'             => Yii::$app->params['staticBaseUrl'] . '/news/content', // Directory URL address, where files are stored.
+                'path'            => Yii::$app->params['absoluteStaticBasePath'] . '/news/content', // Or absolute path to directory where files are stored.
+                'uploadOnlyImage' => false, // For not image-only uploading.
+            ],
+            'fileget' => [
+                'class' => 'vova07\imperavi\actions\GetAction',
+                'url'     => Yii::$app->params['staticBaseUrl'] . '/news/content', // Directory URL address, where files are stored.
+                'path'  => Yii::$app->params['absoluteStaticBasePath'] . '/news/content', // Or absolute path to directory where files are s
+                'type' => GetAction::TYPE_FILES,
+            ]
+        ];
+    }
+
     /**
      * @inheritdoc
      */
