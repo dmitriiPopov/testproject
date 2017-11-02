@@ -23,16 +23,20 @@ class NewsController extends Controller
         //var_dump(Yii::$app->params['staticBaseUrl']);
         return [
             'fileupload' => [
-                'class'           => 'vova07\imperavi\actions\UploadAction',
-                'url'             => Yii::$app->params['staticBaseUrl'] . '/news/content', // Directory URL address, where files are stored.
-                'path'            => Yii::$app->params['absoluteStaticBasePath'] . '/news/content', // Or absolute path to directory where files are stored.
-                'uploadOnlyImage' => false, // For not image-only uploading.
+                'class'            => 'vova07\imperavi\actions\UploadAction',
+                'url'              => Yii::$app->params['staticBaseUrl'] . '/news/content', // Directory URL address, where files are stored.
+                'path'             => Yii::$app->params['absoluteStaticBasePath'] . '/news/content', // Or absolute path to directory where files are stored.
+                'uploadOnlyImage'  => true, // For image-only uploading.
+                'validatorOptions' => [
+                    'maxSize'    => 5242880, //maximum size of image
+                    'extensions' => ['png', 'jpg', 'jpeg'], //extensions for image
+                ],
             ],
             'fileget' => [
                 'class' => 'vova07\imperavi\actions\GetAction',
-                'url'     => Yii::$app->params['staticBaseUrl'] . '/news/content', // Directory URL address, where files are stored.
+                'url'   => Yii::$app->params['staticBaseUrl'] . '/news/content', // Directory URL address, where files are stored.
                 'path'  => Yii::$app->params['absoluteStaticBasePath'] . '/news/content', // Or absolute path to directory where files are s
-                'type' => GetAction::TYPE_FILES,
+                'type'  => GetAction::TYPE_IMAGES,
             ]
         ];
     }

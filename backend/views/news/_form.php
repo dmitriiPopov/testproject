@@ -2,8 +2,8 @@
 
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Url;
 use yii\widgets\ActiveForm;
-use yii\redactor\widgets\Redactor;
 use common\models\Category;
 use common\models\News;
 use kartik\datetime\DateTimePicker;
@@ -31,17 +31,19 @@ use kartik\datetime\DateTimePicker;
 
     <?php
         echo \vova07\imperavi\Widget::widget([
-            'id' => 'content',
-            'model' => $formModel,
+            'id'        => 'content',
+            'model'     => $formModel,
             'attribute' => 'content',
-            //'selector' => '#my-textarea-id',
-            'settings' => [
-                'lang' => 'ru',
-                'minHeight' => 200,
-                'imageUpload' => \yii\helpers\Url::to(['/news/fileupload']),
-                'fileManagerJson' => \yii\helpers\Url::to(['/news/fileget']),
-                'plugins' => [
-                    'filemanager'
+            'settings'  => [
+                'lang'             => 'ru',
+                'minHeight'        => 200,
+                'imageUpload'      => Url::to(['/news/fileupload']),
+                'fileManagerJson'  => Url::to(['/news/fileget']),
+                'plugins'          => [
+                    'filemanager',
+                    'imagemanager',
+                    'fullscreen',
+                    'inlinestyle',
                 ]
             ]
         ]);
