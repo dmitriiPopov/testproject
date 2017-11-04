@@ -198,7 +198,7 @@ class User extends \yii\db\ActiveRecord
                 //set absolute path with old image
                 $oldImage = sprintf('%s/%s/%s',  Yii::$app->params['absoluteStaticBasePath'],  Yii::$app->params['staticPathUserAvatar'], $value);
                 //check image on server
-                if(file_exists($oldImage)){
+                if(file_exists($oldImage) && is_file($oldImage)){
                     //delete image
                     unlink($oldImage);
                 }
