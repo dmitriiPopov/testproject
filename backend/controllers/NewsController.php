@@ -16,11 +16,12 @@ use yii\filters\VerbFilter;
  */
 class NewsController extends Controller
 {
-
-    // DefaultController.php
+    /**
+     * @return array
+     *
+     */
     public function actions()
     {
-        //var_dump(Yii::$app->params['staticBaseUrl']);
         return [
             'fileupload' => [
                 'class'            => 'vova07\imperavi\actions\UploadAction',
