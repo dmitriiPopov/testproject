@@ -1,0 +1,130 @@
+<?php
+
+namespace backend\controllers;
+
+use Yii;
+use common\models\Tags;
+use backend\models\tags\TagsForm;
+use backend\models\tags\TagsSearch;
+use yii\web\Controller;
+use yii\web\NotFoundHttpException;
+use yii\filters\VerbFilter;
+
+/**
+ * TagsController implements the CRUD actions for Tags model.
+ */
+class TagsController extends Controller
+{
+    /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return [
+            'verbs' => [
+                'class' => VerbFilter::className(),
+                'actions' => [
+                    'delete' => ['POST'],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Lists all Tags models.
+     * @return mixed
+     */
+    public function actionIndex()
+    {
+        $searchModel = new TagsSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        return $this->render('index', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
+    /**
+     * Displays a single Tags model.
+     * @param integer $id
+     * @return mixed
+     */
+    public function actionView($id)
+    {
+        return $this->render('view', [
+            'model' => $this->findModel($id),
+        ]);
+    }
+
+    /**
+     * Creates a new Tags model.
+     * If creation is successful, the browser will be redirected to the 'view' page.
+     * @return mixed
+     */
+    public function actionCreate()
+    {
+        $formModel = new TagsForm(['scenario' => TagsForm::SCENARIO_CREATE]);
+
+        $formModel->setModel(new Tags());
+
+        if ($formModel->load(Yii::$app->request->post()) && $formModel->save()) {
+            return $this->redirect(['view', 'id' => $formModel->model->id]);
+        } else {
+            return $this->render('create', [
+                'formModel' => $formModel,
+            ]);
+        }
+    }
+
+    /**
+     * Updates an existing Tags model.
+     * If update is successful, the browser will be redirected to the 'view' page.
+     * @param integer $id
+     * @return mixed
+     */
+    public function actionUpdate($id)
+    {
+        //init form model instance
+        $formModel = new TagsForm(['scenario' => TagsForm::SCENARIO_UPDATE]);
+
+        $formModel->setModel($this->findModel($id), true);
+
+        if ($formModel->load(Yii::$app->request->post()) && $formModel->save()) {
+            return $this->redirect(['view', 'id' => $formModel->model->id]);
+        } else {
+            return $this->render('update', [
+                'formModel' => $formModel,
+            ]);
+        }
+    }
+
+    /**
+     * Deletes an existing Tags model.
+     * If deletion is successful, the browser will be redirected to the 'index' page.
+     * @param integer $id
+     * @return mixed
+     */
+    public function actionDelete($id)
+    {
+        $this->findModel($id)->delete();
+
+        return $this->redirect(['index']);
+    }
+
+    /**
+     * Finds the Tags model based on its primary key value.
+     * If the model is not found, a 404 HTTP exception will be thrown.
+     * @param integer $id
+     * @return Tags the loaded model
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    protected function findModel($id)
+    {
+        if (($model = Tags::findOne($id)) !== null) {
+            return $model;
+        } else {
+            throw new NotFoundHttpException('The requested page does not exist.');
+        }
+    }
+}
