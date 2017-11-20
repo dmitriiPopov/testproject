@@ -21,7 +21,8 @@
         "yiidoc/yii2-redactor": "*",
         "2amigos/yii2-date-picker-widget": "~1.0",
         "kartik-v/yii2-widget-datetimepicker": "*",
-        "vova07/yii2-imperavi-widget": "*"
+        "vova07/yii2-imperavi-widget": "*",
+        "kartik-v/yii2-widget-select2": "@dev"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",

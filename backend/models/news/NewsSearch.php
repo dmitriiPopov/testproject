@@ -61,10 +61,10 @@ class NewsSearch extends News
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
-            'category_id' => $this->category_id,
-            'updated_at' => $this->updated_at,
-            'public_at' => $this->public_at,
+            'id'           => $this->id,
+            'category_id'  => $this->category_id,
+            'updated_at'   => $this->updated_at,
+            'public_at'    => $this->public_at,
             'published_at' => $this->published_at,
         ]);
 

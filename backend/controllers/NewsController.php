@@ -49,7 +49,7 @@ class NewsController extends Controller
     {
         return [
             'verbs' => [
-                'class' => VerbFilter::className(),
+                'class'   => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['POST'],
                 ],
@@ -63,11 +63,11 @@ class NewsController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new NewsSearch();
+        $searchModel  = new NewsSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
-            'searchModel' => $searchModel,
+            'searchModel'  => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
     }
@@ -115,6 +115,8 @@ class NewsController extends Controller
         $formModel = new NewsForm(['scenario' => NewsForm::SCENARIO_UPDATE]);
 
         $formModel->setModel($this->findModel($id), true);
+        //set 'tags' array in formModel
+        $formModel->tagsArr = $this->findModel($id)->tagsArr;
 
         if ($formModel->load(Yii::$app->request->post()) && $formModel->save()) {
             return $this->redirect(['view', 'id' => $formModel->model->id]);

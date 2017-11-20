@@ -5,6 +5,7 @@ use yii\helpers\ArrayHelper;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
 use common\models\News;
+use common\models\Tags;
 use dosamigos\datepicker\DatePicker;
 
 /* @var $this yii\web\View */
@@ -58,6 +59,20 @@ $this->params['breadcrumbs'][] = $this->title;
                 'headerOptions' => ['style' => 'text-align: center; vertical-align: middle;'],
                 'contentOptions' => ['style' => 'white-space: normal;'],
             ],
+//            [
+//                'attribute'      => 'tagsArr',
+//                'value'          => 'category.title',
+//                'headerOptions'  => ['style' => 'text-align: center; vertical-align: middle;'],
+//                'contentOptions' => ['style' => 'text-align: center;'],
+//                'filterOptions'  => ['style' => 'text-align: center; vertical-align: middle;'],
+//                'filter'         => Html::activeDropDownList($searchModel, 'tagsArr',
+//                    ArrayHelper::map(Tags::find()->andWhere(['enabled' => Tags::ENABLED_ON])->all(), 'id', 'name'),
+//                    [
+//                        'prompt' => 'Select',
+//                        'style'  => 'text-align: center; vertical-align: middle;',
+//                        'class'  => 'btn btn-info',
+//                    ]),
+//            ],
             // 'content:ntext',
             [
                 'attribute' => 'status',

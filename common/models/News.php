@@ -4,6 +4,7 @@ namespace common\models;
 
 use Yii;
 use common\components\behaviors\CreatedAtUpdatedAtBehavior;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "news".
@@ -23,6 +24,7 @@ use common\components\behaviors\CreatedAtUpdatedAtBehavior;
  * @property string $published_at
  *
  * @property Category[] $category
+ * @property Tags[] $tagsArr
  */
 class News extends \yii\db\ActiveRecord
 {
@@ -36,6 +38,9 @@ class News extends \yii\db\ActiveRecord
 
     const DISPLAY_ON  = 1;
     const DISPLAY_OFF = 0;
+
+    //variable for tag
+    public $tagsArr;
 
 
     /**
@@ -60,6 +65,7 @@ class News extends \yii\db\ActiveRecord
             [['title'], 'string', 'max' => 127],
 
             [['imagefile'], 'default', 'value' => ''],
+            array('tagsArr', 'safe'),
         ];
     }
 
@@ -70,18 +76,19 @@ class News extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'imagefile' => 'Imagefile',
-            'category_id' => 'Category',
-            'title' => 'Title',
-            'description' => 'Description',
-            'content' => 'Content',
-            'status' => 'Status',
-            'enabled' => 'Enabled',
-            'display' => 'Display',
-            'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
-            'public_at' => 'Public At',
+            'imagefile'    => 'Imagefile',
+            'category_id'  => 'Category',
+            'title'        => 'Title',
+            'description'  => 'Description',
+            'content'      => 'Content',
+            'status'       => 'Status',
+            'enabled'      => 'Enabled',
+            'display'      => 'Display',
+            'created_at'   => 'Created At',
+            'updated_at'   => 'Updated At',
+            'public_at'    => 'Public At',
             'published_at' => 'Published At',
+            'tagsArr'      => 'Tags'
         ];
     }
 
@@ -104,6 +111,15 @@ class News extends \yii\db\ActiveRecord
     public function getCategory()
     {
         return $this->hasOne(Category::className(), ['id' => 'category_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTags()
+    {
+        return $this->hasMany(Tags::className(), ['id' => 'tag_id'])
+            ->viaTable('news_tags', ['news_id' => 'id']);
     }
 
     /**
@@ -137,6 +153,97 @@ class News extends \yii\db\ActiveRecord
             return true;
         }
 
+        return false;
+    }
+
+    /**
+     * @return bool
+     */
+    public function beforeDelete()
+    {
+        if (parent::beforeDelete()){
+            //delete all records belonging to the identifier from News_tags table
+            NewsTags::deleteAll(['news_id' => $this->id]);
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    /**
+     *
+     */
+    public function afterFind()
+    {
+        //set 'tags' field in model
+        $this->tagsArr = ArrayHelper::map($this->tags, 'name', 'name');
+    }
+
+    /**
+     * @param bool $insert
+     * @param array $changedAttributes
+     */
+    public function afterSave($insert, $changedAttributes)
+    {
+        parent::afterSave($insert, $changedAttributes);
+
+        if(is_array($this->tagsArr)){
+            //set tags similar to news
+            $oldTags = ArrayHelper::map($this->tags, 'name', 'id');
+
+            foreach ($this->tagsArr as $newTag){
+                //check new tag in old_tags array
+                if (isset($oldTags[$newTag])){
+                    //remove from old_tags array
+                    unset($oldTags[$newTag]);
+                }else{
+                    //create new tag
+                    if(!$this->createAddTag($newTag)){
+                        Yii::$app->session->addFlash('error', 'The Tags for the news '.$this->title.' has not been added');
+                    }
+                }
+            }
+            //delete all records from News_tags table where not use old tags
+            NewsTags::deleteAll(['and', ['news_id' => $this->id], ['tag_id' => $oldTags]]);
+        }else{
+            //delete all records belonging to the identifier from News_tags table
+            NewsTags::deleteAll(['news_id' => $this->id]);
+        }
+    }
+
+    /**
+     * @param $newTag
+     * @return bool
+     */
+    public function createAddTag($newTag){
+        //if newTag not found in Tags table
+        if(!$tag = Tags::find()->andWhere(['name' => $newTag])->one()){
+            //create new tag
+            $tag          = new Tags();
+            //set name new tag
+            $tag->name    = $newTag;
+            $tag->enabled = self::ENABLED_ON;
+            //save new tag
+            if(!$tag->save()){
+                $tag = null;
+                Yii::$app->session->addFlash('error', 'Tag '.$newTag.' has not been added');
+            }else{
+                Yii::$app->session->addFlash('success', 'Add new Tag '.$newTag);
+            }
+        }
+        //check instance
+        if ($tag instanceof Tags){
+            //var_dump($tag);die;
+            //create new record in news_tags table
+            $newsTags          = new NewsTags();
+            //set params
+            $newsTags->news_id = $this->id;
+            $newsTags->tag_id  = $tag->id;
+            //save record
+            if ($newsTags->save()){
+                return true;
+            }
+        }
         return false;
     }
 }

@@ -68,6 +68,11 @@ class NewsForm extends BaseForm
      */
     public $public_at;
 
+    /**
+     * @var array
+     */
+    public $tagsArr;
+
 
     public function rules()
     {
@@ -75,6 +80,7 @@ class NewsForm extends BaseForm
             [['category_id', 'title', 'description', 'content', 'status'], 'required', 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE]],
             [['title', 'description', 'content', 'public_at'], 'string', 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE]],
             [['category_id', 'enabled', 'display'], 'integer', 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE]],
+            array('tagsArr', 'safe', 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE]),
         ];
     }
 
@@ -85,6 +91,7 @@ class NewsForm extends BaseForm
     {
         return [
             'category_id' => 'Category',
+            'tagsArr'     => 'Tags'
         ];
     }
 

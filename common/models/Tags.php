@@ -51,10 +51,10 @@ class Tags extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'name' => 'Name',
-            'enabled' => 'Enabled',
-            'display' => 'Display',
+            'id'         => 'ID',
+            'name'       => 'Name',
+            'enabled'    => 'Enabled',
+            'display'    => 'Display',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];
@@ -78,6 +78,15 @@ class Tags extends \yii\db\ActiveRecord
     public function getNewsTags()
     {
         return $this->hasMany(NewsTags::className(), ['tag_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getNews()
+    {
+        return $this->hasMany(News::className(), ['id' => 'news_id'])
+            ->viaTable('news_tags', ['tag_id' => 'id']);
     }
 
     /**

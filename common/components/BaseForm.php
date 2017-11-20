@@ -38,5 +38,4 @@ class BaseForm extends \yii\base\Model
     {
         return $this->model;
     }
-
 }

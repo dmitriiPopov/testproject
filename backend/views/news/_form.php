@@ -6,7 +6,9 @@ use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 use common\models\Category;
 use common\models\News;
+use common\models\Tags;
 use kartik\datetime\DateTimePicker;
+use kartik\select2\Select2;
 
 /* @var $this yii\web\View */
 /* @var $formModel backend\models\news\NewsForm */
@@ -46,6 +48,21 @@ use kartik\datetime\DateTimePicker;
                     'inlinestyle',
                 ]
             ]
+        ]);
+    ?>
+
+    <?= $form->field($formModel, 'tagsArr')->widget(Select2::classname(), [
+            //display 'tags' where enabled
+            'data'              => ArrayHelper::map(Tags::find()->andWhere(['enabled' => Tags::ENABLED_ON])->all(), 'name', 'name'),
+            'options'           => [
+                'placeholder' => 'Select a tags ...',
+                'multiple'    => true,
+            ],
+            'pluginOptions'     => [
+                'tags'               => true,
+                'tokenSeparators'    => [',', ' '],
+                'maximumInputLength' => 10
+            ],
         ]);
     ?>
 
