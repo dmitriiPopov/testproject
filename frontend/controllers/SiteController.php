@@ -15,6 +15,7 @@ use frontend\components\forms\SignupForm;
 use frontend\components\forms\ContactForm;
 use common\models\News;
 use common\models\Category;
+use common\models\Tags;
 
 /**
  * Site controller
@@ -86,10 +87,13 @@ class SiteController extends Controller
 
         //array of categories
         $categories = Category::find()->andWhere(['display' => Category::DISPLAY_ON])->all();
+        //array of tags
+        $tags       = Tags::find()->andWhere(['display' => Tags::DISPLAY_ON])->all();
 
         return $this->render('index', [
             'dataProvider' => $dataProvider,
             'categories'   => $categories,
+            'tags'         => $tags,
         ]);
     }
 

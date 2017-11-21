@@ -5,6 +5,8 @@
  * @var $article
  * @var $categories
  * @var $selectedCategory
+ * @var $tags
+ * @var $tagsOfNews[]
  */
 
 $this->title = $article->title;
@@ -40,6 +42,8 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= $this->render('../site/_partial/newsHeader', [
             'categories'       => $categories,
             'selectedCategory' => $selectedCategory,
+            'tags'             => $tags,
+            'tagsOfNews'       => $tagsOfNews,
         ]); ?>
         <!-- End list of categories -->
 

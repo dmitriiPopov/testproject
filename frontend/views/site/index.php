@@ -6,6 +6,7 @@ use yii\widgets\ListView;
  * @var $this yii\web\View
  * @var $dataProvider yii\data\ActiveDataProvider
  * @var $categories common\models\Category
+ * @var $tags common\models\Tags
  */
 
 $this->title = 'My Yii Application';
@@ -37,9 +38,11 @@ $this->title = 'My Yii Application';
 <!-- List of news END -->
 
 
-<!-- List of categories BEGIN -->
+<!-- Lists of categories and tags BEGIN -->
 <?= $this->render('_partial/newsHeader', [
     'categories' => $categories,
+    'tags'       => $tags,
 ]); ?>
-<!-- List of categories END -->
+<!-- Lists of categories and tags END -->
+
 

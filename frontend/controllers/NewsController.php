@@ -10,6 +10,8 @@ namespace frontend\controllers;
 
 use common\models\Category;
 use common\models\News;
+use common\models\Tags;
+use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\data\ActiveDataProvider;
@@ -31,6 +33,9 @@ class NewsController extends Controller
         //get data for selected article (by `id`)
         $article = News::find()->andWhere(['id' => $id, 'display' => News::DISPLAY_ON])->one();
 
+        //get array tags of the news
+        $tagsOfNews = ArrayHelper::map($article->tags, 'name', 'id');
+
         //if it isn't found
         if ( ! $article) {
             throw new NotFoundHttpException();
@@ -38,11 +43,15 @@ class NewsController extends Controller
 
         //array of categories
         $categories = Category::find()->andWhere(['display' => Category::DISPLAY_ON])->all();
+        //array of tags
+        $tags       = Tags::find()->andWhere(['display' => Tags::DISPLAY_ON])->all();
 
         return $this->render('view', [
             'article'          => $article,
             'categories'       => $categories,
             'selectedCategory' => $article->category,
+            'tags'             => $tags,
+            'tagsOfNews'       => $tagsOfNews,
         ]);
     }
 
@@ -53,9 +62,7 @@ class NewsController extends Controller
     public function actionCategory($id)
     {
         //selected category
-        $category = Category::find()
-            ->andWhere(['id' => $id, 'display' => Category::DISPLAY_ON])
-            ->one();
+        $category = Category::find()->andWhere(['id' => $id, 'display' => Category::DISPLAY_ON])->one();
 
         //if category not found
         if( ! $category) {
@@ -63,9 +70,9 @@ class NewsController extends Controller
         }
 
         //array of categories
-        $categories = Category::find()
-            ->andWhere(['display' => Category::DISPLAY_ON])
-            ->all();
+        $categories = Category::find()->andWhere(['display' => Category::DISPLAY_ON])->all();
+        //array of tags
+        $tags       = Tags::find()->andWhere(['display' => Tags::DISPLAY_ON])->all();
 
         //List of news
         $dataProvider = new ActiveDataProvider([
@@ -81,6 +88,7 @@ class NewsController extends Controller
             'dataProvider' => $dataProvider,
             'category'     => $category,
             'categories'   => $categories,
+            'tags'         => $tags,
         ]);
     }
 

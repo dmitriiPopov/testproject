@@ -102,4 +102,12 @@ class Tags extends \yii\db\ActiveRecord
 
         return true;
     }
+
+    /**
+     * Method get count all news with the tag
+     * @return int
+     */
+    public function getCountNews(){
+        return count($this->getNews()->all());
+    }
 }

@@ -6,7 +6,8 @@ use yii\widgets\ListView;
  * @var $this yii\web\View
  * @var $dataProvider yii\data\ActiveDataProvider
  * @var $category common\models\Category
- * @var $categories common\models\Category
+ * @var $categories common\models\Category[]
+ * @var $tags common\models\Tags[]
  */
 
 $this->title = $category->title;
@@ -43,5 +44,6 @@ $this->params['breadcrumbs'][] = $this->title;
 <?= $this->render('../site/_partial/newsHeader', [
     'categories'       => $categories,
     'selectedCategory' => $category,
+    'tags'             => $tags,
 ]); ?>
 <!-- List of categories END -->
