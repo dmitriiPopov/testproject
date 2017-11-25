@@ -24,7 +24,7 @@ use yii\helpers\ArrayHelper;
  * @property string $published_at
  *
  * @property Category[] $category
- * @property Tags[] $tagsArr
+ * @property Tags[]     $tags
  */
 class News extends \yii\db\ActiveRecord
 {
@@ -39,6 +39,7 @@ class News extends \yii\db\ActiveRecord
     const DISPLAY_ON  = 1;
     const DISPLAY_OFF = 0;
 
+    //TODO: удали это одинокое непонятное свойство. Почему?  См. todo ниже по классу
     //variable for tag
     public $tagsArr;
 
@@ -65,7 +66,6 @@ class News extends \yii\db\ActiveRecord
             [['title'], 'string', 'max' => 127],
 
             [['imagefile'], 'default', 'value' => ''],
-            array('tagsArr', 'safe'),
         ];
     }
 
@@ -88,7 +88,6 @@ class News extends \yii\db\ActiveRecord
             'updated_at'   => 'Updated At',
             'public_at'    => 'Public At',
             'published_at' => 'Published At',
-            'tagsArr'      => 'Tags'
         ];
     }
 
@@ -131,8 +130,8 @@ class News extends \yii\db\ActiveRecord
     {
         return [
             self::STATUS_NEW       => Yii::t('app', 'New'),
-            self::STATUS_PUBLICATE => Yii::t('app', 'publicate'),
-            self::STATUS_PUBLISHED => Yii::t('app', 'published'),
+            self::STATUS_PUBLICATE => Yii::t('app', 'Publicate'),
+            self::STATUS_PUBLISHED => Yii::t('app', 'Published'),
         ];
     }
 
@@ -161,21 +160,24 @@ class News extends \yii\db\ActiveRecord
      */
     public function beforeDelete()
     {
-        if (parent::beforeDelete()){
+        if (parent::beforeDelete()) {
             //delete all records belonging to the identifier from News_tags table
             NewsTags::deleteAll(['news_id' => $this->id]);
             return true;
-        }else{
+        } else {
             return false;
         }
     }
 
     /**
-     *
+     * TODO: нет tagsArr - не должно быть и метода
+     * TODO: в этом методе должна быть логика, которая еще не реализована в ActiveRecord и нужна абсолютно всегда при поиске записи в бвзе даных.
      */
     public function afterFind()
     {
         //set 'tags' field in model
+        //TODO: форматирвоание данных нужно чаще всего делать там, где оно непосредственно нужно.
+        //TODO: это удалишь
         $this->tagsArr = ArrayHelper::map($this->tags, 'name', 'name');
     }
 
@@ -187,6 +189,9 @@ class News extends \yii\db\ActiveRecord
     {
         parent::afterSave($insert, $changedAttributes);
 
+
+        // TODO: попробуй использовать NewsTags::addTagsToNewsByTagsIds() прямо в классе формы после сохранения Новости. Вынеси в класс формы логику ниже.
+        // TODO: из бавиться от tagsArr в модели ... я уже это свойство удалил и надеюсь оно не появится тут:)
         if(is_array($this->tagsArr)){
             //set tags similar to news
             $oldTags = ArrayHelper::map($this->tags, 'name', 'id');
@@ -198,7 +203,11 @@ class News extends \yii\db\ActiveRecord
                     unset($oldTags[$newTag]);
                 }else{
                     //create new tag
-                    if(!$this->createAddTag($newTag)){
+                    if($this->addTag($newTag)){
+                        // TODO: нет инкапсуляции
+                        // TODO: все что связано с сессия и куками должно быть вне классов форм и моделей.
+                        // TODO: только контроллеры, отображения или как исклечения - классы, которые используются только для веб-юзера
+                        // TODO: вынести
                         Yii::$app->session->addFlash('error', 'The Tags for the news '.$this->title.' has not been added');
                     }
                 }
@@ -214,6 +223,11 @@ class News extends \yii\db\ActiveRecord
     /**
      * @param $newTag
      * @return bool
+     *
+     * TODO: этот метод удалить и использовать NewsTags::addTagsToNewsByTagsIds(). Вынеси в него эту логику.
+     * TODO: есть такой термин в программирование - "Высокое зацепление" - это значит что класс должен выполнять логически присущие ему вещи.
+     * TODO: например, в случае новой функции в классе овтечающим за связь, появляется метод который эту связь и создает. Все логично и взаимосвязано по смыслу :)
+     * TODO: больше информации по "высокому зацеплению" гугли по аббревматуре - SOLID. Если нагуглишь, но после первого прочтения будет непонятно, то не закрывай и не читай дальше. Обсудим потом))))
      */
     public function createAddTag($newTag){
         //if newTag not found in Tags table
@@ -226,6 +240,10 @@ class News extends \yii\db\ActiveRecord
             //save new tag
             if(!$tag->save()){
                 $tag = null;
+                // TODO: нет инкапсуляции
+                // TODO: все что связано с сессия и куками должно быть вне классов форм и моделей.
+                // TODO: только контроллеры, отображения или как исключения - классы, которые используются только для веб-юзера
+                // TODO: вынести
                 Yii::$app->session->addFlash('error', 'Tag '.$newTag.' has not been added');
             }else{
                 Yii::$app->session->addFlash('success', 'Add new Tag '.$newTag);

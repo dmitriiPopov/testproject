@@ -71,9 +71,12 @@ class SiteController extends Controller
 
     /**
      * Displays homepage.
+     * @param integer $categoryId NULL - all news; integer - news for selected category;
      * @return mixed
+     *
+     * TODO: этот метод с вх. параметром $categoryId должен выполнять то же что и NewsController->actionCategory
      */
-    public function actionIndex()
+    public function actionIndex($categoryId = null)
     {
         //List of news
         $dataProvider = new ActiveDataProvider([

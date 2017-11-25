@@ -91,6 +91,7 @@ class Tags extends \yii\db\ActiveRecord
 
     /**
      * @param bool $insert
+     * @return boolean
      */
     public function beforeSave($insert)
     {
@@ -107,7 +108,8 @@ class Tags extends \yii\db\ActiveRecord
      * Method get count all news with the tag
      * @return int
      */
-    public function getCountNews(){
-        return count($this->getNews()->all());
+    public function getCountNews()
+    {
+        return $this->getNews()->count();
     }
 }

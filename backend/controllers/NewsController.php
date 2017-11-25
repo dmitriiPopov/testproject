@@ -112,11 +112,17 @@ class NewsController extends Controller
      */
     public function actionUpdate($id)
     {
+        // TODO: один раз запрашивается запись о новости. Незачем делать одинаковые запросы, если они отдают одну и ту же ниформацию.
+        $model = $this->findModel($id);
+
         $formModel = new NewsForm(['scenario' => NewsForm::SCENARIO_UPDATE]);
 
-        $formModel->setModel($this->findModel($id), true);
+        $formModel->setModel($model, true);
         //set 'tags' array in formModel
-        $formModel->tagsArr = $this->findModel($id)->tagsArr;
+        //TODO: использую реляцию $model->tags. И затули эту запись прямо внутри $formModel->setModel(), т.к. теги сейчас - это часть формы.
+        $formModel->tagsArr = $model->tags;
+
+        // TODO: всякие флеш месседжи и запросы к сессии должны быть тут
 
         if ($formModel->load(Yii::$app->request->post()) && $formModel->save()) {
             return $this->redirect(['view', 'id' => $formModel->model->id]);

@@ -67,4 +67,23 @@ class NewsTags extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Tags::className(), ['id' => 'tag_id']);
     }
+
+    /**
+     * Connect list of selected tags with selected one News record
+     * @param News  $news     One News record
+     * @param array $tagsIds  List of ids of Tags records
+     *
+     * @return boolean
+     *
+     * TODO: использовать такой формат добавления тега к новости вместо   News->createAddTag
+     * TODO: мы же как-бы работаем на уровне объектов )))
+     *
+     * TODO: не используешь отступы согласно PSR
+     * TODO: не сокращай названия переменных так что это становится не понятно, например "array" лучше чем "arr". Если название переменной короткое  пончтно - ОК. Если короткое, но неочвидно - НЕ ок - делай длиннее, но понятнее.
+     * TODO: используй [] вместо array(
+     */
+    public static function addTagsToNewsByTagsIds(News $news, array $tagsIds)
+    {
+
+    }
 }

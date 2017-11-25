@@ -23,6 +23,9 @@ use common\models\News;
 
 class NewsForm extends BaseForm
 {
+    // max tags count
+    const MAX_TAGS_COUNT = 5;
+
     /**
      * @var string
      */
@@ -109,6 +112,14 @@ class NewsForm extends BaseForm
         }
     }*/
 
+    public function afterValidate()
+    {
+        parent::afterValidate();
+
+        //TODO: тут валидируй кол-во тегов
+        //TODO: если из формы пришло больше 5 тегов, $this->addError('tagsArray', sprintf('Новость может содержать не больше %d тегов', self::MAX_TAGS_COUNT))
+    }
+
     public function save($runValidation = true, $attributeNames = null)
     {
 
@@ -149,6 +160,9 @@ class NewsForm extends BaseForm
 
         //save AR model
         if (!$this->model->save($runValidation, $attributeNames)) {
+
+            //TODO: тут сохраняй теги.
+            // TODO: то, что касается логики работы формы - пихай в клас формы. В саму модель ActiveRecord должно попадать что-то важное, что должно работать независимо от формы на какой-то странице в админке
 
             //get AR model errors and set it to form
             $this->addErrors($this->model->errors);

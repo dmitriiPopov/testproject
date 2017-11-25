@@ -45,8 +45,10 @@ class NewsController extends Controller
         return $this->render('view', [
             'article'          => $article,
             'categories'       => $categories,
+            // TODO: не учитываешь что тебе нужно display=1 категории
             'selectedCategory' => $article->category,
             'tags'             => $tags,
+            // TODO: не учитываешь что тебе нужны  display=1 теги
             'tagsOfNews'       => $article->tags,
         ]);
     }
@@ -54,6 +56,9 @@ class NewsController extends Controller
     /**
      * Displays all articles at some category
      * @param integer $id
+     *
+     * TODO: зачем этот экшн?
+     * TODO: используй siteController::actionIndex вместо этого. Он выполняет то же самое. Вся разница в фильрации новостей по одному входному параметру
      */
     public function actionCategory($id)
     {
