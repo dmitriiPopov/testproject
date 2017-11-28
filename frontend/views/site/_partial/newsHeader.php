@@ -34,14 +34,14 @@ use yii\helpers\Url;
             //check the selected Category is set
             if(isset($selectedCategory)){
                 //verify that the selected category matches the categories from db
-                if($category->title == $selectedCategory->title){ ?>
+                if($category->id == $selectedCategory->id){ ?>
                     <!-- highlighting the selected category -->
-                    <a href="<?= Url::to(['news/category', 'id' => $category->id]); ?>" class="list-group-item active"><?= $category->title; ?></a><?php
+                    <a href="<?= Url::to(['site/index', 'categoryId' => $category->id]); ?>" class="list-group-item active"><?= $category->title; ?></a><?php
                 }else{
-                    ?><a href="<?= Url::to(['news/category', 'id' => $category->id]); ?>" class="list-group-item"><?= $category->title; ?></a><?php
+                    ?><a href="<?= Url::to(['site/index', 'categoryId' => $category->id]); ?>" class="list-group-item"><?= $category->title; ?></a><?php
                 }
             }else {
-                ?><a href="<?= Url::to(['news/category', 'id' => $category->id]); ?>" class="list-group-item"><?= $category->title; ?></a><?php
+                ?><a href="<?= Url::to(['site/index', 'categoryId' => $category->id]); ?>" class="list-group-item"><?= $category->title; ?></a><?php
             }
         }
     ?>

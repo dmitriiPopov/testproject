@@ -7,20 +7,20 @@ $params = array_merge(
 );
 
 return [
-    'id'   => 'app-frontend',
-    'name' => 'Frontend',
-    'basePath' => dirname(__DIR__),
-    'bootstrap' => ['log'],
+    'id'          => 'app-frontend',
+    'name'        => 'Frontend',
+    'basePath'    => dirname(__DIR__),
+    'bootstrap'   => ['log'],
     'controllerNamespace' => 'frontend\controllers',
-    'components' => [
+    'components'  => [
         'request' => [
             'csrfParam' => '_csrf-frontend',
         ],
         'user' => [
 //            'identityClass' => 'common\models\User',
-            'identityClass' => 'frontend\models\User',
+            'identityClass'   => 'frontend\models\User',
             'enableAutoLogin' => true,
-            'identityCookie' => ['name' => '_identity-frontend', 'httpOnly' => true],
+            'identityCookie'  => ['name' => '_identity-frontend', 'httpOnly' => true],
         ],
         'session' => [
             // this is the name of the session cookie used for login on the frontend
@@ -28,9 +28,9 @@ return [
         ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
-            'targets' => [
+            'targets'    => [
                 [
-                    'class' => 'yii\log\FileTarget',
+                    'class'  => 'yii\log\FileTarget',
                     'levels' => ['error', 'warning'],
                 ],
             ],
@@ -39,15 +39,15 @@ return [
             'errorAction' => 'site/error',
         ],
         'urlManager' => [
-            'enablePrettyUrl' => true,
-            'showScriptName' => false,
+            'enablePrettyUrl'     => true,
+            'showScriptName'      => false,
             'enableStrictParsing' => true,
-            'rules' => [
+            'rules'               => [
                 '/' => 'site/index',
-                '<action>' => 'site/<action>',
                 '<controller:\w+>/<id:\d+>'=>'<controller>/view',
-                '<controller:\w+>/<action:\w+>/<id:\d+>'=>'<controller>/<action>',
-                '<controller:\w+>/<action:\w+>'=>'<controller>/<action>'
+                //'<controller:\w+>/<action:\w+>/<id:\d+>'=>'<controller>/view',
+                //'<controller:\w+>/<action:\w+>'=>'<controller>/<action>',
+                '<action:\w+>' => 'site/<action>',
             ],
         ],
     ],

@@ -13,6 +13,8 @@ use kartik\select2\Select2;
 /* @var $this yii\web\View */
 /* @var $formModel backend\models\news\NewsForm */
 /* @var $form yii\widgets\ActiveForm */
+
+//var_dump($formModel->tagsArray);die;
 ?>
 
 <div class="news-form">
@@ -51,7 +53,7 @@ use kartik\select2\Select2;
         ]);
     ?>
 
-    <?= $form->field($formModel, 'tagsArr')->widget(Select2::classname(), [
+    <?= $form->field($formModel, 'tagsArray')->widget(Select2::classname(), [
             //display 'tags' where enabled
             'data'              => ArrayHelper::map(Tags::find()->andWhere(['enabled' => Tags::ENABLED_ON])->all(), 'name', 'name'),
             'options'           => [
@@ -96,21 +98,3 @@ use kartik\select2\Select2;
     <?php ActiveForm::end(); ?>
 
 </div>
-
-<?php
-//JS for enabled and display checkboxes
-//$script = <<< JS
-//
-//    setInterval(function() {
-//      //if enabled is check
-//      if($('#enabled').is(':checked')){
-//        //display checkbox is enable
-//        $('#display').attr('disabled', false);
-//      }else{
-//        //display checkbox is disable and unchecked
-//        $('#display').attr('disabled', true).attr('checked', false);
-//      }
-//    }, 10);
-//JS;
-//$this->registerJs($script);
-?>

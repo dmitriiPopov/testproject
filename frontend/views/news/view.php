@@ -10,7 +10,10 @@
  */
 
 $this->title = $article->title;
-$this->params['breadcrumbs'][] = ['label' => $article->category->title, 'url' => ['news/category', 'id' => $article->category->id]];
+//check is set selected category DISPLAY ON
+if (isset($selectedCategory)) {
+    $this->params['breadcrumbs'][] = ['label' => $selectedCategory->title, 'url' => ['site/index', 'categoryId' => $selectedCategory->id]];
+}
 $this->params['breadcrumbs'][] = $this->title;
 
 ?>
@@ -39,8 +42,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <!-- List of tags of the news -->
             <?php
                 //check is set tagsOfNews
-                if(!empty($tagsOfNews))
-                {
+                if ( ! empty($tagsOfNews)) {
                     echo $this->render('../site/_partial/newsFooter', [
                         'tagsOfNews' => $tagsOfNews,
                     ]);

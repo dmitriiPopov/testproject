@@ -118,9 +118,6 @@ class NewsController extends Controller
         $formModel = new NewsForm(['scenario' => NewsForm::SCENARIO_UPDATE]);
 
         $formModel->setModel($model, true);
-        //set 'tags' array in formModel
-        //TODO: использую реляцию $model->tags. И затули эту запись прямо внутри $formModel->setModel(), т.к. теги сейчас - это часть формы.
-        $formModel->tagsArr = $model->tags;
 
         // TODO: всякие флеш месседжи и запросы к сессии должны быть тут
 

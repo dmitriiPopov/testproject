@@ -39,10 +39,6 @@ class News extends \yii\db\ActiveRecord
     const DISPLAY_ON  = 1;
     const DISPLAY_OFF = 0;
 
-    //TODO: удали это одинокое непонятное свойство. Почему?  См. todo ниже по классу
-    //variable for tag
-    public $tagsArr;
-
 
     /**
      * @inheritdoc
@@ -167,101 +163,5 @@ class News extends \yii\db\ActiveRecord
         } else {
             return false;
         }
-    }
-
-    /**
-     * TODO: нет tagsArr - не должно быть и метода
-     * TODO: в этом методе должна быть логика, которая еще не реализована в ActiveRecord и нужна абсолютно всегда при поиске записи в бвзе даных.
-     */
-    public function afterFind()
-    {
-        //set 'tags' field in model
-        //TODO: форматирвоание данных нужно чаще всего делать там, где оно непосредственно нужно.
-        //TODO: это удалишь
-        $this->tagsArr = ArrayHelper::map($this->tags, 'name', 'name');
-    }
-
-    /**
-     * @param bool $insert
-     * @param array $changedAttributes
-     */
-    public function afterSave($insert, $changedAttributes)
-    {
-        parent::afterSave($insert, $changedAttributes);
-
-
-        // TODO: попробуй использовать NewsTags::addTagsToNewsByTagsIds() прямо в классе формы после сохранения Новости. Вынеси в класс формы логику ниже.
-        // TODO: из бавиться от tagsArr в модели ... я уже это свойство удалил и надеюсь оно не появится тут:)
-        if(is_array($this->tagsArr)){
-            //set tags similar to news
-            $oldTags = ArrayHelper::map($this->tags, 'name', 'id');
-
-            foreach ($this->tagsArr as $newTag){
-                //check new tag in old_tags array
-                if (isset($oldTags[$newTag])){
-                    //remove from old_tags array
-                    unset($oldTags[$newTag]);
-                }else{
-                    //create new tag
-                    if($this->addTag($newTag)){
-                        // TODO: нет инкапсуляции
-                        // TODO: все что связано с сессия и куками должно быть вне классов форм и моделей.
-                        // TODO: только контроллеры, отображения или как исклечения - классы, которые используются только для веб-юзера
-                        // TODO: вынести
-                        Yii::$app->session->addFlash('error', 'The Tags for the news '.$this->title.' has not been added');
-                    }
-                }
-            }
-            //delete all records from News_tags table where not use old tags
-            NewsTags::deleteAll(['and', ['news_id' => $this->id], ['tag_id' => $oldTags]]);
-        }else{
-            //delete all records belonging to the identifier from News_tags table
-            NewsTags::deleteAll(['news_id' => $this->id]);
-        }
-    }
-
-    /**
-     * @param $newTag
-     * @return bool
-     *
-     * TODO: этот метод удалить и использовать NewsTags::addTagsToNewsByTagsIds(). Вынеси в него эту логику.
-     * TODO: есть такой термин в программирование - "Высокое зацепление" - это значит что класс должен выполнять логически присущие ему вещи.
-     * TODO: например, в случае новой функции в классе овтечающим за связь, появляется метод который эту связь и создает. Все логично и взаимосвязано по смыслу :)
-     * TODO: больше информации по "высокому зацеплению" гугли по аббревматуре - SOLID. Если нагуглишь, но после первого прочтения будет непонятно, то не закрывай и не читай дальше. Обсудим потом))))
-     */
-    public function createAddTag($newTag){
-        //if newTag not found in Tags table
-        if(!$tag = Tags::find()->andWhere(['name' => $newTag])->one()){
-            //create new tag
-            $tag          = new Tags();
-            //set name new tag
-            $tag->name    = $newTag;
-            $tag->enabled = self::ENABLED_ON;
-            //save new tag
-            if(!$tag->save()){
-                $tag = null;
-                // TODO: нет инкапсуляции
-                // TODO: все что связано с сессия и куками должно быть вне классов форм и моделей.
-                // TODO: только контроллеры, отображения или как исключения - классы, которые используются только для веб-юзера
-                // TODO: вынести
-                Yii::$app->session->addFlash('error', 'Tag '.$newTag.' has not been added');
-            }else{
-                Yii::$app->session->addFlash('success', 'Add new Tag '.$newTag);
-            }
-        }
-        //check instance
-        if ($tag instanceof Tags){
-            //var_dump($tag);die;
-            //create new record in news_tags table
-            $newsTags          = new NewsTags();
-            //set params
-            $newsTags->news_id = $this->id;
-            $newsTags->tag_id  = $tag->id;
-            //save record
-            if ($newsTags->save()){
-                return true;
-            }
-        }
-        return false;
     }
 }

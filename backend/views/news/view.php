@@ -35,20 +35,25 @@ $this->params['breadcrumbs'][] = $this->title;
             'title',
             'description',
             [
-                'attribute' => 'tagsArr',
-                //TODO: а вот тут как раз нужно использовать ArrayHelper::map($this->tags, 'name', 'name')
-                // TODO: именно в таких случаях, а не в afterFind() модели ActiveRecord. Т.к. форматирвоание данных нужно чаще всего делать там, где оно непосредственно нужно.
-                // TODO:
-                'value'     => function ($model) { return $model->tagsArr ? implode(', ', $model->tagsArr) : Yii::t('app', 'Tags not found'); },
+                'attribute' => 'tagsArray',
+                'value'     => function ($model) {
+                    return ArrayHelper::map($model->tags, 'name', 'name') ?
+                        implode(', ', ArrayHelper::map($model->tags, 'name', 'name')) :
+                        Yii::t('app', 'Tags not found');
+                },
             ],
             'status',
             [
                 'attribute' => 'enabled',
-                'value'     => function ($data) { return $data->enabled ? Yii::t('app', 'Yes') : Yii::t('app', 'No'); },
+                'value'     => function ($data) {
+                    return $data->enabled ? Yii::t('app', 'Yes') : Yii::t('app', 'No');
+                },
             ],
             [
                 'attribute' => 'display',
-                'value'     => function ($data) { return $data->display ? Yii::t('app', 'Yes') : Yii::t('app', 'No'); },
+                'value'     => function ($data) {
+                    return $data->display ? Yii::t('app', 'Yes') : Yii::t('app', 'No');
+                },
             ],
 
             'content:raw',

@@ -1,7 +1,5 @@
 <?php
 
-use yii\helpers\Url;
-
 /**
  * @var $tagsOfNews[]
  */
@@ -14,10 +12,7 @@ use yii\helpers\Url;
     <?php
         foreach ($tagsOfNews as $tag)
         {
-            //check tag if display
-            if ($tag->display) { ?>
-                <a href="" class="btn btn-success"><?= $tag->name; ?></a><?php
-            }
+            ?><a href="" class="btn btn-success"><?= $tag->name; ?></a> <?php
         }
     ?>
 </div>

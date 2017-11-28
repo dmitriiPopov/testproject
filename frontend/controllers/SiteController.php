@@ -4,6 +4,7 @@ namespace frontend\controllers;
 use Yii;
 use yii\base\InvalidParamException;
 use yii\web\BadRequestHttpException;
+use yii\web\NotFoundHttpException;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
@@ -73,16 +74,39 @@ class SiteController extends Controller
      * Displays homepage.
      * @param integer $categoryId NULL - all news; integer - news for selected category;
      * @return mixed
-     *
-     * TODO: этот метод с вх. параметром $categoryId должен выполнять то же что и NewsController->actionCategory
      */
     public function actionIndex($categoryId = null)
     {
+        //check category
+        if ($categoryId != null) {
+
+            //selected category
+            $selectedCategory = Category::find()
+                ->andWhere(['id' => $categoryId, 'display' => Category::DISPLAY_ON])
+                ->one();
+
+            //if category not found
+            if ( ! $selectedCategory) {
+                throw new NotFoundHttpException();
+            }
+
+            //set query for Data Provider
+            $query            = News::find()
+                ->andWhere(['category_id' => $categoryId,'display' => News::DISPLAY_ON])
+                ->orderBy('published_at DESC');
+        } else {
+
+            $selectedCategory = null;
+
+            //set query for Data Provider
+            $query            = News::find()
+                ->andWhere(['display' => News::DISPLAY_ON])
+                ->orderBy('published_at DESC');
+        }
+
         //List of news
         $dataProvider = new ActiveDataProvider([
-            'query' => News::find()
-                ->andWhere(['display' => News::DISPLAY_ON])
-                ->orderBy('published_at DESC'),
+            'query'      => $query,
             'pagination' => [
                 'pageSize' => 4,
             ],
@@ -94,9 +118,10 @@ class SiteController extends Controller
         $tags       = Tags::find()->andWhere(['display' => Tags::DISPLAY_ON])->all();
 
         return $this->render('index', [
-            'dataProvider' => $dataProvider,
-            'categories'   => $categories,
-            'tags'         => $tags,
+            'dataProvider'     => $dataProvider,
+            'categories'       => $categories,
+            'tags'             => $tags,
+            'selectedCategory' => $selectedCategory,
         ]);
     }
 

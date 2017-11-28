@@ -3,6 +3,8 @@
 namespace common\models;
 
 use Yii;
+use yii\base\ErrorException;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "news_tags".
@@ -74,16 +76,52 @@ class NewsTags extends \yii\db\ActiveRecord
      * @param array $tagsIds  List of ids of Tags records
      *
      * @return boolean
-     *
-     * TODO: использовать такой формат добавления тега к новости вместо   News->createAddTag
-     * TODO: мы же как-бы работаем на уровне объектов )))
-     *
-     * TODO: не используешь отступы согласно PSR
-     * TODO: не сокращай названия переменных так что это становится не понятно, например "array" лучше чем "arr". Если название переменной короткое  пончтно - ОК. Если короткое, но неочвидно - НЕ ок - делай длиннее, но понятнее.
-     * TODO: используй [] вместо array(
      */
     public static function addTagsToNewsByTagsIds(News $news, array $tagsIds)
     {
+        if (is_array($tagsIds)) {
+            //set tags similar to news
+            $oldTags = ArrayHelper::map($news->tags, 'name', 'id');
 
+            foreach ($tagsIds as $newTag) {
+                //check new tag in old_tags array
+                if (isset($oldTags[$newTag])) {
+                    //remove from old_tags array
+                    unset($oldTags[$newTag]);
+                } else {
+                    //if newTag not found in Tags table
+                    if ( ! $tag = Tags::find()->andWhere(['name' => $newTag])->one()) {
+                        //create new tag
+                        $tag          = new Tags();
+                        //set name new tag
+                        $tag->name    = $newTag;
+                        $tag->enabled = Tags::ENABLED_ON;
+                        //save new tag
+                        if (!$tag->save()) {
+                            return false;
+                        }
+                    }
+                    //check instance
+                    if ($tag instanceof Tags) {
+                        //create new record in news_tags table
+                        $newsTags          = new NewsTags();
+                        //set params
+                        $newsTags->news_id = $news->id;
+                        $newsTags->tag_id  = $tag->id;
+                        //save record
+                        if ( ! $newsTags->save()) {
+                            return false;
+                        }
+                    }
+                }
+            }
+            //delete all records from News_tags table where not use old tags
+            NewsTags::deleteAll(['and', ['news_id' => $news->id], ['tag_id' => $oldTags]]);
+        }else{
+            //delete all records belonging to the identifier from News_tags table
+            NewsTags::deleteAll(['news_id' => $news->id]);
+        }
+
+        return true;
     }
 }

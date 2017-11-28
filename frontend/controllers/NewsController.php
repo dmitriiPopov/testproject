@@ -37,6 +37,22 @@ class NewsController extends Controller
             throw new NotFoundHttpException();
         }
 
+        //check if category of article is DISPLAY_ON
+        if ($article->category->display) {
+            $selectedCategory = $article->category;
+        } else {
+            $selectedCategory = null;
+        }
+
+        //check if tags of article is DISPLAY_ON
+        if ( ! empty($tagsOfNews = $article->tags)) {
+            foreach ($tagsOfNews as $key => $tag) {
+                if ( ! $tag->display) {
+                    unset($tagsOfNews[$key]);
+                }
+            }
+        }
+
         //array of categories
         $categories = Category::find()->andWhere(['display' => Category::DISPLAY_ON])->all();
         //array of tags
@@ -45,53 +61,9 @@ class NewsController extends Controller
         return $this->render('view', [
             'article'          => $article,
             'categories'       => $categories,
-            // TODO: не учитываешь что тебе нужно display=1 категории
-            'selectedCategory' => $article->category,
+            'selectedCategory' => $selectedCategory,
             'tags'             => $tags,
-            // TODO: не учитываешь что тебе нужны  display=1 теги
-            'tagsOfNews'       => $article->tags,
+            'tagsOfNews'       => $tagsOfNews,
         ]);
     }
-
-    /**
-     * Displays all articles at some category
-     * @param integer $id
-     *
-     * TODO: зачем этот экшн?
-     * TODO: используй siteController::actionIndex вместо этого. Он выполняет то же самое. Вся разница в фильрации новостей по одному входному параметру
-     */
-    public function actionCategory($id)
-    {
-        //selected category
-        $category = Category::find()->andWhere(['id' => $id, 'display' => Category::DISPLAY_ON])->one();
-
-        //if category not found
-        if( ! $category) {
-            throw new NotFoundHttpException();
-        }
-
-        //array of categories
-        $categories = Category::find()->andWhere(['display' => Category::DISPLAY_ON])->all();
-        //array of tags
-        $tags       = Tags::find()->andWhere(['display' => Tags::DISPLAY_ON])->all();
-
-        //List of news
-        $dataProvider = new ActiveDataProvider([
-            'query'      => News::find()
-                ->andWhere(['category_id' => $id,'display' => News::DISPLAY_ON])
-                ->orderBy('published_at DESC'),
-            'pagination' => [
-                'pageSize' => 4,
-            ],
-        ]);
-
-        return $this->render('category', [
-            'dataProvider' => $dataProvider,
-            'category'     => $category,
-            'categories'   => $categories,
-            'tags'         => $tags,
-        ]);
-    }
-
-
 }

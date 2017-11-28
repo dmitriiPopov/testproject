@@ -11,6 +11,8 @@ namespace backend\models\news;
 
 use common\components\BaseForm;
 use common\models\News;
+use common\models\NewsTags;
+use yii\helpers\ArrayHelper;
 
 /**
  * Class NewsForm
@@ -74,7 +76,7 @@ class NewsForm extends BaseForm
     /**
      * @var array
      */
-    public $tagsArr;
+    public $tagsArray;
 
 
     public function rules()
@@ -83,7 +85,7 @@ class NewsForm extends BaseForm
             [['category_id', 'title', 'description', 'content', 'status'], 'required', 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE]],
             [['title', 'description', 'content', 'public_at'], 'string', 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE]],
             [['category_id', 'enabled', 'display'], 'integer', 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE]],
-            array('tagsArr', 'safe', 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE]),
+            [['tagsArray'], 'safe', 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE]],
         ];
     }
 
@@ -94,12 +96,11 @@ class NewsForm extends BaseForm
     {
         return [
             'category_id' => 'Category',
-            'tagsArr'     => 'Tags'
+            'tagsArray'   => 'Tags'
         ];
     }
 
-    //EXAMPLE
-    /*public function setModel($model, $setAttributes = false)
+    public function setModel($model, $setAttributes = false)
     {
         parent::setModel($model, $setAttributes);
 
@@ -107,17 +108,19 @@ class NewsForm extends BaseForm
         if ($setAttributes) {
             //set model attributes to form attributes with another names
             $this->setAttributes([
-                'specificFormAttributeNameFuck' => $this->model->exampleField1,
+                'tagsArray' => ArrayHelper::map($this->model->tags, 'name', 'name'),
             ]);
         }
-    }*/
+    }
 
     public function afterValidate()
     {
         parent::afterValidate();
-
-        //TODO: тут валидируй кол-во тегов
-        //TODO: если из формы пришло больше 5 тегов, $this->addError('tagsArray', sprintf('Новость может содержать не больше %d тегов', self::MAX_TAGS_COUNT))
+        //check count of tags
+        if (count($this->tagsArray) > self::MAX_TAGS_COUNT) {
+            //set Error message
+            $this->addError('tagsArray', sprintf('Новость может содержать не больше %d тегов', self::MAX_TAGS_COUNT));
+        }
     }
 
     public function save($runValidation = true, $attributeNames = null)
@@ -125,7 +128,7 @@ class NewsForm extends BaseForm
 
         if ($runValidation) {
             //validate form attributes. If attributes aren't valid then to break saving and return false
-            if (!$this->validate($attributeNames)) {
+            if ( ! $this->validate($attributeNames)) {
                 return false;
             }
         }
@@ -159,15 +162,14 @@ class NewsForm extends BaseForm
         }
 
         //save AR model
-        if (!$this->model->save($runValidation, $attributeNames)) {
-
-            //TODO: тут сохраняй теги.
-            // TODO: то, что касается логики работы формы - пихай в клас формы. В саму модель ActiveRecord должно попадать что-то важное, что должно работать независимо от формы на какой-то странице в админке
-
+        if ( ! $this->model->save($runValidation, $attributeNames)) {
             //get AR model errors and set it to form
             $this->addErrors($this->model->errors);
 
             return false;
+        } else {
+            //if model is saved then add tags to article
+            if ( ! NewsTags::addTagsToNewsByTagsIds($this->model, $this->tagsArray)) { return false; }
         }
 
         return true;

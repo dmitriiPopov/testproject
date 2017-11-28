@@ -5,8 +5,9 @@ use yii\widgets\ListView;
 /**
  * @var $this yii\web\View
  * @var $dataProvider yii\data\ActiveDataProvider
- * @var $categories common\models\Category
- * @var $tags common\models\Tags
+ * @var $categories common\models\Category[]
+ * @var $tags common\models\Tags[]
+ * @var $selectedCategory  common\models\Category
  */
 
 $this->title = 'My Yii Application';
@@ -14,8 +15,16 @@ $this->title = 'My Yii Application';
 ?>
 
 <!-- Header BEGIN -->
-<h1 class="page-header text-justify">News</h1>
+<?php
+    //check selected category
+    if (isset($selectedCategory)) { ?>
+        <h1 class="page-header text-justify">News from category "<?= $selectedCategory->title; ?>"</h1><?php
+    } else { ?>
+        <h1 class="page-header text-justify">News</h1><?php
+    }
+?>
 <!-- Header END -->
+
 
 <!-- List of news BEGIN -->
 <?= ListView::widget([
@@ -40,8 +49,9 @@ $this->title = 'My Yii Application';
 
 <!-- Lists of categories and tags BEGIN -->
 <?= $this->render('_partial/newsHeader', [
-    'categories' => $categories,
-    'tags'       => $tags,
+    'categories'         => $categories,
+    'tags'               => $tags,
+    'selectedCategory'   => $selectedCategory,
 ]); ?>
 <!-- Lists of categories and tags END -->
 
