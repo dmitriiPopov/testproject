@@ -17,14 +17,17 @@ use yii\helpers\Url;
     <!-- Tab with name "All" category BEGIN -->
     <?php
         //check the selected Category is set
-        if(isset($selectedCategory))
-        {
-            ?><a href="<?= Url::to(['site/index']); ?>" class="list-group-item">All</a><?php
-        }else{
+        if (isset($selectedCategory)) : ?>
+
+            <a href="<?= Url::to(['site/index']); ?>" class="list-group-item">All</a>
+
+        <?php
             //highlighting this tab
-            ?><a href="<?= Url::to(['site/index']); ?>" class="list-group-item active">All</a><?php
-        }
-    ?>
+            else: ?>
+
+            <a href="<?= Url::to(['site/index']); ?>" class="list-group-item active">All</a>
+
+    <?php endif; ?>
     <!-- Tab with name "All" category END -->
 
     <!-- Tab with list of categories BEGIN -->

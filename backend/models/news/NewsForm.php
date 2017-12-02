@@ -12,6 +12,7 @@ namespace backend\models\news;
 use common\components\BaseForm;
 use common\models\News;
 use common\models\NewsTags;
+use TheSeer\Tokenizer\Exception;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -161,18 +162,31 @@ class NewsForm extends BaseForm
             }
         }
 
-        //save AR model
-        if ( ! $this->model->save($runValidation, $attributeNames)) {
+        //TODO: здесь очень уместно использовать транзакцию, т.к. нам необходимо чтобы ВСЕ данные были сохранены.
+        $transaction = \Yii::$app->db->beginTransaction();
+        try {
+
+            if (
+                // сохраняем новость
+                $this->model->save($runValidation, $attributeNames) &&
+                // и сохраняем связанные с ней сущности
+                NewsTags::addTagsToNewsByTagsIds($this->model, $this->tagsArray)
+            ) {
+                // если данные были успешно сохранены в разных запросах - подтверждаем транзакцию
+                $transaction->commit();
+                return true;
+            } else {
+                throw new Exception();
+            }
+        } catch (Exception $e) {
+            // если хоть какая-то часть данных не была сохранена, то откатываем сохранение
+            $transaction->rollBack();
             //get AR model errors and set it to form
             $this->addErrors($this->model->errors);
-
-            return false;
-        } else {
-            //if model is saved then add tags to article
-            if ( ! NewsTags::addTagsToNewsByTagsIds($this->model, $this->tagsArray)) { return false; }
         }
 
-        return true;
+
+        return false;
     }
 
 }

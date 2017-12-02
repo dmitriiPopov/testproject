@@ -43,7 +43,14 @@ return [
             'showScriptName'      => false,
             'enableStrictParsing' => true,
             'rules'               => [
-                '/' => 'site/index',
+
+                'news/category/<categoryId:\d>' => 'site/index',
+                'news'                          => 'site/index',
+                '/'                             => 'site/index',
+
+                'article/<id:\d>'               => 'news/view',
+
+
                 '<controller:\w+>/<id:\d+>'=>'<controller>/view',
                 //'<controller:\w+>/<action:\w+>/<id:\d+>'=>'<controller>/view',
                 //'<controller:\w+>/<action:\w+>'=>'<controller>/<action>',

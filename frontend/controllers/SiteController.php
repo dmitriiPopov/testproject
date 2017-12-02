@@ -74,35 +74,32 @@ class SiteController extends Controller
      * Displays homepage.
      * @param integer $categoryId NULL - all news; integer - news for selected category;
      * @return mixed
+     * @throws NotFoundHttpException
      */
     public function actionIndex($categoryId = null)
     {
-        //check category
-        if ($categoryId != null) {
+        //set default query for getting News
+        $query = News::find()
+            ->andWhere(['display' => News::DISPLAY_ON])
+            ->orderBy('published_at DESC');
+        // set default selected category
+        $selectedCategory = null;
 
+
+        //check category if it's set
+        if ($categoryId) {
             //selected category
             $selectedCategory = Category::find()
                 ->andWhere(['id' => $categoryId, 'display' => Category::DISPLAY_ON])
                 ->one();
-
-            //if category not found
-            if ( ! $selectedCategory) {
+            //if category is not found
+            if (!$selectedCategory) {
                 throw new NotFoundHttpException();
             }
-
-            //set query for Data Provider
-            $query            = News::find()
-                ->andWhere(['category_id' => $categoryId,'display' => News::DISPLAY_ON])
-                ->orderBy('published_at DESC');
-        } else {
-
-            $selectedCategory = null;
-
-            //set query for Data Provider
-            $query            = News::find()
-                ->andWhere(['display' => News::DISPLAY_ON])
-                ->orderBy('published_at DESC');
+            // add conditions with category ID
+            $query->andWhere(['category_id' => $selectedCategory->id]);
         }
+
 
         //List of news
         $dataProvider = new ActiveDataProvider([
@@ -112,10 +109,12 @@ class SiteController extends Controller
             ],
         ]);
 
+
         //array of categories
         $categories = Category::find()->andWhere(['display' => Category::DISPLAY_ON])->all();
         //array of tags
         $tags       = Tags::find()->andWhere(['display' => Tags::DISPLAY_ON])->all();
+
 
         return $this->render('index', [
             'dataProvider'     => $dataProvider,

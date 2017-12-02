@@ -41,9 +41,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 'filter' => Html::activeDropDownList($searchModel, 'category_id',
                     ArrayHelper::map(News::find()->all(), 'category_id', 'category.title'),
                     [
-                        'prompt' => 'Select',
+                        'prompt' => 'All',
                         'style'  => 'text-align: center; vertical-align: middle;',
-                        'class'  => 'btn btn-info',
+                        'class'  => 'form-control',
                     ]),
             ],
             [
@@ -83,9 +83,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 'filter' => Html::activeDropDownList($searchModel, 'status',
                     ArrayHelper::map(News::find()->all(), 'status', 'status'),
                     [
-                        'prompt' => 'Select',
+                        'prompt' => 'All',
                         'style'  => 'text-align: center; vertical-align: middle;',
-                        'class'  => 'btn btn-info',
+                        'class'  => 'form-control',
                     ]),
             ],
             [
@@ -97,9 +97,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 'filter' => Html::activeDropDownList($searchModel, 'enabled', ArrayHelper::map(News::find()->all(), 'enabled',
                     function ($data) { return $data->enabled ? Yii::t('app', 'Yes') : Yii::t('app', 'No'); }),
                     [
-                        'prompt' => 'Select',
+                        'prompt' => 'All',
                         'style'  => 'text-align: center; vertical-align: middle;',
-                        'class'  => 'btn btn-info',
+                        'class'  => 'form-control',
                     ]),
             ],
             [
@@ -111,9 +111,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 'filter' => Html::activeDropDownList($searchModel, 'display', ArrayHelper::map(News::find()->all(), 'display',
                     function ($data) { return $data->display ? Yii::t('app', 'Yes') : Yii::t('app', 'No'); }),
                     [
-                        'prompt' => 'Select',
+                        'prompt' => 'All',
                         'style'  => 'text-align: center; vertical-align: middle;',
-                        'class'  => 'btn btn-info',
+                        'class'  => 'form-control',
                     ]),
             ],
             [

@@ -46,9 +46,9 @@ $this->params['breadcrumbs'][] = $this->title;
                     ArrayHelper::map(Tags::find()->all(), 'enabled',
                     function ($data) { return $data->enabled ? Yii::t('app', 'Yes') : Yii::t('app', 'No'); }),
                     [
-                        'prompt' => 'Select',
+                        'prompt' => 'All',
                         'style'  => 'text-align: center; vertical-align: middle;',
-                        'class'  => 'btn btn-info',
+                        'class'  => 'form-control',
                     ]),
             ],
             [
@@ -61,9 +61,9 @@ $this->params['breadcrumbs'][] = $this->title;
                     ArrayHelper::map(Tags::find()->all(), 'display',
                     function ($data) { return $data->display ? Yii::t('app', 'Yes') : Yii::t('app', 'No'); }),
                     [
-                        'prompt' => 'Select',
+                        'prompt' => 'All',
                         'style'  => 'text-align: center; vertical-align: middle;',
-                        'class'  => 'btn btn-info',
+                        'class'  => 'form-control',
                     ]),
             ],
             //'created_at',

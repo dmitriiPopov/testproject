@@ -26,31 +26,18 @@ class NewsController extends Controller
     /**
      * Displays article
      * @param integer $id
+     * @return mixed
+     * @throws NotFoundHttpException
      */
     public function actionView($id)
     {
         //get data for selected article (by `id`)
+        /**@var $article News*/
         $article = News::find()->andWhere(['id' => $id, 'display' => News::DISPLAY_ON])->one();
 
         //if it isn't found
-        if ( ! $article) {
+        if (!$article) {
             throw new NotFoundHttpException();
-        }
-
-        //check if category of article is DISPLAY_ON
-        if ($article->category->display) {
-            $selectedCategory = $article->category;
-        } else {
-            $selectedCategory = null;
-        }
-
-        //check if tags of article is DISPLAY_ON
-        if ( ! empty($tagsOfNews = $article->tags)) {
-            foreach ($tagsOfNews as $key => $tag) {
-                if ( ! $tag->display) {
-                    unset($tagsOfNews[$key]);
-                }
-            }
         }
 
         //array of categories
@@ -61,9 +48,9 @@ class NewsController extends Controller
         return $this->render('view', [
             'article'          => $article,
             'categories'       => $categories,
-            'selectedCategory' => $selectedCategory,
+            'selectedCategory' => $article->getCategory()->andWhere(['display' => Category::DISPLAY_ON])->one(),
             'tags'             => $tags,
-            'tagsOfNews'       => $tagsOfNews,
+            'tagsOfNews'       => $article->getTags()->andWhere(['display' => Tags::DISPLAY_ON])->all(),
         ]);
     }
 }

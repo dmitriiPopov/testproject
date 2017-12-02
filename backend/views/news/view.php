@@ -37,9 +37,13 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'tagsArray',
                 'value'     => function ($model) {
-                    return ArrayHelper::map($model->tags, 'name', 'name') ?
-                        implode(', ', ArrayHelper::map($model->tags, 'name', 'name')) :
-                        Yii::t('app', 'Tags not found');
+                    // TODO: неправильно логически. Дважды выполняется тяжелая операция  ArrayHelper::map($model->tags, 'name', 'name'), при том что нам нужно проверить только наличие тегов
+                    //return ArrayHelper::map($model->tags, 'name', 'name') ?
+                        //implode(', ', ArrayHelper::map($model->tags, 'name', 'name')) :
+                        //Yii::t('app', 'Tags not found');
+
+                    // проверяем наличие данных в реляции. А потом уже форматируем.
+                    return !empty($model->tags) ? implode(', ', ArrayHelper::map($model->tags, 'name', 'name')) : Yii::t('app', 'Tags not found');
                 },
             ],
             'status',

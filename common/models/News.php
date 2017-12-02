@@ -23,7 +23,7 @@ use yii\helpers\ArrayHelper;
  * @property string $public_at
  * @property string $published_at
  *
- * @property Category[] $category
+ * @property Category   $category
  * @property Tags[]     $tags
  */
 class News extends \yii\db\ActiveRecord
@@ -163,5 +163,14 @@ class News extends \yii\db\ActiveRecord
         } else {
             return false;
         }
+    }
+
+    /**
+     * @param array $tagsIds
+     * @return bool
+     */
+    public function addTagsByTagsIds($tagsIds = [])
+    {
+        return NewsTags::addTagsToNewsByTagsIds($this, $tagsIds);
     }
 }
