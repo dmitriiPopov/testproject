@@ -162,7 +162,7 @@ class NewsForm extends BaseForm
             }
         }
 
-        //TODO: здесь очень уместно использовать транзакцию, т.к. нам необходимо чтобы ВСЕ данные были сохранены.
+        //create transaction
         $transaction = \Yii::$app->db->beginTransaction();
         try {
 

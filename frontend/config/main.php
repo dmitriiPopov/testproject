@@ -44,17 +44,20 @@ return [
             'enableStrictParsing' => true,
             'rules'               => [
 
-                'news/category/<categoryId:\d>' => 'site/index',
-                'news'                          => 'site/index',
-                '/'                             => 'site/index',
+                'news/category/<categoryId:\d+>/tag/<tagId:\d+>' => 'site/index',
+                'news/category/<categoryId:\d+>'                 => 'site/index',
+                'news/tag/<tagId:\d+>'                           => 'site/index',
+                'news/page/<page:\d+>-<per-page:\d>'             => 'site/index',
+                'news'                                           => 'site/index',
+                '/'                                              => 'site/index',
 
-                'article/<id:\d>'               => 'news/view',
+                'article/<id:\d+>'                               => 'news/view',
 
 
-                '<controller:\w+>/<id:\d+>'=>'<controller>/view',
+                '<controller:\w+>/<id:\d+>'                      => '<controller>/view',
                 //'<controller:\w+>/<action:\w+>/<id:\d+>'=>'<controller>/view',
                 //'<controller:\w+>/<action:\w+>'=>'<controller>/<action>',
-                '<action:\w+>' => 'site/<action>',
+                '<action:\w+>'                                   => 'site/<action>',
             ],
         ],
     ],

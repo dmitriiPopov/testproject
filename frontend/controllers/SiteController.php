@@ -8,13 +8,12 @@ use yii\web\NotFoundHttpException;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
-use yii\data\ActiveDataProvider;
 use frontend\components\forms\LoginForm;
 use frontend\components\forms\PasswordResetRequestForm;
 use frontend\components\forms\ResetPasswordForm;
 use frontend\components\forms\SignupForm;
 use frontend\components\forms\ContactForm;
-use common\models\News;
+use frontend\models\NewsFinder;
 use common\models\Category;
 use common\models\Tags;
 
@@ -73,18 +72,25 @@ class SiteController extends Controller
     /**
      * Displays homepage.
      * @param integer $categoryId NULL - all news; integer - news for selected category;
+     * @param integer $tagId      NULL - all news
      * @return mixed
      * @throws NotFoundHttpException
      */
-    public function actionIndex($categoryId = null)
+    public function actionIndex($categoryId = null, $tagId = null)
     {
-        //set default query for getting News
-        $query = News::find()
-            ->andWhere(['display' => News::DISPLAY_ON])
-            ->orderBy('published_at DESC');
-        // set default selected category
-        $selectedCategory = null;
+        $selectedTag = $selectedCategory = null;
 
+        //check tag if it's set
+        if ($tagId) {
+            //selected tag
+            $selectedTag = Tags::find()
+                ->andWhere(['id' => $tagId, 'display' => Tags::DISPLAY_ON])
+                ->one();
+            //if tag is not found
+            if (!$selectedTag) {
+                throw new NotFoundHttpException();
+            }
+        }
 
         //check category if it's set
         if ($categoryId) {
@@ -96,19 +102,14 @@ class SiteController extends Controller
             if (!$selectedCategory) {
                 throw new NotFoundHttpException();
             }
-            // add conditions with category ID
-            $query->andWhere(['category_id' => $selectedCategory->id]);
         }
 
+        $newsFinder = new NewsFinder();
 
-        //List of news
-        $dataProvider = new ActiveDataProvider([
-            'query'      => $query,
-            'pagination' => [
-                'pageSize' => 4,
-            ],
-        ]);
+        $newsFinder->category = $selectedCategory;
+        $newsFinder->tag      = $selectedTag;
 
+        $dataProvider = $newsFinder->getDataProvider();
 
         //array of categories
         $categories = Category::find()->andWhere(['display' => Category::DISPLAY_ON])->all();
@@ -121,6 +122,7 @@ class SiteController extends Controller
             'categories'       => $categories,
             'tags'             => $tags,
             'selectedCategory' => $selectedCategory,
+            'selectedTag'      => $selectedTag,
         ]);
     }
 

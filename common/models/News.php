@@ -25,6 +25,7 @@ use yii\helpers\ArrayHelper;
  *
  * @property Category   $category
  * @property Tags[]     $tags
+ * @property NewsTags[] $newsTags
  */
 class News extends \yii\db\ActiveRecord
 {
@@ -115,6 +116,14 @@ class News extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Tags::className(), ['id' => 'tag_id'])
             ->viaTable('news_tags', ['news_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getNewsTags()
+    {
+        return $this->hasMany(NewsTags::className(), ['news_id' => 'id']);
     }
 
     /**

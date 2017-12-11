@@ -42,7 +42,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <!-- List of tags of the news -->
             <?php
                 //check is set tagsOfNews
-                if ( ! empty($tagsOfNews)) {
+                if (!empty($tagsOfNews)) {
                     echo $this->render('../site/_partial/newsFooter', [
                         'tagsOfNews' => $tagsOfNews,
                     ]);
@@ -57,6 +57,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'categories'       => $categories,
             'selectedCategory' => $selectedCategory,
             'tags'             => $tags,
+            'tagsOfNews'       => $tagsOfNews,
         ]); ?>
         <!-- End list of categories -->
 

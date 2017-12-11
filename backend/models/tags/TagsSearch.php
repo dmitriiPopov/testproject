@@ -59,9 +59,9 @@ class TagsSearch extends Tags
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
-            'enabled' => $this->enabled,
-            'display' => $this->display,
+            'id'         => $this->id,
+            'enabled'    => $this->enabled,
+            'display'    => $this->display,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ]);
