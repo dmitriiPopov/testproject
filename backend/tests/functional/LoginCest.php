@@ -2,7 +2,9 @@
 
 namespace backend\tests\functional;
 
+// frontend tester is used
 use frontend\tests\FunctionalTester;
+
 use common\fixtures\User as UserFixture;
 
 class LoginCest

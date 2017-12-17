@@ -1,6 +1,7 @@
 <?php
 return [
-    'adminuser' => [
+    //format: unique identifier => [data]
+    'adminuser1' => [
         'username' => 'testuser',
         'auth_key' => 'pfnLsMYovSZZ7zE628BqbEVQptCgyP9v',
         // password: '111111'
