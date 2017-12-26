@@ -26,19 +26,19 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php Pjax::begin(); ?>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
+        'filterModel'  => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
             //'id',
             //'imagefile',
             [
-                'attribute' => 'category_id',
-                'value' => 'category.title',
-                'headerOptions' => ['style' => 'text-align: center; vertical-align: middle;'],
+                'attribute'      => 'category_id',
+                'value'          => 'category.title',
+                'headerOptions'  => ['style' => 'text-align: center; vertical-align: middle;'],
                 'contentOptions' => ['style' => 'text-align: center;'],
-                'filterOptions' => ['style' => 'text-align: center; vertical-align: middle;'],
-                'filter' => Html::activeDropDownList($searchModel, 'category_id',
+                'filterOptions'  => ['style' => 'text-align: center; vertical-align: middle;'],
+                'filter'         => Html::activeDropDownList($searchModel, 'category_id',
                     ArrayHelper::map(News::find()->all(), 'category_id', 'category.title'),
                     [
                         'prompt' => 'All',
@@ -47,40 +47,40 @@ $this->params['breadcrumbs'][] = $this->title;
                     ]),
             ],
             [
-                'attribute' => 'title',
-                'value' => 'title',
-                'headerOptions' => ['style' => 'text-align: center; vertical-align: middle;'],
+                'attribute'      => 'title',
+                'value'          => 'title',
+                'headerOptions'  => ['style' => 'text-align: center; vertical-align: middle;'],
                 'contentOptions' => ['style' => 'white-space: normal;']
             ],
             //'description',
             [
-                'attribute' => 'description',
-                'value' => 'description',
-                'headerOptions' => ['style' => 'text-align: center; vertical-align: middle;'],
+                'attribute'      => 'description',
+                'value'          => 'description',
+                'headerOptions'  => ['style' => 'text-align: center; vertical-align: middle;'],
                 'contentOptions' => ['style' => 'white-space: normal;'],
             ],
-//            [
-//                'attribute'      => 'tagsArr',
-//                'value'          => 'category.title',
-//                'headerOptions'  => ['style' => 'text-align: center; vertical-align: middle;'],
-//                'contentOptions' => ['style' => 'text-align: center;'],
-//                'filterOptions'  => ['style' => 'text-align: center; vertical-align: middle;'],
-//                'filter'         => Html::activeDropDownList($searchModel, 'tagsArr',
-//                    ArrayHelper::map(Tags::find()->andWhere(['enabled' => Tags::ENABLED_ON])->all(), 'id', 'name'),
-//                    [
-//                        'prompt' => 'Select',
-//                        'style'  => 'text-align: center; vertical-align: middle;',
-//                        'class'  => 'btn btn-info',
-//                    ]),
-//            ],
+            [
+                'attribute'      => 'tag_id',
+                'label'          => 'Tags',
+                'headerOptions'  => ['style' => 'text-align: center; vertical-align: middle;'],
+                'contentOptions' => ['style' => 'text-align: center;'],
+                'filterOptions'  => ['style' => 'text-align: center; vertical-align: middle;'],
+                'value'          => function($data) {
+                    $tagNames = [];
+                    foreach ($data->tags as $tag) {
+                        $tagNames[] = ($tag->enabled ? $tag->name : $tag->name." (disabled)");
+                    }
+                    return implode(', ', $tagNames);
+                },
+            ],
             // 'content:ntext',
             [
-                'attribute' => 'status',
-                'value' => 'status',
-                'headerOptions' => ['style' => 'text-align: center; vertical-align: middle;'],
+                'attribute'      => 'status',
+                'value'          => 'status',
+                'headerOptions'  => ['style' => 'text-align: center; vertical-align: middle;'],
                 'contentOptions' => ['style' => 'text-align: center; vertical-align: middle;'],
-                'filterOptions' => ['style' => 'text-align: center; vertical-align: middle;'],
-                'filter' => Html::activeDropDownList($searchModel, 'status',
+                'filterOptions'  => ['style' => 'text-align: center; vertical-align: middle;'],
+                'filter'         => Html::activeDropDownList($searchModel, 'status',
                     ArrayHelper::map(News::find()->all(), 'status', 'status'),
                     [
                         'prompt' => 'All',
@@ -89,12 +89,12 @@ $this->params['breadcrumbs'][] = $this->title;
                     ]),
             ],
             [
-                'attribute' => 'enabled',
-                'value' => function ($data) { return $data->enabled ? Yii::t('app', 'Yes') : Yii::t('app', 'No'); },
-                'headerOptions' => ['style' => 'text-align: center; vertical-align: middle;'],
+                'attribute'      => 'enabled',
+                'value'          => function ($data) { return $data->enabled ? Yii::t('app', 'Yes') : Yii::t('app', 'No'); },
+                'headerOptions'  => ['style' => 'text-align: center; vertical-align: middle;'],
                 'contentOptions' => ['style' => 'text-align: center; vertical-align: middle;'],
-                'filterOptions' => ['style' => 'text-align: center; vertical-align: middle;'],
-                'filter' => Html::activeDropDownList($searchModel, 'enabled', ArrayHelper::map(News::find()->all(), 'enabled',
+                'filterOptions'  => ['style' => 'text-align: center; vertical-align: middle;'],
+                'filter'         => Html::activeDropDownList($searchModel, 'enabled', ArrayHelper::map(News::find()->all(), 'enabled',
                     function ($data) { return $data->enabled ? Yii::t('app', 'Yes') : Yii::t('app', 'No'); }),
                     [
                         'prompt' => 'All',
@@ -103,12 +103,12 @@ $this->params['breadcrumbs'][] = $this->title;
                     ]),
             ],
             [
-                'attribute' => 'display',
-                'value' => function ($data) { return $data->display ? Yii::t('app', 'Yes') : Yii::t('app', 'No'); },
-                'headerOptions' => ['style' => 'text-align: center; vertical-align: middle;'],
+                'attribute'      => 'display',
+                'value'          => function ($data) { return $data->display ? Yii::t('app', 'Yes') : Yii::t('app', 'No'); },
+                'headerOptions'  => ['style' => 'text-align: center; vertical-align: middle;'],
                 'contentOptions' => ['style' => 'text-align: center; vertical-align: middle;'],
-                'filterOptions' => ['style' => 'text-align: center; vertical-align: middle;'],
-                'filter' => Html::activeDropDownList($searchModel, 'display', ArrayHelper::map(News::find()->all(), 'display',
+                'filterOptions'  => ['style' => 'text-align: center; vertical-align: middle;'],
+                'filter'         => Html::activeDropDownList($searchModel, 'display', ArrayHelper::map(News::find()->all(), 'display',
                     function ($data) { return $data->display ? Yii::t('app', 'Yes') : Yii::t('app', 'No'); }),
                     [
                         'prompt' => 'All',
@@ -117,18 +117,18 @@ $this->params['breadcrumbs'][] = $this->title;
                     ]),
             ],
             [
-                'attribute' => 'created_at',
-                'value' => 'created_at',
-                'headerOptions' => ['style' => 'text-align: center; vertical-align: middle;'],
+                'attribute'      => 'created_at',
+                'value'          => 'created_at',
+                'headerOptions'  => ['style' => 'text-align: center; vertical-align: middle;'],
                 'contentOptions' => ['style' => 'text-align: center; vertical-align: middle;'],
-                'filter' => DatePicker::widget([
-                    'model' => $searchModel,
-                    'attribute' => 'created_at',
+                'filter'         => DatePicker::widget([
+                    'model'         => $searchModel,
+                    'attribute'     => 'created_at',
                     'clientOptions' => [
-                        'autoclose' => true,
-                        'format' => 'yyyy-mm-dd',
+                        'autoclose'      => true,
+                        'format'         => 'yyyy-mm-dd',
                         'todayHighlight' => true,
-                        'language' => 'ru'
+                        'language'       => 'ru'
                     ]
                 ])
             ],

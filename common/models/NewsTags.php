@@ -82,15 +82,18 @@ class NewsTags extends \yii\db\ActiveRecord
         if (is_array($tagsIds)) {
             //set tags similar to news
             $oldTags = ArrayHelper::map($news->tags, 'name', 'id');
+            //var_dump($tagsIds);die;
 
             foreach ($tagsIds as $newTag) {
+                //$tag = Tags::find()->andWhere(['name' => $newTag])->andWhere(['enabled' => Tags::ENABLED_ON])->one();
+                //var_dump($tag);die;
                 //check new tag in old_tags array
-                if (isset($oldTags[$newTag])) {
+                if (isset($oldTags[$newTag]) && Tags::find()->andWhere(['name' => $newTag, 'enabled' => Tags::ENABLED_ON])->one()) {
                     //remove from old_tags array
                     unset($oldTags[$newTag]);
                 } else {
                     //if newTag not found in Tags table
-                    if ( ! $tag = Tags::find()->andWhere(['name' => $newTag])->one()) {
+                    if (!$tag = Tags::find()->andWhere(['name' => $newTag])->one()) {
                         //create new tag
                         $tag          = new Tags();
                         //set name new tag
@@ -102,14 +105,14 @@ class NewsTags extends \yii\db\ActiveRecord
                         }
                     }
                     //check instance
-                    if ($tag instanceof Tags) {
+                    if ($tag instanceof Tags && $tag->enabled) {
                         //create new record in news_tags table
                         $newsTags          = new NewsTags();
                         //set params
                         $newsTags->news_id = $news->id;
                         $newsTags->tag_id  = $tag->id;
                         //save record
-                        if ( ! $newsTags->save()) {
+                        if (!$newsTags->save()) {
                             return false;
                         }
                     }

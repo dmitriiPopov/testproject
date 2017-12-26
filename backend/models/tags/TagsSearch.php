@@ -62,11 +62,11 @@ class TagsSearch extends Tags
             'id'         => $this->id,
             'enabled'    => $this->enabled,
             'display'    => $this->display,
-            'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ]);
 
-        $query->andFilterWhere(['like', 'name', $this->name]);
+        $query->andFilterWhere(['like', 'name', $this->name])
+            ->andFilterWhere(['like', 'created_at', $this->created_at]);
 
         return $dataProvider;
     }

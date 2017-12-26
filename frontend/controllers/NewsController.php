@@ -11,6 +11,7 @@ namespace frontend\controllers;
 use common\models\Category;
 use common\models\News;
 use common\models\Tags;
+use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\data\ActiveDataProvider;
@@ -50,7 +51,7 @@ class NewsController extends Controller
             'categories'       => $categories,
             'selectedCategory' => $article->getCategory()->andWhere(['display' => Category::DISPLAY_ON])->one(),
             'tags'             => $tags,
-            'tagsOfNews'       => $article->getTags()->andWhere(['display' => Tags::DISPLAY_ON])->all(),
+            'tagsOfNews'       => ArrayHelper::map($article->getTags()->andWhere(['display' => Tags::DISPLAY_ON])->all(), 'id', 'id'),
         ]);
     }
 }

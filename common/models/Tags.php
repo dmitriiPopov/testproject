@@ -112,4 +112,21 @@ class Tags extends \yii\db\ActiveRecord
     {
         return $this->getNews()->count();
     }
+
+    /**
+     * Method get array all tags names for select2 widget
+     * (if tag is disabled then name of tag -'tagName'-disabled)
+     * @return array
+     */
+    public static function getAllTags()
+    {
+        $allTags = Tags::find()->all();
+        //init data is array
+        $data = array();
+        foreach ($allTags as $tag) {
+            //set array
+            $data[$tag->name] = ($tag->enabled == 1 ? $tag->name : $tag->name.' (disabled)');
+        }
+        return $data;
+    }
 }

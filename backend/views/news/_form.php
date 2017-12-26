@@ -15,6 +15,7 @@ use kartik\select2\Select2;
 /* @var $form yii\widgets\ActiveForm */
 
 //var_dump($formModel->tagsArray);die;
+//var_dump($data);die;
 ?>
 
 <div class="news-form">
@@ -54,8 +55,7 @@ use kartik\select2\Select2;
     ?>
 
     <?= $form->field($formModel, 'tagsArray')->widget(Select2::classname(), [
-            //display 'tags' where enabled
-            'data'              => ArrayHelper::map(Tags::find()->andWhere(['enabled' => Tags::ENABLED_ON])->all(), 'name', 'name'),
+            'data'              => Tags::getAllTags(),
             'options'           => [
                 'placeholder' => 'Select a tags ...',
                 'multiple'    => true,
@@ -65,7 +65,13 @@ use kartik\select2\Select2;
                 'tokenSeparators'    => [',', ' '],
                 'maximumInputLength' => 10
             ],
-        ]);
+            'toggleAllSettings' => [
+                'selectLabel'     => '<i class="glyphicon glyphicon-ok-circle"></i> Tag All',
+                'unselectLabel'   => '<i class="glyphicon glyphicon-remove-circle"></i> Untag All',
+                'selectOptions'   => ['class' => 'text-success'],
+                'unselectOptions' => ['class' => 'text-danger'],
+            ],
+        ])->hint('**You can not enter more '.$formModel::MAX_TAGS_COUNT.' tags');
     ?>
 
     <?= $form->field($formModel, 'status')->dropDownList(News::getStatuses(), ['prompt' => 'Select status']) ?>

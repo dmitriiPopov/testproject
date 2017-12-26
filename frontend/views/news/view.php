@@ -39,17 +39,6 @@ $this->params['breadcrumbs'][] = $this->title;
             </article>
             <!-- End article -->
 
-            <!-- List of tags of the news -->
-            <?php
-                //check is set tagsOfNews
-                if (!empty($tagsOfNews)) {
-                    echo $this->render('../site/_partial/newsFooter', [
-                        'tagsOfNews' => $tagsOfNews,
-                    ]);
-                }
-            ?>
-            <!-- End list of tags of the news -->
-
         </div>
 
         <!-- List of categories -->
