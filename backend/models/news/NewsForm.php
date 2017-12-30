@@ -12,7 +12,7 @@ namespace backend\models\news;
 use common\components\BaseForm;
 use common\models\News;
 use common\models\NewsTags;
-use TheSeer\Tokenizer\Exception;
+use yii\base\Exception;
 use yii\helpers\ArrayHelper;
 
 /**

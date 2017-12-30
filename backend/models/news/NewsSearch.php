@@ -61,21 +61,28 @@ class NewsSearch extends News
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id'           => $this->id,
+            //TODO: а айдишник кстати в админках на разных роектах всегда присутсвует в фильтре - это очень удобно
+            //'id'           => $this->id,
             'category_id'  => $this->category_id,
-            'updated_at'   => $this->updated_at,
-            'public_at'    => $this->public_at,
-            'published_at' => $this->published_at,
         ]);
 
-        $query->andFilterWhere(['like', 'imagefile', $this->imagefile])
-            ->andFilterWhere(['like', 'news.title', $this->title])
+        if (!empty($this->created_at)) {
+            //  TODO: between условие быстрее всего работает с датами в диапазонах и учитывает индекс (тут конечно индекса нет на этом поле, но это тебе инфа на будущее)
+            $query->andFilterWhere([
+                'between',
+                'news.created_at',
+                sprintf('%s 00:00:00', $this->created_at),// `created_at` has 'Y-m-d' format
+                sprintf('%s 23:59:59', $this->created_at)// `created_at` has 'Y-m-d' format
+
+            ]);
+        }
+
+
+        //TODO: убрал неиспользуемые фильтры
+        $query->andFilterWhere(['like', 'news.title', $this->title])
             ->andFilterWhere(['like', 'description', $this->description])
-            ->andFilterWhere(['like', 'content', $this->content])
             ->andFilterWhere(['like', 'status', $this->status])
-            ->andFilterWhere(['like', 'news.enabled', $this->enabled])
-            ->andFilterWhere(['like', 'news.display', $this->display])
-            ->andFilterWhere(['like', 'news.created_at', $this->created_at]);
+            ->andFilterWhere(['like', 'news.display', $this->display]);
 
         return $dataProvider;
     }

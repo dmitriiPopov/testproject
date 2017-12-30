@@ -2,7 +2,7 @@
 
 namespace backend\controllers;
 
-use vova07\imperavi\actions\GetAction;
+//use vova07\imperavi\actions\GetAction;
 use Yii;
 use common\models\News;
 use backend\models\news\NewsSearch;
@@ -34,10 +34,9 @@ class NewsController extends Controller
                 ],
             ],
             'fileget' => [
-                'class' => 'vova07\imperavi\actions\GetAction',
+                'class' => 'vova07\imperavi\actions\GetImagesAction',
                 'url'   => Yii::$app->params['staticBaseUrl'] . '/news/content', // Directory URL address, where files are stored.
                 'path'  => Yii::$app->params['absoluteStaticBasePath'] . '/news/content', // Or absolute path to directory where files are s
-                'type'  => GetAction::TYPE_IMAGES,
             ]
         ];
     }

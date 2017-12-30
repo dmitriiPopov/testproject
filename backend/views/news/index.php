@@ -89,20 +89,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     ]),
             ],
             [
-                'attribute'      => 'enabled',
-                'value'          => function ($data) { return $data->enabled ? Yii::t('app', 'Yes') : Yii::t('app', 'No'); },
-                'headerOptions'  => ['style' => 'text-align: center; vertical-align: middle;'],
-                'contentOptions' => ['style' => 'text-align: center; vertical-align: middle;'],
-                'filterOptions'  => ['style' => 'text-align: center; vertical-align: middle;'],
-                'filter'         => Html::activeDropDownList($searchModel, 'enabled', ArrayHelper::map(News::find()->all(), 'enabled',
-                    function ($data) { return $data->enabled ? Yii::t('app', 'Yes') : Yii::t('app', 'No'); }),
-                    [
-                        'prompt' => 'All',
-                        'style'  => 'text-align: center; vertical-align: middle;',
-                        'class'  => 'form-control',
-                    ]),
-            ],
-            [
                 'attribute'      => 'display',
                 'value'          => function ($data) { return $data->display ? Yii::t('app', 'Yes') : Yii::t('app', 'No'); },
                 'headerOptions'  => ['style' => 'text-align: center; vertical-align: middle;'],
@@ -112,7 +98,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     function ($data) { return $data->display ? Yii::t('app', 'Yes') : Yii::t('app', 'No'); }),
                     [
                         'prompt' => 'All',
-                        'style'  => 'text-align: center; vertical-align: middle;',
+                        'style'  => 'text-align: center; vertical-align: middle; width: 70px',
                         'class'  => 'form-control',
                     ]),
             ],
