@@ -170,7 +170,7 @@ class NewsForm extends BaseForm
                 // сохраняем новость
                 $this->model->save($runValidation, $attributeNames) &&
                 // и сохраняем связанные с ней сущности
-                ($this->tagsArray ? NewsTags::addTagsToNewsByTagsIds($this->model, $this->tagsArray) : true)
+                NewsTags::addTagsToNewsByTagsIds($this->model,($this->tagsArray ? $this->tagsArray : array()))
             ) {
                 // если данные были успешно сохранены в разных запросах - подтверждаем транзакцию
                 $transaction->commit();

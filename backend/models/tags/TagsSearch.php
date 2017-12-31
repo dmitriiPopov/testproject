@@ -59,14 +59,23 @@ class TagsSearch extends Tags
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id'         => $this->id,
+            //'id'         => $this->id,
             'enabled'    => $this->enabled,
             'display'    => $this->display,
-            'updated_at' => $this->updated_at,
+            //'updated_at' => $this->updated_at,
         ]);
 
-        $query->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'created_at', $this->created_at]);
+        if (!empty($this->created_at)) {
+            $query->andFilterWhere([
+                'between',
+                'tags.created_at',
+                sprintf('%s 00:00:00', $this->created_at),// `created_at` has 'Y-m-d' format
+                sprintf('%s 23:59:59', $this->created_at)// `created_at` has 'Y-m-d' format
+
+            ]);
+        }
+
+        $query->andFilterWhere(['like', 'name', $this->name]);
 
         return $dataProvider;
     }
