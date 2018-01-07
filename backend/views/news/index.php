@@ -65,13 +65,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 'headerOptions'  => ['style' => 'text-align: center; vertical-align: middle;'],
                 'contentOptions' => ['style' => 'text-align: center;'],
                 'filterOptions'  => ['style' => 'text-align: center; vertical-align: middle;'],
-//                'filter'         => Html::activeDropDownList($searchModel, 'tag_id',
-//                    ArrayHelper::map(Tags::find()->all(), 'tag_id', 'tags.name'),
-//                    [
-//                        'prompt' => 'All',
-//                        'style'  => 'text-align: center; vertical-align: middle;',
-//                        'class'  => 'form-control',
-//                    ]),
+                'filter'         => Html::activeDropDownList($searchModel, 'tag_id',
+                    ArrayHelper::map(Tags::find()->all(), 'id', 'name'),
+                    [
+                        'prompt' => 'All',
+                        'style'  => 'text-align: center; vertical-align: middle;',
+                        'class'  => 'form-control',
+                    ]),
                 'value'          => function($data) {
                     $tagNames = [];
                     foreach ($data->tags as $tag) {

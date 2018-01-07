@@ -12,13 +12,16 @@ use common\models\News;
  */
 class NewsSearch extends News
 {
+
+    public $tag_id;
+
     /**
      * @inheritdoc
      */
     public function rules()
     {
         return [
-            [['id', 'category_id'], 'integer'],
+            [['id', 'category_id', 'tag_id'], 'integer'],
             [['imagefile', 'title', 'description', 'content', 'status', 'enabled', 'display', 'created_at', 'updated_at', 'public_at', 'published_at'], 'safe'],
         ];
     }
@@ -63,7 +66,7 @@ class NewsSearch extends News
         $query->andFilterWhere([
             //TODO: а айдишник кстати в админках на разных роектах всегда присутсвует в фильтре - это очень удобно
             //'id'           => $this->id,
-            'category_id'  => $this->category_id,
+            'category_id' => $this->category_id,
         ]);
 
         if (!empty($this->created_at)) {
@@ -77,6 +80,16 @@ class NewsSearch extends News
             ]);
         }
 
+        if (!empty($this->tag_id)) {
+
+            $tagId = $this->tag_id;
+
+            $query->joinWith([
+                'newsTags' => function(\yii\db\ActiveQuery $query) use ($tagId) {
+                    $query->andWhere(['news_tags.tag_id' => $tagId]);
+                }
+            ]);
+        }
 
         //TODO: убрал неиспользуемые фильтры
         $query->andFilterWhere(['like', 'news.title', $this->title])
