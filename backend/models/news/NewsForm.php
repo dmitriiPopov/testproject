@@ -11,6 +11,9 @@ namespace backend\models\news;
 
 use common\components\BaseForm;
 use common\models\News;
+use common\models\NewsTags;
+use yii\base\Exception;
+use yii\helpers\ArrayHelper;
 
 /**
  * Class NewsForm
@@ -23,6 +26,9 @@ use common\models\News;
 
 class NewsForm extends BaseForm
 {
+    // max tags count
+    const MAX_TAGS_COUNT = 5;
+
     /**
      * @var string
      */
@@ -68,6 +74,11 @@ class NewsForm extends BaseForm
      */
     public $public_at;
 
+    /**
+     * @var array
+     */
+    public $tagsArray;
+
 
     public function rules()
     {
@@ -75,6 +86,7 @@ class NewsForm extends BaseForm
             [['category_id', 'title', 'description', 'content', 'status'], 'required', 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE]],
             [['title', 'description', 'content', 'public_at'], 'string', 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE]],
             [['category_id', 'enabled', 'display'], 'integer', 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE]],
+            [['tagsArray'], 'safe', 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE]],
         ];
     }
 
@@ -85,11 +97,11 @@ class NewsForm extends BaseForm
     {
         return [
             'category_id' => 'Category',
+            'tagsArray'   => 'Tags'
         ];
     }
 
-    //EXAMPLE
-    /*public function setModel($model, $setAttributes = false)
+    public function setModel($model, $setAttributes = false)
     {
         parent::setModel($model, $setAttributes);
 
@@ -97,10 +109,20 @@ class NewsForm extends BaseForm
         if ($setAttributes) {
             //set model attributes to form attributes with another names
             $this->setAttributes([
-                'specificFormAttributeNameFuck' => $this->model->exampleField1,
+                'tagsArray' => ArrayHelper::map($this->model->tags, 'name', 'name'),
             ]);
         }
-    }*/
+    }
+
+    public function afterValidate()
+    {
+        parent::afterValidate();
+        //check count of tags
+        if (count($this->tagsArray) > self::MAX_TAGS_COUNT) {
+            //set Error message
+            $this->addError('tagsArray', sprintf('Новость может содержать не больше %d тегов', self::MAX_TAGS_COUNT));
+        }
+    }
 
     public function save($runValidation = true, $attributeNames = null)
     {
@@ -140,16 +162,31 @@ class NewsForm extends BaseForm
             }
         }
 
-        //save AR model
-        if (!$this->model->save($runValidation, $attributeNames)) {
+        //create transaction
+        $transaction = \Yii::$app->db->beginTransaction();
+        try {
 
+            if (
+                // сохраняем новость
+                $this->model->save($runValidation, $attributeNames) &&
+                // и сохраняем связанные с ней сущности
+                NewsTags::addTagsToNewsByTagsIds($this->model,($this->tagsArray ? $this->tagsArray : array()))
+            ) {
+                // если данные были успешно сохранены в разных запросах - подтверждаем транзакцию
+                $transaction->commit();
+                return true;
+            } else {
+                throw new Exception();
+            }
+        } catch (Exception $e) {
+            // если хоть какая-то часть данных не была сохранена, то откатываем сохранение
+            $transaction->rollBack();
             //get AR model errors and set it to form
             $this->addErrors($this->model->errors);
-
-            return false;
         }
 
-        return true;
+
+        return false;
     }
 
 }

@@ -58,9 +58,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 'filter' => Html::activeDropDownList($searchModel, 'status', ArrayHelper::map(User::find()->all(), 'status',
                     function ($data) { return $data->status === User::STATUS_ACTIVE ? Yii::t('app', 'Active') : Yii::t('app', 'Deleted'); }),
                     [
-                        'prompt' => 'Select',
+                        'prompt' => 'All',
                         'style'  => 'text-align: center; vertical-align: middle;',
-                        'class'  => 'btn btn-info',
+                        'class'  => 'form-control',
                     ]),
             ],
             [

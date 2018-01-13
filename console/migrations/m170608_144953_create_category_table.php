@@ -32,6 +32,8 @@ class m170608_144953_create_category_table extends Migration
      */
     public function down()
     {
-        $this->dropTable('category');
+        //$this->dropTable('category');
+        echo 'm170608_144953_create_category_table cannot be reverted.\n';
+        return false;
     }
 }

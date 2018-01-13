@@ -6,11 +6,16 @@ use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 use common\models\Category;
 use common\models\News;
+use common\models\Tags;
 use kartik\datetime\DateTimePicker;
+use kartik\select2\Select2;
 
 /* @var $this yii\web\View */
 /* @var $formModel backend\models\news\NewsForm */
 /* @var $form yii\widgets\ActiveForm */
+
+//var_dump($formModel->tagsArray);die;
+//var_dump($data);die;
 ?>
 
 <div class="news-form">
@@ -49,6 +54,26 @@ use kartik\datetime\DateTimePicker;
         ]);
     ?>
 
+    <?= $form->field($formModel, 'tagsArray')->widget(Select2::classname(), [
+            'data'              => Tags::getAllTags(),
+            'options'           => [
+                'placeholder' => 'Select a tags ...',
+                'multiple'    => true,
+            ],
+            'pluginOptions'     => [
+                'tags'               => true,
+                'tokenSeparators'    => [',', ' '],
+                'maximumInputLength' => 10
+            ],
+            'toggleAllSettings' => [
+                'selectLabel'     => '<i class="glyphicon glyphicon-ok-circle"></i> Tag All',
+                'unselectLabel'   => '<i class="glyphicon glyphicon-remove-circle"></i> Untag All',
+                'selectOptions'   => ['class' => 'text-success'],
+                'unselectOptions' => ['class' => 'text-danger'],
+            ],
+        ])->hint('**You can not enter more '.$formModel::MAX_TAGS_COUNT.' tags');
+    ?>
+
     <?= $form->field($formModel, 'status')->dropDownList(News::getStatuses(), ['prompt' => 'Select status']) ?>
 
     <?= $form->field($formModel, 'enabled')->checkbox() ?>
@@ -79,21 +104,3 @@ use kartik\datetime\DateTimePicker;
     <?php ActiveForm::end(); ?>
 
 </div>
-
-<?php
-//JS for enabled and display checkboxes
-//$script = <<< JS
-//
-//    setInterval(function() {
-//      //if enabled is check
-//      if($('#enabled').is(':checked')){
-//        //display checkbox is enable
-//        $('#display').attr('disabled', false);
-//      }else{
-//        //display checkbox is disable and unchecked
-//        $('#display').attr('disabled', true).attr('checked', false);
-//      }
-//    }, 10);
-//JS;
-//$this->registerJs($script);
-?>

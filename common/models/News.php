@@ -4,6 +4,7 @@ namespace common\models;
 
 use Yii;
 use common\components\behaviors\CreatedAtUpdatedAtBehavior;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "news".
@@ -22,7 +23,9 @@ use common\components\behaviors\CreatedAtUpdatedAtBehavior;
  * @property string $public_at
  * @property string $published_at
  *
- * @property Category[] $category
+ * @property Category   $category
+ * @property Tags[]     $tags
+ * @property NewsTags[] $newsTags
  */
 class News extends \yii\db\ActiveRecord
 {
@@ -70,17 +73,17 @@ class News extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'imagefile' => 'Imagefile',
-            'category_id' => 'Category',
-            'title' => 'Title',
-            'description' => 'Description',
-            'content' => 'Content',
-            'status' => 'Status',
-            'enabled' => 'Enabled',
-            'display' => 'Display',
-            'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
-            'public_at' => 'Public At',
+            'imagefile'    => 'Imagefile',
+            'category_id'  => 'Category',
+            'title'        => 'Title',
+            'description'  => 'Description',
+            'content'      => 'Content',
+            'status'       => 'Status',
+            'enabled'      => 'Enabled',
+            'display'      => 'Display',
+            'created_at'   => 'Created At',
+            'updated_at'   => 'Updated At',
+            'public_at'    => 'Public At',
             'published_at' => 'Published At',
         ];
     }
@@ -107,6 +110,23 @@ class News extends \yii\db\ActiveRecord
     }
 
     /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTags()
+    {
+        return $this->hasMany(Tags::className(), ['id' => 'tag_id'])
+            ->viaTable('news_tags', ['news_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getNewsTags()
+    {
+        return $this->hasMany(NewsTags::className(), ['news_id' => 'id']);
+    }
+
+    /**
      * Return statuses with labels
      * @param array $params
      * @return array
@@ -115,8 +135,8 @@ class News extends \yii\db\ActiveRecord
     {
         return [
             self::STATUS_NEW       => Yii::t('app', 'New'),
-            self::STATUS_PUBLICATE => Yii::t('app', 'publicate'),
-            self::STATUS_PUBLISHED => Yii::t('app', 'published'),
+            self::STATUS_PUBLICATE => Yii::t('app', 'Publicate'),
+            self::STATUS_PUBLISHED => Yii::t('app', 'Published'),
         ];
     }
 
@@ -138,5 +158,28 @@ class News extends \yii\db\ActiveRecord
         }
 
         return false;
+    }
+
+    /**
+     * @return bool
+     */
+    public function beforeDelete()
+    {
+        if (parent::beforeDelete()) {
+            //delete all records belonging to the identifier from News_tags table
+            NewsTags::deleteAll(['news_id' => $this->id]);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * @param array $tagsIds
+     * @return bool
+     */
+    public function addTagsByTagsIds($tagsIds = [])
+    {
+        return NewsTags::addTagsToNewsByTagsIds($this, $tagsIds);
     }
 }

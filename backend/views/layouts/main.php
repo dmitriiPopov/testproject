@@ -38,6 +38,7 @@ AppAsset::register($this);
         ['label' => 'Home', 'url' => ['/site/index']],
         ['label' => 'User', 'url' => ['/user/index']],
         ['label' => 'Category', 'url' => ['/category/index']],
+        ['label' => 'Tags', 'url' => ['/tags/index']],
         ['label' => 'News', 'url' => ['/news/index']],
     ];
     if (Yii::$app->user->isGuest) {

@@ -40,6 +40,8 @@ class m170608_201452_create_news_table extends Migration
      */
     public function down()
     {
-        $this->dropTable('news');
+        //$this->dropTable('news');
+        echo 'm170608_201452_create_news_table cannot be reverted.\n';
+        return false;
     }
 }

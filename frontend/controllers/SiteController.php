@@ -4,17 +4,18 @@ namespace frontend\controllers;
 use Yii;
 use yii\base\InvalidParamException;
 use yii\web\BadRequestHttpException;
+use yii\web\NotFoundHttpException;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
-use yii\data\ActiveDataProvider;
 use frontend\components\forms\LoginForm;
 use frontend\components\forms\PasswordResetRequestForm;
 use frontend\components\forms\ResetPasswordForm;
 use frontend\components\forms\SignupForm;
 use frontend\components\forms\ContactForm;
-use common\models\News;
+use frontend\models\NewsFinder;
 use common\models\Category;
+use common\models\Tags;
 
 /**
  * Site controller
@@ -70,26 +71,58 @@ class SiteController extends Controller
 
     /**
      * Displays homepage.
+     * @param integer $categoryId NULL - all news; integer - news for selected category;
+     * @param integer $tagId      NULL - all news
      * @return mixed
+     * @throws NotFoundHttpException
      */
-    public function actionIndex()
+    public function actionIndex($categoryId = null, $tagId = null)
     {
-        //List of news
-        $dataProvider = new ActiveDataProvider([
-            'query' => News::find()
-                ->andWhere(['display' => News::DISPLAY_ON])
-                ->orderBy('published_at DESC'),
-            'pagination' => [
-                'pageSize' => 4,
-            ],
-        ]);
+        $selectedTag = $selectedCategory = null;
+
+        //check tag if it's set
+        if ($tagId) {
+            //selected tag
+            $selectedTag = Tags::find()
+                ->andWhere(['id' => $tagId, 'display' => Tags::DISPLAY_ON])
+                ->one();
+            //if tag is not found
+            if (!$selectedTag) {
+                throw new NotFoundHttpException();
+            }
+        }
+
+        //check category if it's set
+        if ($categoryId) {
+            //selected category
+            $selectedCategory = Category::find()
+                ->andWhere(['id' => $categoryId, 'display' => Category::DISPLAY_ON])
+                ->one();
+            //if category is not found
+            if (!$selectedCategory) {
+                throw new NotFoundHttpException();
+            }
+        }
+
+        $newsFinder = new NewsFinder();
+
+        $newsFinder->category = $selectedCategory;
+        $newsFinder->tag      = $selectedTag;
+
+        $dataProvider = $newsFinder->getDataProvider();
 
         //array of categories
         $categories = Category::find()->andWhere(['display' => Category::DISPLAY_ON])->all();
+        //array of tags
+        $tags       = Tags::find()->andWhere(['display' => Tags::DISPLAY_ON])->all();
+
 
         return $this->render('index', [
-            'dataProvider' => $dataProvider,
-            'categories'   => $categories,
+            'dataProvider'     => $dataProvider,
+            'categories'       => $categories,
+            'tags'             => $tags,
+            'selectedCategory' => $selectedCategory,
+            'selectedTag'      => $selectedTag,
         ]);
     }
 

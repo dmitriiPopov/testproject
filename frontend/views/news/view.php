@@ -5,10 +5,15 @@
  * @var $article
  * @var $categories
  * @var $selectedCategory
+ * @var $tags
+ * @var $tagsOfNews[]
  */
 
 $this->title = $article->title;
-$this->params['breadcrumbs'][] = ['label' => $article->category->title, 'url' => ['news/category', 'id' => $article->category->id]];
+//check is set selected category DISPLAY ON
+if (isset($selectedCategory)) {
+    $this->params['breadcrumbs'][] = ['label' => $selectedCategory->title, 'url' => ['site/index', 'categoryId' => $selectedCategory->id]];
+}
 $this->params['breadcrumbs'][] = $this->title;
 
 ?>
@@ -40,6 +45,8 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= $this->render('../site/_partial/newsHeader', [
             'categories'       => $categories,
             'selectedCategory' => $selectedCategory,
+            'tags'             => $tags,
+            'tagsOfNews'       => $tagsOfNews,
         ]); ?>
         <!-- End list of categories -->
 

@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\ArrayHelper;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
@@ -33,15 +34,25 @@ $this->params['breadcrumbs'][] = $this->title;
             'category.title',
             'title',
             'description',
-            //'content:ntext',
+            [
+                'attribute' => 'tagsArray',
+                'value'     => function ($model) {
+                    // проверяем наличие данных в реляции. А потом уже форматируем.
+                    return !empty($model->tags) ? implode(', ', ArrayHelper::map($model->tags, 'name', 'name')) : Yii::t('app', 'Tags not found');
+                },
+            ],
             'status',
             [
                 'attribute' => 'enabled',
-                'value' => function ($data) { return $data->enabled ? Yii::t('app', 'Yes') : Yii::t('app', 'No'); },
+                'value'     => function ($data) {
+                    return $data->enabled ? Yii::t('app', 'Yes') : Yii::t('app', 'No');
+                },
             ],
             [
                 'attribute' => 'display',
-                'value' => function ($data) { return $data->display ? Yii::t('app', 'Yes') : Yii::t('app', 'No'); },
+                'value'     => function ($data) {
+                    return $data->display ? Yii::t('app', 'Yes') : Yii::t('app', 'No');
+                },
             ],
 
             'content:raw',

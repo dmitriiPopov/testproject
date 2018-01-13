@@ -2,7 +2,7 @@
 
 namespace backend\controllers;
 
-use vova07\imperavi\actions\GetAction;
+//use vova07\imperavi\actions\GetAction;
 use Yii;
 use common\models\News;
 use backend\models\news\NewsSearch;
@@ -16,11 +16,12 @@ use yii\filters\VerbFilter;
  */
 class NewsController extends Controller
 {
-
-    // DefaultController.php
+    /**
+     * @return array
+     *
+     */
     public function actions()
     {
-        //var_dump(Yii::$app->params['staticBaseUrl']);
         return [
             'fileupload' => [
                 'class'            => 'vova07\imperavi\actions\UploadAction',
@@ -33,10 +34,9 @@ class NewsController extends Controller
                 ],
             ],
             'fileget' => [
-                'class' => 'vova07\imperavi\actions\GetAction',
+                'class' => 'vova07\imperavi\actions\GetImagesAction',
                 'url'   => Yii::$app->params['staticBaseUrl'] . '/news/content', // Directory URL address, where files are stored.
                 'path'  => Yii::$app->params['absoluteStaticBasePath'] . '/news/content', // Or absolute path to directory where files are s
-                'type'  => GetAction::TYPE_IMAGES,
             ]
         ];
     }
@@ -48,7 +48,7 @@ class NewsController extends Controller
     {
         return [
             'verbs' => [
-                'class' => VerbFilter::className(),
+                'class'   => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['POST'],
                 ],
@@ -62,11 +62,11 @@ class NewsController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new NewsSearch();
+        $searchModel  = new NewsSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
-            'searchModel' => $searchModel,
+            'searchModel'  => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
     }
@@ -111,9 +111,14 @@ class NewsController extends Controller
      */
     public function actionUpdate($id)
     {
+        // TODO: один раз запрашивается запись о новости. Незачем делать одинаковые запросы, если они отдают одну и ту же ниформацию.
+        $model = $this->findModel($id);
+
         $formModel = new NewsForm(['scenario' => NewsForm::SCENARIO_UPDATE]);
 
-        $formModel->setModel($this->findModel($id), true);
+        $formModel->setModel($model, true);
+
+        // TODO: всякие флеш месседжи и запросы к сессии должны быть тут
 
         if ($formModel->load(Yii::$app->request->post()) && $formModel->save()) {
             return $this->redirect(['view', 'id' => $formModel->model->id]);
