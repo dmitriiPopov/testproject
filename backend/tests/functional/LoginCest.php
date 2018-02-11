@@ -2,8 +2,7 @@
 
 namespace backend\tests\functional;
 
-// frontend tester is used
-use frontend\tests\FunctionalTester;
+use backend\tests\FunctionalTester;
 
 use common\fixtures\User as UserFixture;
 
