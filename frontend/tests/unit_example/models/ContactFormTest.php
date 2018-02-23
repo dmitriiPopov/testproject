@@ -11,10 +11,10 @@ class ContactFormTest extends \Codeception\Test\Unit
         $model = new ContactForm();
 
         $model->attributes = [
-            'name' => 'Tester',
-            'email' => 'tester@example.com',
+            'name'    => 'Tester',
+            'email'   => 'tester@example.com',
             'subject' => 'very important letter subject',
-            'body' => 'body of current message',
+            'body'    => 'body of current message',
         ];
 
         expect_that($model->sendEmail('admin@example.com'));
