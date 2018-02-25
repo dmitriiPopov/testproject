@@ -4,3 +4,4 @@ modules:
     enabled:
         - Yii2:
             part: fixtures
+            cleanup: false #need for skipping transaction errors in tests

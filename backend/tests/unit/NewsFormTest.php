@@ -3,13 +3,17 @@
 namespace backend\tests\unit;
 
 use backend\models\news\NewsForm;
+use common\fixtures\CategoryFixture;
 use common\fixtures\NewsFixture;
 use common\fixtures\NewsTagsFixture;
 use common\fixtures\TagsFixture;
+use common\models\News;
 
 
 /**
  * News form test
+ *
+ * TODO: https://codeception.com/docs/05-UnitTests - полезная официальная документация
  */
 class NewsFormTest extends \Codeception\Test\Unit
 {
@@ -21,78 +25,65 @@ class NewsFormTest extends \Codeception\Test\Unit
     public function _before()
     {
         $this->tester->haveFixtures([
-            'news'     => [
-                'class'    => NewsFixture::className(),
-                'dataFile' => codecept_data_dir() . 'news_data.php'
+            //TODO: создаем записи в таблицах в порядке их приоритета. Вначале то, что нужно для связей, а уже после них записи со связями
+            'category'     => [
+                'class'    => CategoryFixture::className(),
+                'dataFile' => codecept_data_dir() . 'category_data.php'
             ],
             'tags'     => [
                 'class'    => TagsFixture::className(),
                 'dataFile' => codecept_data_dir() . 'tags_data.php'
             ],
-//            'tagsNews' => [
-//                'class'    => NewsTagsFixture::className(),
-//                'dataFile' => codecept_data_dir() . 'news_tags_data.php'
-//            ]
+            'news'     => [
+                'class'    => NewsFixture::className(),
+                'dataFile' => codecept_data_dir() . 'news_data.php'
+            ],
+            'news_tags'     => [
+                'class'    => NewsTagsFixture::className(),
+                'dataFile' => codecept_data_dir() . 'news_tags_data.php'
+            ],
         ]);
     }
 
-    public function testStatusValidation()
+    /**
+     * //TODO: если хочешь првоерить сохранение новости с разными значениями (категория, тайтл и т.п. то проверяй сразу все - так это единый процесс СОЗДАНИЯ новости)
+     * Validate Article creation
+     */
+    public function testCreateNews()
     {
-        //create news form
+        //TODO: ВАЖНО ---> заметь, что логика ниже взята по аналогии из \backend\controllers\NewsController::actionCreate(), так как ТЕСТ - это ЭМУЛЯЦИЯ реальной работы
+        // СОЗДАНИЕ новости
         $formModel = new NewsForm(['scenario' => NewsForm::SCENARIO_CREATE]);
-        //change attribute
-        $formModel->setAttributes([
-            'status' => 'wrong_status',
-        ]);
-        //expect wrong message
-        expect('Validation status fault', $formModel->save())->false();
-    }
+        $formModel->setModel(new News());
 
-    public function testTitleValidation()
-    {
-        //create news form
-        $formModel = new NewsForm(['scenario' => NewsForm::SCENARIO_CREATE]);
-        //change attribute
-        $formModel->setAttributes([
-            'title' => '',
-        ]);
-        //expect wrong message
-        expect('Validation title fault', $formModel->save())->false();
-    }
+        //ЭМУЛЯЦИЯ САБМИТА ДАННЫХ ИЗ ФОРМЫ
+        $requestFromHtmlForm = [
+            'category_id' => 1,
+            // TODO: вот пустой title (как у тебя было в твоих предыдущих тестах)
+            'title'       => '',
+            'imagefile'   => '',
+            'description' => 'sadasdasd',
+            'content'     => 'adasdasdasd',
+            'status'      => News::STATUS_NEW,
+            'enabled'     => News::ENABLED_ON,
+            // допустимое количество тегов
+            'tagsArray'   => ['Tag1','Tag2','Tag3','Tag4'],
+        ];
+        //ЭМУЛЯЦИЯ САБМИТА ДАННЫХ ИЗ ФОРМЫ
+        $formModel->setAttributes($requestFromHtmlForm);
 
-    public function testCategoryValidation()
-    {
-        //create news form
-        $formModel = new NewsForm(['scenario' => NewsForm::SCENARIO_CREATE]);
-        //change attribute
-        $formModel->setAttributes([
-            'category_id' => '',
-        ]);
-        //expect wrong message
-        expect('Validation category fault', $formModel->save())->false();
-    }
+        //TODO: вот проверка пустой title (как у тебя было в твоих предыдущих тестах)
+        // не должно сохраниться, так как title - ПУСТОЙ!!!
+        expect('News won\'t be created', $formModel->save())->false();
 
-    public function testDescriptionValidation()
-    {
-        //create news form
-        $formModel = new NewsForm(['scenario' => NewsForm::SCENARIO_CREATE]);
-        //change attribute
-        $formModel->setAttributes([
-            'description' => '',
-        ]);
-        //expect wrong message
-        expect('Validation description fault', $formModel->save())->false();
-    }
+        // задаем навазине новости
+        $formModel->title = 'Теперь название новости не пустое';
 
-    public function testTagsValidation()
-    {
-        //create news form
-        $formModel = new NewsForm(['scenario' => NewsForm::SCENARIO_CREATE]);
-        //change attribute
-        $formModel->setAttributes([
-            'tagsArray' => ['Tag1','Tag2','Tag3','Tag4'],
-        ]);
-        //expect wrong message
-        expect('Validation tags fault', $formModel->validate())->true();
+        // валидируем и сохраняем
+        $isSaved = $formModel->save();
+
+        //TODO: а вот успешная операция в конце
+        // данные мы в форму задали валидные и новость должна провалидироваться и успешно сохраниться!!!
+        expect(sprintf('Form errors: %s', json_encode($formModel->errors)), $isSaved)->true();
     }
 }
