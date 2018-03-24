@@ -26,19 +26,19 @@ class NewsFormTest extends \Codeception\Test\Unit
     {
         $this->tester->haveFixtures([
             //TODO: создаем записи в таблицах в порядке их приоритета. Вначале то, что нужно для связей, а уже после них записи со связями
-            'category'     => [
+            'category'  => [
                 'class'    => CategoryFixture::className(),
                 'dataFile' => codecept_data_dir() . 'category_data.php'
             ],
-            'tags'     => [
+            'tags'      => [
                 'class'    => TagsFixture::className(),
                 'dataFile' => codecept_data_dir() . 'tags_data.php'
             ],
-            'news'     => [
+            'news'      => [
                 'class'    => NewsFixture::className(),
                 'dataFile' => codecept_data_dir() . 'news_data.php'
             ],
-            'news_tags'     => [
+            'news_tags' => [
                 'class'    => NewsTagsFixture::className(),
                 'dataFile' => codecept_data_dir() . 'news_tags_data.php'
             ],
@@ -66,18 +66,21 @@ class NewsFormTest extends \Codeception\Test\Unit
             'content'     => 'adasdasdasd',
             'status'      => News::STATUS_NEW,
             'enabled'     => News::ENABLED_ON,
-            // допустимое количество тегов
-            'tagsArray'   => ['Tag1','Tag2','Tag3','Tag4'],
+            // превышающее допустимое количество тегов
+            'tagsArray'   => ['Tag1','Tag2','Tag3','Tag4','Tag5','Tag6'],
         ];
+
         //ЭМУЛЯЦИЯ САБМИТА ДАННЫХ ИЗ ФОРМЫ
         $formModel->setAttributes($requestFromHtmlForm);
 
         //TODO: вот проверка пустой title (как у тебя было в твоих предыдущих тестах)
         // не должно сохраниться, так как title - ПУСТОЙ!!!
-        expect('News won\'t be created', $formModel->save())->false();
+        expect('News won\'t be created ', $formModel->save())->false();
 
         // задаем навазине новости
-        $formModel->title = 'Теперь название новости не пустое';
+        $formModel->title     = 'Теперь название новости не пустое';
+        // задаем допустимое количество тегов
+        $formModel->tagsArray = ['Tag1','Tag2','Tag3'];
 
         // валидируем и сохраняем
         $isSaved = $formModel->save();
