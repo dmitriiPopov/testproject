@@ -3,6 +3,7 @@
 namespace backend\tests\unit;
 
 use backend\models\news\NewsForm;
+
 use common\fixtures\CategoryFixture;
 use common\fixtures\NewsFixture;
 use common\fixtures\NewsTagsFixture;
@@ -10,10 +11,10 @@ use common\fixtures\TagsFixture;
 use common\models\News;
 
 
+
 /**
  * News form test
  *
- * TODO: https://codeception.com/docs/05-UnitTests - полезная официальная документация
  */
 class NewsFormTest extends \Codeception\Test\Unit
 {
@@ -25,7 +26,6 @@ class NewsFormTest extends \Codeception\Test\Unit
     public function _before()
     {
         $this->tester->haveFixtures([
-            //TODO: создаем записи в таблицах в порядке их приоритета. Вначале то, что нужно для связей, а уже после них записи со связями
             'category'  => [
                 'class'    => CategoryFixture::className(),
                 'dataFile' => codecept_data_dir() . 'category_data.php'
@@ -46,12 +46,10 @@ class NewsFormTest extends \Codeception\Test\Unit
     }
 
     /**
-     * //TODO: если хочешь првоерить сохранение новости с разными значениями (категория, тайтл и т.п. то проверяй сразу все - так это единый процесс СОЗДАНИЯ новости)
-     * Validate Article creation
+     * Validate Article's creation
      */
-    public function testCreateNews()
+    public function testCreateArticle()
     {
-        //TODO: ВАЖНО ---> заметь, что логика ниже взята по аналогии из \backend\controllers\NewsController::actionCreate(), так как ТЕСТ - это ЭМУЛЯЦИЯ реальной работы
         // СОЗДАНИЕ новости
         $formModel = new NewsForm(['scenario' => NewsForm::SCENARIO_CREATE]);
         $formModel->setModel(new News());
@@ -59,7 +57,6 @@ class NewsFormTest extends \Codeception\Test\Unit
         //ЭМУЛЯЦИЯ САБМИТА ДАННЫХ ИЗ ФОРМЫ
         $requestFromHtmlForm = [
             'category_id' => 1,
-            // TODO: вот пустой title (как у тебя было в твоих предыдущих тестах)
             'title'       => '',
             'imagefile'   => '',
             'description' => 'sadasdasd',
@@ -73,20 +70,61 @@ class NewsFormTest extends \Codeception\Test\Unit
         //ЭМУЛЯЦИЯ САБМИТА ДАННЫХ ИЗ ФОРМЫ
         $formModel->setAttributes($requestFromHtmlForm);
 
-        //TODO: вот проверка пустой title (как у тебя было в твоих предыдущих тестах)
         // не должно сохраниться, так как title - ПУСТОЙ!!!
         expect('News won\'t be created ', $formModel->save())->false();
 
         // задаем навазине новости
         $formModel->title     = 'Теперь название новости не пустое';
+
+        // не должно сохраниться, так как превышено допустимое количество тегов!!!
+        expect('News won\'t be created ', $formModel->save())->false();
+
         // задаем допустимое количество тегов
         $formModel->tagsArray = ['Tag1','Tag2','Tag3'];
 
         // валидируем и сохраняем
         $isSaved = $formModel->save();
 
-        //TODO: а вот успешная операция в конце
         // данные мы в форму задали валидные и новость должна провалидироваться и успешно сохраниться!!!
         expect(sprintf('Form errors: %s', json_encode($formModel->errors)), $isSaved)->true();
+    }
+
+    /**
+     * Validate Article's updating
+     */
+    public function testUpdateArticle()
+    {
+        //find Article with id=1
+        $model     = News::findOne(1);
+        $formModel = new NewsForm(['scenario' => NewsForm::SCENARIO_UPDATE]);
+        $formModel->setModel($model, true);
+
+        //CHECK DATA
+        //check title
+        $this->assertEquals('Test Article 1', $formModel->title);
+        //check category_id
+        $this->assertEquals(1, $formModel->category_id);
+        //check description
+        $this->assertEquals('Description of Article 1', $formModel->description);
+
+        //CHANGE DATA to FALSE DATA
+        //change title and check
+        $formModel->title = "";
+        $this->assertFalse($formModel->save());
+
+        //change category_id and check
+        $formModel->category_id = 3;
+        $formModel->title       = "Test Article 1 Update";
+        $this->assertFalse($formModel->save());
+
+        //change description and check
+        $formModel->description = "";
+        $formModel->category_id = 2;
+        $this->assertFalse($formModel->save());
+
+        //set true description
+        $formModel->description = "Description of Article 1 Update";
+        //check saving, it's must be TRUE
+        $this->assertTrue($formModel->save());
     }
 }
