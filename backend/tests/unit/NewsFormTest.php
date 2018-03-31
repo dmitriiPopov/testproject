@@ -48,7 +48,7 @@ class NewsFormTest extends \Codeception\Test\Unit
     /**
      * Validate Article's creation
      */
-    public function testCreateArticle()
+    public function testAddingTagsAndCreateArticle()
     {
         // СОЗДАНИЕ новости
         $formModel = new NewsForm(['scenario' => NewsForm::SCENARIO_CREATE]);
@@ -98,14 +98,6 @@ class NewsFormTest extends \Codeception\Test\Unit
         $model     = News::findOne(1);
         $formModel = new NewsForm(['scenario' => NewsForm::SCENARIO_UPDATE]);
         $formModel->setModel($model, true);
-
-        //CHECK DATA
-        //check title
-        $this->assertEquals('Test Article 1', $formModel->title);
-        //check category_id
-        $this->assertEquals(1, $formModel->category_id);
-        //check description
-        $this->assertEquals('Description of Article 1', $formModel->description);
 
         //CHANGE DATA to FALSE DATA
         //change title and check
