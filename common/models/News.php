@@ -75,7 +75,7 @@ class News extends \yii\db\ActiveRecord
             'id' => 'ID',
             'imagefile'    => 'Imagefile',
             'category_id'  => 'Category',
-            'title'        => 'Title',
+            'title'        => 'Article Title',
             'description'  => 'Description',
             'content'      => 'Content',
             'status'       => 'Status',

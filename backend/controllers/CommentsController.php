@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\models\comments\CommentForm;
 use Yii;
 use common\models\Comment;
 use backend\models\comments\CommentsSearch;
@@ -66,15 +67,18 @@ class CommentsController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
+        //init form model instance
+        $formModel = new CommentForm(['scenario' => CommentForm::SCENARIO_UPDATE]);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        $formModel->setModel($this->findModel($id), true);
+
+        if ($formModel->load(Yii::$app->request->post()) && $formModel->save()) {
+            return $this->redirect(['view', 'id' => $formModel->model->id]);
+        } else {
+            return $this->render('update', [
+                'formModel' => $formModel,
+            ]);
         }
-
-        return $this->render('update', [
-            'model' => $model,
-        ]);
     }
 
     /**

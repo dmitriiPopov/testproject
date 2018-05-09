@@ -53,10 +53,10 @@ class Category extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'title' => 'Category Name',
-            'enabled' => 'Enabled',
-            'display' => 'Display',
+            'id'         => 'ID',
+            'title'      => 'Category Name',
+            'enabled'    => 'Enabled',
+            'display'    => 'Display',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];

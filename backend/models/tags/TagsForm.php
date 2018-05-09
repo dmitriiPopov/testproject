@@ -11,7 +11,7 @@ namespace backend\models\tags;
 use common\components\BaseForm;
 
 /**
- * Class CategoryForm
+ * Class TagsForm
  * @package backend\models\tags
  *
  * @property \common\models\Tags $model

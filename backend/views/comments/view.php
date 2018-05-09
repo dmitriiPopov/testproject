@@ -7,12 +7,15 @@ use yii\widgets\DetailView;
 /* @var $model common\models\Comment */
 
 $this->title = $model->id;
+//add route to detail view article
+$this->params['breadcrumbs'][] = ['label' => \common\models\News::findOne($model->news_id)->title, 'url' => ['news/view', 'id' => $model->news_id]];
 $this->params['breadcrumbs'][] = ['label' => 'Comments', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->params['breadcrumbs'][] = '#'.$this->title;
+
 ?>
 <div class="comment-view">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <h1><?= Html::encode('Comment #'.$this->title.' on the article "'.\common\models\News::findOne($model->news_id)->title.'"') ?></h1>
 
     <p>
         <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
@@ -29,12 +32,18 @@ $this->params['breadcrumbs'][] = $this->title;
         'model'      => $model,
         'attributes' => [
             'id',
-            'user_id',
-            'news_id',
+            'user.username',
+            'news.title',
             'content:ntext',
-            'enabled',
+            [
+                'attribute' => 'enabled',
+                'value'     => function ($data) { return $data->enabled ? Yii::t('app', 'Yes') : Yii::t('app', 'No'); },
+            ],
             'created_at',
-            'updated_at',
+            [
+                'attribute' => 'updated_at',
+                'value'     => function ($data) { return $data->updated_at ? $data->updated_at : 'Not updated'; },
+            ],
         ],
     ]) ?>
 

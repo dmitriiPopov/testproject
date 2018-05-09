@@ -63,9 +63,19 @@ class CommentsSearch extends Comment
             'user_id'    => $this->user_id,
             'news_id'    => $this->news_id,
             'enabled'    => $this->enabled,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            //'created_at' => $this->created_at,
+            //'updated_at' => $this->updated_at,
         ]);
+
+        if (!empty($this->created_at)) {
+            $query->andFilterWhere([
+                'between',
+                'comments.created_at',
+                sprintf('%s 00:00:00', $this->created_at),// `created_at` has 'Y-m-d' format
+                sprintf('%s 23:59:59', $this->created_at)// `created_at` has 'Y-m-d' format
+
+            ]);
+        }
 
         $query->andFilterWhere(['like', 'content', $this->content]);
 

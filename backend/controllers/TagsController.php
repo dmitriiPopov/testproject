@@ -22,7 +22,7 @@ class TagsController extends Controller
     {
         return [
             'verbs' => [
-                'class' => VerbFilter::className(),
+                'class'   => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['POST'],
                 ],
@@ -36,11 +36,11 @@ class TagsController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new TagsSearch();
+        $searchModel  = new TagsSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
-            'searchModel' => $searchModel,
+            'searchModel'  => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
     }

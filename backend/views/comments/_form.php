@@ -4,30 +4,37 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model common\models\Comment */
+/* @var $formModel backend\models\comments\CommentForm */
 /* @var $form yii\widgets\ActiveForm */
+
 ?>
 
 <div class="comment-form">
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'id')->textInput() ?>
+    <?php //echo $form->field($model, 'id')->textInput() ?>
 
-    <?= $form->field($model, 'user_id')->textInput() ?>
+    <?php echo $form->field($formModel, 'user_id')->textInput([
+            'value'    => \common\models\User::findOne($formModel->model->user_id)->username,
+            'disabled' => true
+    ]) ?>
 
-    <?= $form->field($model, 'news_id')->textInput() ?>
+    <?php echo $form->field($formModel, 'news_id')->textInput([
+            'value'    => \common\models\News::findOne($formModel->model->news_id)->title,
+            'disabled' => true
+    ]) ?>
 
-    <?= $form->field($model, 'content')->textarea(['rows' => 6]) ?>
+    <?= $form->field($formModel, 'content')->textarea(['rows' => 6]) ?>
 
-    <?= $form->field($model, 'enabled')->textInput() ?>
+    <?= $form->field($formModel, 'enabled')->checkbox() ?>
 
-    <?= $form->field($model, 'created_at')->textInput() ?>
+    <?php //echo $form->field($model, 'created_at')->textInput() ?>
 
-    <?= $form->field($model, 'updated_at')->textInput() ?>
+    <?php //echo $form->field($model, 'updated_at')->textInput() ?>
 
     <div class="form-group">
-        <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+        <?= Html::submitButton('Update', ['class' => 'btn btn-primary']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

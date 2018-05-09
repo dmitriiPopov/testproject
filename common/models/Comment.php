@@ -2,6 +2,7 @@
 
 namespace common\models;
 
+use common\components\behaviors\CreatedAtUpdatedAtBehavior;
 use Yii;
 
 /**
@@ -51,12 +52,24 @@ class Comment extends \yii\db\ActiveRecord
     {
         return [
             'id'         => 'ID',
-            'user_id'    => 'User ID',
-            'news_id'    => 'News ID',
+            'user_id'    => 'User',
+            'news_id'    => 'Article',
             'content'    => 'Content',
             'enabled'    => 'Enabled',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function behaviors()
+    {
+        return [
+            'createdAtUpdatedAtBehavior' => [
+                'class' => CreatedAtUpdatedAtBehavior::className(),
+            ]
         ];
     }
 
