@@ -32,6 +32,10 @@ class CommentForm extends BaseForm
     /*
      * @var string
      */
+    public $name;
+    /*
+     * @var string
+     */
     public $content;
     /*
      * @var integer
@@ -42,9 +46,10 @@ class CommentForm extends BaseForm
     public function rules()
     {
         return [
-            [['user_id', 'news_id'], 'required'],
             [['user_id', 'news_id', 'enabled'], 'integer', 'on' => [self::SCENARIO_UPDATE]],
             [['content'], 'string', 'max' => 200, 'on' => [self::SCENARIO_UPDATE]],
+            [['name'], 'string', 'max' => 50, 'on' => [self::SCENARIO_UPDATE]],
+            [['name', 'content'], 'required']
         ];
     }
 

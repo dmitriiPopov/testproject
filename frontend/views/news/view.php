@@ -7,7 +7,16 @@
  * @var $selectedCategory
  * @var $tags
  * @var $tagsOfNews[]
+ * @var $comments yii\data\ActiveDataProvider
+ * @var $commentForm
+ * @var $commentScenario
+ * @var $commentId
  */
+
+use yii\helpers\Html;
+use yii\widgets\Pjax;
+use yii\widgets\ListView;
+use frontend\components\forms\CommentForm;
 
 $this->title = $article->title;
 //check is set selected category DISPLAY ON
@@ -37,7 +46,79 @@ $this->params['breadcrumbs'][] = $this->title;
                     </div>
                 </div>
             </article>
+            <hr>
             <!-- End article -->
+
+    <!-- Comments -->
+
+            <h3>Комментарии</h3>
+            <hr style="border: none; color: grey; background-color: grey; height: 3px;">
+
+            <!-- BEGIN comment's form -->
+            <?php if(Yii::$app->user->isGuest): ?>
+                <div style="font-style: italic; font-size: large; text-align: center;">Чтобы иметь возможность оставлять комментарий, нужно авторизоваться!</div>
+            <?php else: ?>
+                <div class="row">
+                    <div class="comment-form col-lg-12">
+                        <!-- BEGIN form widget -->
+                        <?php $form = \yii\widgets\ActiveForm::begin([
+                                'action'  => [
+                                    //action in CommentsController (create or update)
+                                    'comments/'.$commentScenario,
+                                    //article id
+                                    'articleId' => $article->id,
+                                    //comment id
+                                    'id'        => $commentId ? $commentId : null,
+                                ],
+                                'options' => ['class' => 'form-horizontal contact-form', 'role' => 'form']
+                        ]) ?>
+
+                        <?= $form->field($commentForm, 'name')->textInput(['placeholder' => 'Name'])->label(false); ?>
+
+                        <?= $form->field($commentForm, 'content')->textarea(['placeholder' => 'Message'])->label(false); ?>
+
+                        <div class="form-group">
+                            <?= Html::submitButton( $commentScenario == CommentForm::SCENARIO_CREATE ? 'Оставить комментарий' : 'Обновить комментарий',
+                                [
+                                    'class' => $commentScenario == CommentForm::SCENARIO_CREATE  ? 'btn btn-success' : 'btn btn-primary'
+                                ])
+                            ?>
+                        </div>
+
+                        <?php \yii\widgets\ActiveForm::end(); ?>
+                        <!-- END form widget -->
+                    </div>
+                </div>
+
+            <?php endif; ?>
+            <!-- END comment's form -->
+
+            <!-- List of comments BEGIN -->
+            <?php Pjax::begin(['enablePushState' => false, 'enableReplaceState' => false]); ?>
+
+                <?= ListView::widget([
+                    'dataProvider' => $comments,
+                    'summary'      => false,
+                    'itemView'     => '_partial/commentsList',
+                    'options'      => [
+                        'class' => 'text-center col-lg-12',
+                    ],
+                    'emptyText' => '<p>Комментарии отсутствуют. Вы можете стать первым.</p>',
+                    //pagination options
+                    'pager'        => [
+                        'nextPageLabel'  => '>',
+                        'prevPageLabel'  => '<',
+                        'maxButtonCount' => 3,
+                        'options'        => [
+                            'class' => 'pagination',
+                        ],
+                    ],
+                ]); ?>
+
+            <?php Pjax::end(); ?>
+            <!-- List of comments END -->
+
+    <!-- End comments -->
 
         </div>
 

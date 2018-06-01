@@ -19,7 +19,7 @@ class CommentsSearch extends Comment
     {
         return [
             [['id', 'user_id', 'news_id', 'enabled'], 'integer'],
-            [['content', 'created_at', 'updated_at'], 'safe'],
+            [['name', 'content', 'created_at', 'updated_at'], 'safe'],
         ];
     }
 
@@ -78,6 +78,7 @@ class CommentsSearch extends Comment
         }
 
         $query->andFilterWhere(['like', 'content', $this->content]);
+        $query->andFilterWhere(['like', 'name', $this->name]);
 
         return $dataProvider;
     }

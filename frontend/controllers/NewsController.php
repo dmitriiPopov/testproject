@@ -9,9 +9,12 @@
 namespace frontend\controllers;
 
 use common\models\Category;
+use common\models\Comment;
 use common\models\News;
 use common\models\Tags;
+use frontend\components\forms\CommentForm;
 use yii\helpers\ArrayHelper;
+use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\data\ActiveDataProvider;
@@ -27,10 +30,11 @@ class NewsController extends Controller
     /**
      * Displays article
      * @param integer $id
+     * @param integer $commentId
      * @return mixed
      * @throws NotFoundHttpException
      */
-    public function actionView($id)
+    public function actionView($id, $commentId = null)
     {
         //get data for selected article (by `id`)
         /**@var $article News*/
@@ -45,6 +49,28 @@ class NewsController extends Controller
         $categories = Category::find()->andWhere(['display' => Category::DISPLAY_ON])->all();
         //array of tags
         $tags       = Tags::find()->andWhere(['display' => Tags::DISPLAY_ON])->all();
+        //Data Provider of comments for ListView
+        $comments   = new ActiveDataProvider([
+            'query'      => Comment::find()->andWhere(['news_id' => $id, 'enabled' => Comment::ENABLED_ON])->orderBy('id DESC'),
+            'pagination' => [
+                'pageSize' => 3,
+            ],
+        ]);
+
+       // var_dump($comments);die;
+
+        //check isset id comment's
+        if ($commentId) {
+            //set comment's form data from DB
+            $commentForm = Comment::findOne($commentId);
+            //set scenario
+            $scenario    = CommentForm::SCENARIO_UPDATE;
+        } else {
+            //create new comment's form
+            $commentForm = new CommentForm();
+            //set scenario
+            $scenario    = CommentForm::SCENARIO_CREATE;
+        }
 
         return $this->render('view', [
             'article'          => $article,
@@ -52,6 +78,10 @@ class NewsController extends Controller
             'selectedCategory' => $article->getCategory()->andWhere(['display' => Category::DISPLAY_ON])->one(),
             'tags'             => $tags,
             'tagsOfNews'       => ArrayHelper::map($article->getTags()->andWhere(['display' => Tags::DISPLAY_ON])->all(), 'id', 'id'),
+            'comments'         => $comments,
+            'commentForm'      => $commentForm,
+            'commentScenario'  => $scenario,
+            'commentId'        => $commentId,
         ]);
     }
 }

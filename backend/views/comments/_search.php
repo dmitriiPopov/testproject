@@ -24,6 +24,8 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'news_id') ?>
 
+    <?= $form->field($model, 'name') ?>
+
     <?= $form->field($model, 'content') ?>
 
     <?= $form->field($model, 'enabled') ?>

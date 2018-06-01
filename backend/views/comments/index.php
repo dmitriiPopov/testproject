@@ -28,7 +28,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'headerOptions'  => ['style' => 'text-align: center; vertical-align: middle;'],
             ],
             [
-                'attribute' => 'id',
+                'attribute'      => 'id',
                 'headerOptions'  => ['style' => 'text-align: center; vertical-align: middle;'],
                 'contentOptions' => ['style' => 'text-align: center; vertical-align: middle;'],
             ],
@@ -60,7 +60,16 @@ $this->params['breadcrumbs'][] = $this->title;
                     ]),
                 'filterOptions'  => ['style' => 'text-align: center; vertical-align: middle;'],
             ],
-            'content:ntext',
+            [
+                'attribute'      => 'name',
+                'headerOptions'  => ['style' => 'text-align: center; vertical-align: middle;'],
+                'contentOptions' => ['style' => 'vertical-align: middle;'],
+            ],
+            [
+                'attribute'      => 'content',
+                'headerOptions'  => ['style' => 'text-align: center; vertical-align: middle;'],
+                'contentOptions' => ['style' => 'vertical-align: middle;'],
+            ],
             [
                 'attribute'      => 'enabled',
                 'value'          => function ($data) { return $data->enabled ? Yii::t('app', 'Yes') : Yii::t('app', 'No'); },

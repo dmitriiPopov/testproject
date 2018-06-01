@@ -14,9 +14,10 @@ class m180501_150418_create_comments_table extends Migration
     {
         $this->execute("
             CREATE TABLE IF NOT EXISTS `comments` (
-                    `id` INT(10) UNSIGNED NOT NULL,
+                    `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
                     `user_id` INT(11) NOT NULL,
                     `news_id` INT(10) UNSIGNED NOT NULL,
+                    `name` VARCHAR(50) NOT NULL DEFAULT '',
                     `content` TEXT NULL DEFAULT NULL,
                     `enabled` TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',
                     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,

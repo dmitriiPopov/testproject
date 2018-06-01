@@ -25,6 +25,8 @@ use yii\widgets\ActiveForm;
             'disabled' => true
     ]) ?>
 
+    <?= $form->field($formModel, 'name')->textInput() ?>
+
     <?= $form->field($formModel, 'content')->textarea(['rows' => 6]) ?>
 
     <?= $form->field($formModel, 'enabled')->checkbox() ?>

@@ -11,6 +11,7 @@ use Yii;
  * @property int $id
  * @property int $user_id
  * @property int $news_id
+ * @property string $name
  * @property string $content
  * @property int $enabled
  * @property string $created_at
@@ -21,6 +22,8 @@ use Yii;
  */
 class Comment extends \yii\db\ActiveRecord
 {
+    const ENABLED_ON  = 1;
+    const ENABLED_OFF = 0;
     /**
      * @inheritdoc
      */
@@ -35,8 +38,9 @@ class Comment extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id', 'user_id', 'news_id'], 'required'],
+            [['user_id', 'news_id'], 'required'],
             [['id', 'user_id', 'news_id', 'enabled'], 'integer'],
+            [['name'], 'string', 'max' => 50],
             [['content'], 'string'],
             [['created_at', 'updated_at'], 'safe'],
             [['id'], 'unique'],
@@ -54,6 +58,7 @@ class Comment extends \yii\db\ActiveRecord
             'id'         => 'ID',
             'user_id'    => 'User',
             'news_id'    => 'Article',
+            'name'       => 'Name',
             'content'    => 'Content',
             'enabled'    => 'Enabled',
             'created_at' => 'Created At',

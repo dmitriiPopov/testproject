@@ -34,6 +34,7 @@ $this->params['breadcrumbs'][] = '#'.$this->title;
             'id',
             'user.username',
             'news.title',
+            'name:ntext',
             'content:ntext',
             [
                 'attribute' => 'enabled',
