@@ -27,12 +27,12 @@ class m180501_150418_create_comments_table extends Migration
                 INDEX `fk_comments_user_idx` (`user_id` ASC),
                 CONSTRAINT `fk_comments_news`
                     FOREIGN KEY (`news_id`)
-                    REFERENCES `testadvanced`.`news` (`id`)
+                    REFERENCES `news` (`id`)
                     ON DELETE NO ACTION
                     ON UPDATE NO ACTION,
                 CONSTRAINT `fk_comments_user`
                     FOREIGN KEY (`user_id`)
-                    REFERENCES `testadvanced`.`user` (`id`)
+                    REFERENCES `user` (`id`)
                     ON DELETE NO ACTION
                     ON UPDATE NO ACTION)
                 ENGINE = InnoDB

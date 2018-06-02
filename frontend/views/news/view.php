@@ -70,7 +70,11 @@ $this->params['breadcrumbs'][] = $this->title;
                                     //comment id
                                     'id'        => $commentId ? $commentId : null,
                                 ],
-                                'options' => ['class' => 'form-horizontal contact-form', 'role' => 'form']
+                                'options' => [
+                                    'class'           => 'form-horizontal contact-form',
+                                    'role'            => 'form',
+                                    'data-comment-id' => $commentId ? $commentId : null,
+                                ]
                         ]) ?>
 
                         <?= $form->field($commentForm, 'name')->textInput(['placeholder' => 'Name'])->label(false); ?>
