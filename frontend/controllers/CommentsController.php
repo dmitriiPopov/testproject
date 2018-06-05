@@ -37,20 +37,31 @@ class CommentsController extends Controller
      */
     public function actionCreate($articleId)
     {
-        //check user
-        if (!Yii::$app->user->isGuest) {
-            //init form model instance
-            $formModel = new CommentForm(['scenario' => CommentForm::SCENARIO_CREATE]);
+        //check is Ajax
+        if(Yii::$app->request->isAjax) {
+            //check user
+            if (!Yii::$app->user->isGuest) {
+                //init form model instance
+                $formModel = new CommentForm(['scenario' => CommentForm::SCENARIO_CREATE]);
 
-            $formModel->setModel(new Comment());
+                $formModel->setModel(new Comment());
 
-            if ($formModel->load(Yii::$app->request->post()) && $formModel->save($articleId)) {
-                //redirect to view article
-                return $this->redirect(['news/view', 'id' => $articleId]);
+                if ($formModel->load(Yii::$app->request->post()) && $formModel->save($articleId)) {
+
+                    return $this->renderPartial('/news/_partial/commentItem', [
+                        //model of COMMENT create
+                        'model' => Comment::find()
+                            ->where(['content' => $formModel->content, 'name' => $formModel->name])
+                            ->orderBy('id DESC')
+                            ->one(),
+                        ]);
+                }
             }
+
+            return false;
         }
 
-        return $this->redirect(['news/view', 'id' => $articleId]);
+        return false;
     }
 
     /**

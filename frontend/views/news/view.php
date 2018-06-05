@@ -74,7 +74,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                     'class'           => 'form-horizontal contact-form',
                                     'role'            => 'form',
                                     'data-comment-id' => $commentId ? $commentId : null,
-                                ]
+                                ],
+                                'id'      => 'commentForm',
                         ]) ?>
 
                         <?= $form->field($commentForm, 'name')->textInput(['placeholder' => 'Name'])->label(false); ?>
@@ -98,14 +99,15 @@ $this->params['breadcrumbs'][] = $this->title;
             <!-- END comment's form -->
 
             <!-- List of comments BEGIN -->
+            <div id="comments" class="col-lg-12">
             <?php Pjax::begin(['enablePushState' => false, 'enableReplaceState' => false]); ?>
 
                 <?= ListView::widget([
                     'dataProvider' => $comments,
                     'summary'      => false,
-                    'itemView'     => '_partial/commentsList',
+                    'itemView'     => '_partial/commentItem',
                     'options'      => [
-                        'class' => 'text-center col-lg-12',
+                        'class' => 'text-center',
                     ],
                     'emptyText' => '<p>Комментарии отсутствуют. Вы можете стать первым.</p>',
                     //pagination options
@@ -120,10 +122,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 ]); ?>
 
             <?php Pjax::end(); ?>
+            </div>
             <!-- List of comments END -->
 
-    <!-- End comments -->
-
+        <!-- End comments -->
         </div>
 
         <!-- List of categories -->
@@ -137,3 +139,27 @@ $this->params['breadcrumbs'][] = $this->title;
 
     </div>
 </div>
+
+<?php $this->registerJs("
+    $(document).on('submit', '#commentForm', function(e) {
+
+         e.preventDefault();
+
+         var data = $(this).serialize();
+//         console.log(data);
+
+         $.ajax({
+              url: '/comments/create?articleId=".$article->id."',
+              type: 'POST',
+              data: data,
+              success: function(responseHtml) {
+        	      $('#comments').prepend(responseHtml);  
+        	      $('#commentForm').trigger('reset');
+              },
+              error: function() {
+                  console.log('Error!');
+              }
+          });
+    })
+", \yii\web\View::POS_END);
+?>
