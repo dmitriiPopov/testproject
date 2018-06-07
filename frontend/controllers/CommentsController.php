@@ -33,35 +33,43 @@ class CommentsController extends Controller
      * Creates a new Comment model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @param integer $articleId
-     * @return mixed
+     *
+     * @return string HTML-string
      */
     public function actionCreate($articleId)
     {
-        //check is Ajax
-        if(Yii::$app->request->isAjax) {
-            //check user
-            if (!Yii::$app->user->isGuest) {
-                //init form model instance
-                $formModel = new CommentForm(['scenario' => CommentForm::SCENARIO_CREATE]);
 
-                $formModel->setModel(new Comment());
+        //TODO: 1) избегай глубокой вложености условий - if внутри if внутри if и так далее. Так нельзя.
+        //TODO: 2) сразу отсекай невалидные варианты и объединяй их в одно условие, если один и тот же результат после условия (как я это сделал ниже)
+        //TODO: 3) пиши информативные комментарии (больше для себя, если это необходимо).
 
-                if ($formModel->load(Yii::$app->request->post()) && $formModel->save($articleId)) {
-
-                    return $this->renderPartial('/news/_partial/commentItem', [
-                        //model of COMMENT create
-                        'model' => Comment::find()
-                            ->where(['content' => $formModel->content, 'name' => $formModel->name])
-                            ->orderBy('id DESC')
-                            ->one(),
-                        ]);
-                }
-            }
-
-            return false;
+        // if request isn't AJAX or user isn't authorized
+        if(!Yii::$app->request->isAjax || Yii::$app->user->isGuest) {
+            // return empty string to ajax-callback function
+            return '';
         }
 
-        return false;
+        //init form model instance
+        $formModel = new CommentForm(['scenario' => CommentForm::SCENARIO_CREATE]);
+
+        // create new instance of Comment model for saving below
+        $formModel->setModel(new Comment());
+
+        // save comment with data from request
+        if ($formModel->load(Yii::$app->request->post()) && $formModel->save($articleId)) {
+            // return html-code of one comment to ajax-callback
+            return $this->renderPartial(
+                '/news/_partial/commentItem',
+                [
+                    // set new comment ot view template
+                    //TODO: тут незачем заново отправлять запрос в Бвзу Данных так, как у тебя же уже проинициализирована и сохранена нужная модель внутри CommentForm
+                    'model' => $formModel->getModel(),
+                ]
+            );
+        }
+
+        // return empty string if comment hasn't been saved
+        return '';
     }
 
     /**
