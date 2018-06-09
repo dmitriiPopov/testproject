@@ -52,9 +52,9 @@ class NewsController extends Controller
         //Data Provider of comments for ListView
         $comments   = new ActiveDataProvider([
             'query'      => Comment::find()->andWhere(['news_id' => $id, 'enabled' => Comment::ENABLED_ON])->orderBy('id DESC'),
-            'pagination' => [
-                'pageSize' => 3,
-            ],
+//            'pagination' => [
+//                'pageSize' => 3,
+//            ],
         ]);
 
        // var_dump($comments);die;

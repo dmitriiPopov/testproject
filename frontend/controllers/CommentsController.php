@@ -38,11 +38,6 @@ class CommentsController extends Controller
      */
     public function actionCreate($articleId)
     {
-
-        //TODO: 1) избегай глубокой вложености условий - if внутри if внутри if и так далее. Так нельзя.
-        //TODO: 2) сразу отсекай невалидные варианты и объединяй их в одно условие, если один и тот же результат после условия (как я это сделал ниже)
-        //TODO: 3) пиши информативные комментарии (больше для себя, если это необходимо).
-
         // if request isn't AJAX or user isn't authorized
         if(!Yii::$app->request->isAjax || Yii::$app->user->isGuest) {
             // return empty string to ajax-callback function
@@ -62,7 +57,6 @@ class CommentsController extends Controller
                 '/news/_partial/commentItem',
                 [
                     // set new comment ot view template
-                    //TODO: тут незачем заново отправлять запрос в Бвзу Данных так, как у тебя же уже проинициализирована и сохранена нужная модель внутри CommentForm
                     'model' => $formModel->getModel(),
                 ]
             );
@@ -70,6 +64,36 @@ class CommentsController extends Controller
 
         // return empty string if comment hasn't been saved
         return '';
+    }
+
+    /**
+     * Send to sever comment(model) and check that
+     * If check is successful, the server will be return comment to commentForm.
+     * @param integer $articleId
+     * @param integer $id
+     * @return mixed
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionUpdating($articleId, $id)
+    {
+        // if request isn't AJAX or user isn't authorized
+        if(!Yii::$app->request->isAjax || Yii::$app->user->isGuest) {
+            // return empty string to ajax-callback function
+            return '';
+        }
+
+        //load model
+        $formModel = $this->findModel($id);
+
+        //check id comment, id article and id user
+        if ($formModel->id == $id && $formModel->news_id == $articleId && $formModel->user_id == Yii::$app->user->id) {
+            //return model JSON
+            return json_encode($formModel);
+        }
+
+        // return empty string if comment hasn't been find
+        return '';
+
     }
 
     /**

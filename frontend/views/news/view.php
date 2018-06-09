@@ -14,8 +14,6 @@
  */
 
 use yii\helpers\Html;
-use yii\widgets\Pjax;
-use yii\widgets\ListView;
 use frontend\components\forms\CommentForm;
 
 $this->title = $article->title;
@@ -61,67 +59,26 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="row">
                     <div class="comment-form col-lg-12">
                         <!-- BEGIN form widget -->
-                        <?php $form = \yii\widgets\ActiveForm::begin([
-                                'action'  => [
-                                    //action in CommentsController (create or update)
-                                    'comments/'.$commentScenario,
-                                    //article id
-                                    'articleId' => $article->id,
-                                    //comment id
-                                    'id'        => $commentId ? $commentId : null,
-                                ],
-                                'options' => [
-                                    'class'           => 'form-horizontal contact-form',
-                                    'role'            => 'form',
-                                    'data-comment-id' => $commentId ? $commentId : null,
-                                ],
-                                'id'      => 'commentForm',
-                        ]) ?>
-
-                        <?= $form->field($commentForm, 'name')->textInput(['placeholder' => 'Name'])->label(false); ?>
-
-                        <?= $form->field($commentForm, 'content')->textarea(['placeholder' => 'Message'])->label(false); ?>
-
-                        <div class="form-group">
-                            <?= Html::submitButton( $commentScenario == CommentForm::SCENARIO_CREATE ? 'Оставить комментарий' : 'Обновить комментарий',
-                                [
-                                    'class' => $commentScenario == CommentForm::SCENARIO_CREATE  ? 'btn btn-success' : 'btn btn-primary'
-                                ])
-                            ?>
-                        </div>
-
-                        <?php \yii\widgets\ActiveForm::end(); ?>
+                        <?= $this->render('_partial/commentForm', [
+                            'article'         => $article,
+                            'commentForm'     => $commentForm,
+                            'commentScenario' => $commentScenario,
+                            'commentId'       => $commentId,
+                        ]); ?>
                         <!-- END form widget -->
                     </div>
                 </div>
 
             <?php endif; ?>
+
             <!-- END comment's form -->
 
             <!-- List of comments BEGIN -->
             <div id="comments" class="col-lg-12">
-            <?php Pjax::begin(['enablePushState' => false, 'enableReplaceState' => false]); ?>
+                <?= $this->render('_partial/commentsList', [
+                    'comments' => $comments,
 
-                <?= ListView::widget([
-                    'dataProvider' => $comments,
-                    'summary'      => false,
-                    'itemView'     => '_partial/commentItem',
-                    'options'      => [
-                        'class' => 'text-center',
-                    ],
-                    'emptyText' => '<p>Комментарии отсутствуют. Вы можете стать первым.</p>',
-                    //pagination options
-                    'pager'        => [
-                        'nextPageLabel'  => '>',
-                        'prevPageLabel'  => '<',
-                        'maxButtonCount' => 3,
-                        'options'        => [
-                            'class' => 'pagination',
-                        ],
-                    ],
                 ]); ?>
-
-            <?php Pjax::end(); ?>
             </div>
             <!-- List of comments END -->
 
@@ -146,7 +103,7 @@ $this->params['breadcrumbs'][] = $this->title;
          e.preventDefault();
 
          var data = $(this).serialize();
-//         console.log(data);
+         console.log(data);
 
          $.ajax({
               url: '/comments/create?articleId=".$article->id."',
@@ -155,11 +112,42 @@ $this->params['breadcrumbs'][] = $this->title;
               success: function(responseHtml) {
         	      $('#comments').prepend(responseHtml);  
         	      $('#commentForm').trigger('reset');
+        	      $('.empty').hide();
               },
               error: function() {
                   console.log('Error!');
               }
           });
-    })
+    });
+    
+    $(document).on('click', 'button.glyphicon-pencil', function(e) {
+    
+        e.preventDefault();
+        
+        //надо ли эти данные?
+        var data = {
+            articleId: $article->id,
+            id: $(this).attr('alt') 
+        }
+        //урл задал как строку, в конце вставляю id комментария спомощью атрибута alt
+        var url = '/comments/updating?articleId=".$article->id."&id=' +$(this).attr('alt');        
+        
+        if (confirm('Are you sure you want to update this item?')) {
+
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: data,
+                success: function(response) { 
+                   //принимаю json и необходимые данные вставляю в форму
+                },
+                error: function() {
+                    console.log('Error!');
+                }
+          });
+        }
+        
+        
+    });
 ", \yii\web\View::POS_END);
 ?>

@@ -23,27 +23,38 @@ use yii\helpers\Html;
         <!-- Check user for buttons delete and update-->
         <?php if (Yii::$app->user->id == $model->user_id) : ?>
 
-            <div class="col-lg-1" style="display: inline-block;">
+            <div>
 
                 <!-- update button-->
-                <?= Html::a('', ['news/view', 'id' => $model->news_id, 'commentId' => $model->id], [
+                <?= Html::button('', [
                     'class' => 'glyphicon glyphicon-pencil',
                     'style' => [
-                        'text-decoration' => 'none',
+                        'background-color' => '#4CAF50', /* Green */
+                        'border'           => 'none',
+                        'color'            => 'white',
+                        'border-radius'    => '2px',
+                        'display'          => 'inline-block',
+                        'padding'          => '5px',
                     ],
                     'data'  => [
-                        'confirm' => 'Are you sure you want to update this item?',
+                        //'confirm' => 'Are you sure you want to update this item?',
                         'method'  => 'post',
                     ],
+                    'alt'   => $model->id,
                 ]) ?>
                 <!-- delete button-->
-                <?= Html::a('', ['comments/delete', 'articleId' => $model->news_id, 'id' => $model->id], [
+                <?= Html::button('', [
                     'class' => 'glyphicon glyphicon-trash',
                     'style' => [
-                        'text-decoration' => 'none',
+                        'background-color' => '#4CAF50', /* Green */
+                        'border'           => 'none',
+                        'color'            => 'white',
+                        'border-radius'    => '2px',
+                        'display'          => 'inline-block',
+                        'padding'          => '5px',
                     ],
                     'data'  => [
-                        'confirm' => 'Are you sure you want to delete this item?',
+//                        'confirm' => 'Are you sure you want to delete this item?',
                         'method'  => 'post',
                     ],
                 ]) ?>
