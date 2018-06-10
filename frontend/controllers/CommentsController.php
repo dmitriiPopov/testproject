@@ -69,31 +69,36 @@ class CommentsController extends Controller
     /**
      * Send to sever comment(model) and check that
      * If check is successful, the server will be return comment to commentForm.
-     * @param integer $articleId
+     * //TODO: зачем тут наи нужен был  articleID?
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdating($articleId, $id)
+    //TODO: та ну нельзя иметь два метода updating и update ))))))) В чем же их разница?)))) не делай так никогда :)))
+    //TODO: ------ тут получай данные комментария и вставляй в форму
+    public function actionOne($id)
     {
+        //TODO: https://stackoverflow.com/questions/28831860/ajax-controller-action-in-yii2
+        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
         // if request isn't AJAX or user isn't authorized
         if(!Yii::$app->request->isAjax || Yii::$app->user->isGuest) {
             // return empty string to ajax-callback function
-            return '';
+            return [];
         }
 
         //load model
-        $formModel = $this->findModel($id);
+        //TODO: зачем ты назвал до этого переменную $formModel? Это же не объект для работы с формой, а модель Comment
+        $model = $this->findModel($id);
 
-        //check id comment, id article and id user
-        if ($formModel->id == $id && $formModel->news_id == $articleId && $formModel->user_id == Yii::$app->user->id) {
-            //return model JSON
-            return json_encode($formModel);
+        // if comment belongs to current user
+        if ($model && $model->user_id == Yii::$app->user->id) {
+            //return comment data
+            return $model->getAttributes();
         }
 
         // return empty string if comment hasn't been find
-        return '';
-
+        return [];
     }
 
     /**
@@ -104,6 +109,7 @@ class CommentsController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
+    //TODO: ------- а тут сохраняй форму (update)
     public function actionUpdate($articleId, $id)
     {
         //check user

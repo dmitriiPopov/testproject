@@ -27,7 +27,7 @@ use yii\helpers\Html;
 
                 <!-- update button-->
                 <?= Html::button('', [
-                    'class' => 'glyphicon glyphicon-pencil',
+                    'class' => 'glyphicon glyphicon-pencil updateComment',
                     'style' => [
                         'background-color' => '#4CAF50', /* Green */
                         'border'           => 'none',
@@ -36,11 +36,8 @@ use yii\helpers\Html;
                         'display'          => 'inline-block',
                         'padding'          => '5px',
                     ],
-                    'data'  => [
-                        //'confirm' => 'Are you sure you want to update this item?',
-                        'method'  => 'post',
-                    ],
-                    'alt'   => $model->id,
+                    'data-id'   => $model->id,
+                    //TODO: зачем ту писал id в alt?
                 ]) ?>
                 <!-- delete button-->
                 <?= Html::button('', [
@@ -53,6 +50,7 @@ use yii\helpers\Html;
                         'display'          => 'inline-block',
                         'padding'          => '5px',
                     ],
+                    // TODO: зачем эта data?
                     'data'  => [
 //                        'confirm' => 'Are you sure you want to delete this item?',
                         'method'  => 'post',

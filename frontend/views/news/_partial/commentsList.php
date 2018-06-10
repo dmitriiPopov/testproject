@@ -1,6 +1,6 @@
 <?php
 
-/*
+/**
  * @var $comments yii\data\ActiveDataProvider
  */
 
@@ -9,7 +9,10 @@ use yii\widgets\ListView;
 
 ?>
 
-<?php Pjax::begin(['enablePushState' => true, 'enableReplaceState' => false]); ?>
+<?php
+//TODO: зачем ты используешь PJAX? мы же договорились его не использовать. Нельзя использовать это не разобравшись с ajax
+//TODO: убрал PJAX
+?>
     <?= ListView::widget([
         'dataProvider' => $comments,
         'summary'      => false,
@@ -28,5 +31,3 @@ use yii\widgets\ListView;
 //            ],
 //        ],
     ]); ?>
-
-<?php Pjax::end(); ?>

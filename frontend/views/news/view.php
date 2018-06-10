@@ -98,6 +98,8 @@ $this->params['breadcrumbs'][] = $this->title;
 </div>
 
 <?php $this->registerJs("
+
+    /* CREATE COMMENT */
     $(document).on('submit', '#commentForm', function(e) {
 
          e.preventDefault();
@@ -119,33 +121,30 @@ $this->params['breadcrumbs'][] = $this->title;
               }
           });
     });
-    
-    $(document).on('click', 'button.glyphicon-pencil', function(e) {
+
+    /* GET COMMENT DATA AND PUT IN FORM */
+    $(document).on('click', '.updateComment', function(e) {
     
         e.preventDefault();
-        
-        //надо ли эти данные?
-        var data = {
-            articleId: $article->id,
-            id: $(this).attr('alt') 
-        }
-        //урл задал как строку, в конце вставляю id комментария спомощью атрибута alt
-        var url = '/comments/updating?articleId=".$article->id."&id=' +$(this).attr('alt');        
-        
-        if (confirm('Are you sure you want to update this item?')) {
 
-            $.ajax({
-                url: url,
-                type: 'POST',
-                data: data,
-                success: function(response) { 
-                   //принимаю json и необходимые данные вставляю в форму
-                },
-                error: function() {
-                    console.log('Error!');
-                }
-          });
-        }
+        var commentId = $(this).attr('data-id');
+
+        $.ajax({
+            url: '/comments/one?id='+commentId,
+            type: 'POST',
+            data: {},
+            dataType: 'json',
+            success: function(jsonResponse) {
+
+                console.log(jsonResponse);
+               //принимаю json и необходимые данные вставляю в форму
+
+            },
+            error: function() {
+                console.log('Error!');
+            }
+      });
+
         
         
     });
