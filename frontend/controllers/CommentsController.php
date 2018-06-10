@@ -69,13 +69,10 @@ class CommentsController extends Controller
     /**
      * Send to sever comment(model) and check that
      * If check is successful, the server will be return comment to commentForm.
-     * //TODO: зачем тут наи нужен был  articleID?
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    //TODO: та ну нельзя иметь два метода updating и update ))))))) В чем же их разница?)))) не делай так никогда :)))
-    //TODO: ------ тут получай данные комментария и вставляй в форму
     public function actionOne($id)
     {
         //TODO: https://stackoverflow.com/questions/28831860/ajax-controller-action-in-yii2
@@ -88,7 +85,6 @@ class CommentsController extends Controller
         }
 
         //load model
-        //TODO: зачем ты назвал до этого переменную $formModel? Это же не объект для работы с формой, а модель Comment
         $model = $this->findModel($id);
 
         // if comment belongs to current user
@@ -104,44 +100,71 @@ class CommentsController extends Controller
     /**
      * Updates an existing Comment model.
      * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $articleId
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    //TODO: ------- а тут сохраняй форму (update)
-    public function actionUpdate($articleId, $id)
+    public function actionUpdate($id)
     {
-        //check user
-        if (!Yii::$app->user->isGuest) {
-            //load model from DB
-            $formModel = $this->findModel($id);
+        // if request isn't AJAX or user isn't authorized
+        if(!Yii::$app->request->isAjax || Yii::$app->user->isGuest) {
+            // return empty string to ajax-callback function
+            return [];
+        }
+
+        $formModel = new CommentForm(['scenario' => CommentForm::SCENARIO_UPDATE]);
+
+        $formModel->setModel($this->findModel($id), true);
+        //set article id for save
+        $articleId = $formModel->model->news_id;
+        // if comment belongs to current user
+        if ($formModel && $formModel->model->user_id == Yii::$app->user->id) {
+
             //load form from post array to model and save to DB
             if ($formModel->load(Yii::$app->request->post()) && $formModel->save($articleId)) {
-                return $this->redirect(['news/view', 'id' => $articleId]);
+                // return html-code of one comment to ajax-callback
+                return $this->renderPartial(
+                    '/news/_partial/commentItem',
+                    [
+                        // set update comment ot view template
+                        'model' => $formModel->getModel(),
+                    ]
+                );
             }
         }
 
-        return $this->redirect(['news/view', 'id' => $articleId]);
+        // return empty string if comment hasn't been saved
+        return '';
     }
 
     /**
      * Deletes an existing Comment model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $articleId
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionDelete($articleId, $id)
+    public function actionDelete($id)
     {
-        //check user
-        if (!Yii::$app->user->isGuest) {
-            //delete from DB
-            $this->findModel($id)->delete();
+        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        //check status for action status and check deleted for comment deleted status
+        $result = ['status' => false, 'deleted' => false];
+
+        // if request isn't AJAX or user isn't authorized
+        if(!Yii::$app->request->isAjax || Yii::$app->user->isGuest) {
+            // return false result
+            return $result;
         }
 
-        return $this->redirect(['news/view', 'id' => $articleId]);
+        //check delete from DB
+        if ($this->findModel($id)->delete()) {
+            //set deleted status on TRUE
+            $result['deleted'] = true;
+        }
+        //set action status on TRUE
+        $result['status'] = true;
+        //return result
+        return $result;
     }
 
     /**

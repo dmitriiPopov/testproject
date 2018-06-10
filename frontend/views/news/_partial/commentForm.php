@@ -34,11 +34,7 @@ use frontend\components\forms\CommentForm;
 <?= $form->field($commentForm, 'content')->textarea(['placeholder' => 'Message'])->label(false); ?>
 
     <div class="form-group">
-        <?= Html::submitButton( $commentScenario == CommentForm::SCENARIO_CREATE ? 'Оставить комментарий' : 'Обновить комментарий',
-            [
-                'class' => $commentScenario == CommentForm::SCENARIO_CREATE  ? 'btn btn-success' : 'btn btn-primary'
-            ])
-        ?>
+        <?= Html::submitButton('Оставить комментарий', ['id' => 'buttonForm','class' => 'btn btn-success']); ?>
     </div>
 
 <?php \yii\widgets\ActiveForm::end(); ?>

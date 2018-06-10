@@ -99,27 +99,51 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <?php $this->registerJs("
 
-    /* CREATE COMMENT */
+    /* CREATE OR UPDATE COMMENT */
     $(document).on('submit', '#commentForm', function(e) {
 
          e.preventDefault();
 
          var data = $(this).serialize();
          console.log(data);
-
-         $.ajax({
-              url: '/comments/create?articleId=".$article->id."',
-              type: 'POST',
-              data: data,
-              success: function(responseHtml) {
-        	      $('#comments').prepend(responseHtml);  
-        	      $('#commentForm').trigger('reset');
-        	      $('.empty').hide();
-              },
-              error: function() {
-                  console.log('Error!');
-              }
-          });
+         
+         /* Create */
+         if ($('#buttonForm').attr('class') == 'btn btn-success') {
+             $.ajax({
+                  url: '/comments/create?articleId=".$article->id."',
+                  type: 'POST',
+                  data: data,
+                  success: function(responseHtml) {
+                      $('#comments').prepend(responseHtml);  
+                      $('#commentForm').trigger('reset');
+                      $('.empty').hide();
+                  },
+                  error: function() {
+                      console.log('Error!');
+                  }
+             });
+         };
+         
+         /* Update */
+         if ($('#buttonForm').attr('class') == 'btn btn-primary') {
+             var commentId = $('#commentForm').attr('data-id');
+             console.log(commentId);
+             $.ajax({
+                  url: '/comments/update?id='+commentId,
+                  type: 'POST',
+                  data: data,
+                  success: function(responseHtml) {
+                      $('div.list-group > div#comment-'+commentId).replaceWith(responseHtml);  
+                      $('#commentForm').trigger('reset');
+                      $('#buttonForm').attr('class', 'btn btn-success');
+                      $('#buttonForm').text('Оставить комментарий');
+                      $('#commentForm').removeAttr('data-id');
+                  },
+                  error: function() {
+                      console.log('Error!');
+                  }
+             });
+         };
     });
 
     /* GET COMMENT DATA AND PUT IN FORM */
@@ -127,26 +151,51 @@ $this->params['breadcrumbs'][] = $this->title;
     
         e.preventDefault();
 
-        var commentId = $(this).attr('data-id');
-
-        $.ajax({
-            url: '/comments/one?id='+commentId,
-            type: 'POST',
-            data: {},
-            dataType: 'json',
-            success: function(jsonResponse) {
-
-                console.log(jsonResponse);
-               //принимаю json и необходимые данные вставляю в форму
-
-            },
-            error: function() {
-                console.log('Error!');
-            }
-      });
-
+        var commentId = $(this).attr('data-id');        
         
+        if (confirm('Are you sure you want to update this item?')) {
+            $.ajax({
+                url: '/comments/one?id='+commentId,
+                type: 'POST',
+                data: {},
+                dataType: 'json',
+                success: function(jsonResponse) {                   
+                    $('#commentform-name').val(jsonResponse['name']);
+                    $('#commentform-content').val(jsonResponse['content']);
+                    $('#commentForm').attr('data-id', commentId);
+                    $('#buttonForm').attr('class', 'btn btn-primary');
+                    $('#buttonForm').text('Изменить комментарий');
+                },
+                error: function() {
+                    console.log('Error!');
+                }
+            });      
+        }
+    });
+    
+    /* DELETE COMMENT */
+    $(document).on('click', '.deleteComment', function(e) {
+    
+        e.preventDefault();
+
+        var commentId = $(this).attr('data-id');        
         
+        if (confirm('Are you sure you want to delete this item?')) {
+            $.ajax({
+                url: '/comments/delete?id='+commentId,
+                type: 'POST',
+                data: {},
+                dataType: 'json',
+                success: function(jsonResponse) {
+                    if (jsonResponse['status'] && jsonResponse['deleted']) {
+                        $('div.list-group > div#comment-'+commentId).hide();
+                    }
+                },
+                error: function() {
+                    console.log('Error!');
+                }
+            });      
+        }
     });
 ", \yii\web\View::POS_END);
 ?>

@@ -20,15 +20,15 @@ use yii\helpers\Html;
             <span style="font-size: small; color: #4c4c4c;"><?= $model->updated_at ? $model->updated_at : $model->created_at; ?></span>
             <div class="content-container"><?= $model->content; ?></div>
         </div>
-        <!-- Check user for buttons delete and update-->
-        <?php if (Yii::$app->user->id == $model->user_id) : ?>
+        <!-- Check USER and TIME(10 min) for buttons delete and update-->
+        <?php if (Yii::$app->user->id == $model->user_id && time() - strtotime($model->updated_at ? $model->updated_at : $model->created_at) < 600) : ?>
 
             <div>
 
                 <!-- update button-->
                 <?= Html::button('', [
-                    'class' => 'glyphicon glyphicon-pencil updateComment',
-                    'style' => [
+                    'class'   => 'glyphicon glyphicon-pencil updateComment',
+                    'style'   => [
                         'background-color' => '#4CAF50', /* Green */
                         'border'           => 'none',
                         'color'            => 'white',
@@ -36,13 +36,12 @@ use yii\helpers\Html;
                         'display'          => 'inline-block',
                         'padding'          => '5px',
                     ],
-                    'data-id'   => $model->id,
-                    //TODO: зачем ту писал id в alt?
+                    'data-id' => $model->id,
                 ]) ?>
                 <!-- delete button-->
                 <?= Html::button('', [
-                    'class' => 'glyphicon glyphicon-trash',
-                    'style' => [
+                    'class'   => 'glyphicon glyphicon-trash deleteComment',
+                    'style'   => [
                         'background-color' => '#4CAF50', /* Green */
                         'border'           => 'none',
                         'color'            => 'white',
@@ -50,11 +49,7 @@ use yii\helpers\Html;
                         'display'          => 'inline-block',
                         'padding'          => '5px',
                     ],
-                    // TODO: зачем эта data?
-                    'data'  => [
-//                        'confirm' => 'Are you sure you want to delete this item?',
-                        'method'  => 'post',
-                    ],
+                    'data-id' => $model->id,
                 ]) ?>
 
             </div>
