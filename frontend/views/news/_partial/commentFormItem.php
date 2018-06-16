@@ -8,7 +8,6 @@
  */
 
 use yii\helpers\Html;
-use frontend\components\forms\CommentForm;
 
 ?>
 

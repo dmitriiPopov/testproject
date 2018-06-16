@@ -51,7 +51,12 @@ class CommentsController extends Controller
         $formModel->setModel(new Comment());
 
         // save comment with data from request
-        if ($formModel->load(Yii::$app->request->post()) && $formModel->save($articleId)) {
+        if ($formModel->load(Yii::$app->request->post()) && $this->findWord($formModel->name)
+            && $this->findWord($formModel->content) && $formModel->save($articleId)) {
+
+            //set 'name' is session
+            $_SESSION['name'] = $formModel->name;
+
             // return html-code of one comment to ajax-callback
             return $this->renderPartial(
                 '/news/_partial/commentItem',
@@ -86,9 +91,11 @@ class CommentsController extends Controller
 
         //load model
         $model = $this->findModel($id);
+        //set apply time for update
+        $checkTime = time() - strtotime($model->updated_at ? $model->updated_at : $model->created_at);
 
         // if comment belongs to current user
-        if ($model && $model->user_id == Yii::$app->user->id) {
+        if ($checkTime < 600 && $model->user_id == Yii::$app->user->id) {
             //return comment data
             return $model->getAttributes();
         }
@@ -121,7 +128,12 @@ class CommentsController extends Controller
         if ($formModel && $formModel->model->user_id == Yii::$app->user->id) {
 
             //load form from post array to model and save to DB
-            if ($formModel->load(Yii::$app->request->post()) && $formModel->save($articleId)) {
+            if ($formModel->load(Yii::$app->request->post()) && $this->findWord($formModel->name)
+                && $this->findWord($formModel->content) && $formModel->save($articleId)) {
+
+                //set 'name' is session
+                $_SESSION['name'] = $formModel->name;
+
                 // return html-code of one comment to ajax-callback
                 return $this->renderPartial(
                     '/news/_partial/commentItem',
@@ -156,8 +168,12 @@ class CommentsController extends Controller
             return $result;
         }
 
+        $model     = $this->findModel($id);
+        //set apply time for delete
+        $checkTime = time() - strtotime($model->updated_at ? $model->updated_at : $model->created_at);
+
         //check delete from DB
-        if ($this->findModel($id)->delete()) {
+        if ($checkTime < 600 && $model->delete()) {
             //set deleted status on TRUE
             $result['deleted'] = true;
         }
@@ -181,5 +197,47 @@ class CommentsController extends Controller
         }
 
         throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+    }
+
+    /**
+     * Finding "BAD" words in the string
+     * If isn't found "BAD" words in the string then return true
+     * @param string $str
+     * @return bool
+     */
+    protected function findWord($str)
+    {
+        //include array with "BAD" words
+        $words = include '../components/helpers/Words.php';
+
+        foreach ($words as $item) {
+
+            //check if there is a "BAD" word in the string
+            if (preg_match("/\b".$item."\b/i", $str)){
+                //if there is
+                return false;
+            }
+
+        }
+
+        //if there isn't found "BAD" words in the string
+        return true;
+    }
+
+    /**
+     * Get "Name" value from session
+     * @return mixed
+     */
+    public function actionTwo()
+    {
+        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+        // if request isn't AJAX or user isn't authorized
+        if(!Yii::$app->request->isAjax || Yii::$app->user->isGuest) {
+            // return empty string to ajax-callback function
+            return [];
+        }
+
+        return $_SESSION['name'] ? $_SESSION['name'] : '';
     }
 }

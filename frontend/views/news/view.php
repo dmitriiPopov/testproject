@@ -59,7 +59,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="row">
                     <div class="comment-form col-lg-12">
                         <!-- BEGIN form widget -->
-                        <?= $this->render('_partial/commentForm', [
+                        <?= $this->render('_partial/commentFormItem', [
                             'article'         => $article,
                             'commentForm'     => $commentForm,
                             'commentScenario' => $commentScenario,
@@ -75,7 +75,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             <!-- List of comments BEGIN -->
             <div id="comments" class="col-lg-12">
-                <?= $this->render('_partial/commentsList', [
+                <?= $this->render('_partial/commentsListItem', [
                     'comments' => $comments,
 
                 ]); ?>
@@ -114,9 +114,11 @@ $this->params['breadcrumbs'][] = $this->title;
                   type: 'POST',
                   data: data,
                   success: function(responseHtml) {
-                      $('#comments').prepend(responseHtml);  
-                      $('#commentForm').trigger('reset');
-                      $('.empty').hide();
+                      if (responseHtml != '') {
+                          $('#comments').prepend(responseHtml);  
+                          $('#commentForm').trigger('reset');
+                          $('.empty').hide();                   
+                      }
                   },
                   error: function() {
                       console.log('Error!');
@@ -133,11 +135,15 @@ $this->params['breadcrumbs'][] = $this->title;
                   type: 'POST',
                   data: data,
                   success: function(responseHtml) {
-                      $('div.list-group > div#comment-'+commentId).replaceWith(responseHtml);  
-                      $('#commentForm').trigger('reset');
-                      $('#buttonForm').attr('class', 'btn btn-success');
-                      $('#buttonForm').text('Оставить комментарий');
-                      $('#commentForm').removeAttr('data-id');
+                  
+                      if (responseHtml != '') {
+                          $('div.list-group > div#comment-'+commentId).replaceWith(responseHtml);  
+                          $('#commentForm').trigger('reset');
+                          $('#buttonForm').attr('class', 'btn btn-success');
+                          $('#buttonForm').text('Оставить комментарий');
+                          $('#commentForm').removeAttr('data-id');
+                      }
+                  
                   },
                   error: function() {
                       console.log('Error!');
@@ -159,12 +165,18 @@ $this->params['breadcrumbs'][] = $this->title;
                 type: 'POST',
                 data: {},
                 dataType: 'json',
-                success: function(jsonResponse) {                   
-                    $('#commentform-name').val(jsonResponse['name']);
-                    $('#commentform-content').val(jsonResponse['content']);
-                    $('#commentForm').attr('data-id', commentId);
-                    $('#buttonForm').attr('class', 'btn btn-primary');
-                    $('#buttonForm').text('Изменить комментарий');
+                success: function(jsonResponse) {  
+                  
+                    if (jsonResponse.length != 0) {
+                    
+                        $('#commentform-name').val(jsonResponse['name']);
+                        $('#commentform-content').val(jsonResponse['content']);
+                        $('#commentForm').attr('data-id', commentId);
+                        $('#buttonForm').attr('class', 'btn btn-primary');
+                        $('#buttonForm').text('Изменить комментарий');
+                        
+                    }
+                    
                 },
                 error: function() {
                     console.log('Error!');
@@ -196,6 +208,31 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
             });      
         }
+    });
+    
+    /* GET NAME FROM SESSION */
+    $(document).on('click', 'input#commentform-name', function(e) {
+        
+        e.preventDefault();
+        
+        $.ajax({
+            url: '/comments/two',
+            type: 'POST',
+            data: {},
+            dataType: 'json',
+            success: function(jsonResponse) {
+            
+                if (jsonResponse) {
+                    $('#commentform-name').val(jsonResponse);
+                }
+                
+            },
+            error: function() {
+                console.log('Error!');
+            }
+        });
+        
+
     });
 ", \yii\web\View::POS_END);
 ?>
