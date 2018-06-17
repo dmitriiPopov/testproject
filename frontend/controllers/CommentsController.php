@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use frontend\components\helpers\StopWordsHelper;
 use Yii;
 use common\models\Comment;
 use frontend\components\forms\CommentForm;
@@ -14,6 +15,13 @@ use yii\filters\VerbFilter;
  */
 class CommentsController extends Controller
 {
+    /**
+     * //TODO: очень и очень круто "детали реализации" выносить в константы
+     * //TODO: детали реализации это на первый взгляд это непонятные/неочевидные числа и слова внутри кода
+     * @var int
+     */
+    const MAX_NUMBER_OF_SECONDS_FOR_DELETING_COMMENT = 600;
+
     /**
      * @inheritdoc
      */
@@ -51,10 +59,11 @@ class CommentsController extends Controller
         $formModel->setModel(new Comment());
 
         // save comment with data from request
+        //TODO: $this->findWord($formModel->name) - это не должно вызываться в экшне
         if ($formModel->load(Yii::$app->request->post()) && $this->findWord($formModel->name)
             && $this->findWord($formModel->content) && $formModel->save($articleId)) {
 
-            //set 'name' is session
+            //set 'name' to session
             $_SESSION['name'] = $formModel->name;
 
             // return html-code of one comment to ajax-callback
@@ -95,7 +104,7 @@ class CommentsController extends Controller
         $checkTime = time() - strtotime($model->updated_at ? $model->updated_at : $model->created_at);
 
         // if comment belongs to current user
-        if ($checkTime < 600 && $model->user_id == Yii::$app->user->id) {
+        if ($checkTime < self::MAX_NUMBER_OF_SECONDS_FOR_DELETING_COMMENT && $model->user_id == Yii::$app->user->id) {
             //return comment data
             return $model->getAttributes();
         }
@@ -123,15 +132,19 @@ class CommentsController extends Controller
 
         $formModel->setModel($this->findModel($id), true);
         //set article id for save
+        //TODO: $article_id  - бесполезная переменная, так как она уже есть $formModel
+        //TODO: ты ее достаешь ИЗ $formModel и потом обратно задаешь В форму в $formModel->save($articleId)
         $articleId = $formModel->model->news_id;
         // if comment belongs to current user
+        //TODO: здесь бесполезно проверять наличие $formModel так как ты выше объявил этот объект и его  в принципе не может не быть
         if ($formModel && $formModel->model->user_id == Yii::$app->user->id) {
 
             //load form from post array to model and save to DB
+            //TODO: $this->findWord($formModel->name) - это не должно вызываться в экшне
             if ($formModel->load(Yii::$app->request->post()) && $this->findWord($formModel->name)
                 && $this->findWord($formModel->content) && $formModel->save($articleId)) {
 
-                //set 'name' is session
+                //set 'name' to session
                 $_SESSION['name'] = $formModel->name;
 
                 // return html-code of one comment to ajax-callback
@@ -139,7 +152,7 @@ class CommentsController extends Controller
                     '/news/_partial/commentItem',
                     [
                         // set update comment ot view template
-                        'model' => $formModel->getModel(),
+                        'model' => $formModel->model,
                     ]
                 );
             }
@@ -173,7 +186,7 @@ class CommentsController extends Controller
         $checkTime = time() - strtotime($model->updated_at ? $model->updated_at : $model->created_at);
 
         //check delete from DB
-        if ($checkTime < 600 && $model->delete()) {
+        if ($checkTime < self::MAX_NUMBER_OF_SECONDS_FOR_DELETING_COMMENT && $model->delete()) {
             //set deleted status on TRUE
             $result['deleted'] = true;
         }
@@ -205,10 +218,12 @@ class CommentsController extends Controller
      * @param string $str
      * @return bool
      */
+    //TODO: вынеси это в rules Класса Формы. Этому точно не место в контроллере.
+    //TODO: все что можно назвать "валидацией" должно быть там, где находится остальная валидация для данных из формы
     protected function findWord($str)
     {
         //include array with "BAD" words
-        $words = include '../components/helpers/Words.php';
+        $words = StopWordsHelper::getCensuredWords();
 
         foreach ($words as $item) {
 
@@ -227,6 +242,9 @@ class CommentsController extends Controller
     /**
      * Get "Name" value from session
      * @return mixed
+     *
+     * TODO: а почему он называет Two, а не так, чтобы было понятно что он делает?
+     * TODO: например, actionGetSessionName
      */
     public function actionTwo()
     {
@@ -237,7 +255,8 @@ class CommentsController extends Controller
             // return empty string to ajax-callback function
             return [];
         }
-
-        return $_SESSION['name'] ? $_SESSION['name'] : '';
+        //TODO:добавил проверку иначе ошибка так как массив пустой длч нового пользователя
+        //TODO: всегда, когда используешь элемент массива проверяй есть ли он. Так как его может не быть и будет ошибка.
+        return isset($_SESSION['name']) ? $_SESSION['name'] : '';
     }
 }
