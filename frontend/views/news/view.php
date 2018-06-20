@@ -13,8 +13,6 @@
  * @var $commentId
  */
 
-use yii\helpers\Html;
-use frontend\components\forms\CommentForm;
 
 $this->title = $article->title;
 //check is set selected category DISPLAY ON
@@ -104,54 +102,56 @@ $this->params['breadcrumbs'][] = $this->title;
 
          e.preventDefault();
 
-         var data = $(this).serialize();
-         console.log(data);
+         var data = $(this).serializeArray();
 
-         //TODO: есть ошибка. Воспроизводится так:
-         // 1) добавить комментарий (после этого добавляется блок комментария и форма очищается)
-         // 2) еще раз нажать кнопку 'Добавить комментарий' и после этого добавится пустой комментарий. И так можно нажимать сколько угодно. Это неправильно.
-         /* Create */
-         if ($('#buttonForm').attr('class') == 'btn btn-success') {
-             $.ajax({
-                  url: '/comments/create?articleId=".$article->id."',
-                  type: 'POST',
-                  data: data,
-                  success: function(responseHtml) {
-                      if (responseHtml != '') {
-                          $('#comments').prepend(responseHtml);  
-                          $('#commentForm').trigger('reset');
-                          $('.empty').hide();                   
+         //check form fields      
+         if (data[1].value != '' || data[2].value != '') {
+             
+             /* Create */
+             if ($('#buttonForm').attr('class') == 'btn btn-success') {
+                 $.ajax({
+                      url: '/comments/create?articleId=".$article->id."',
+                      type: 'POST',
+                      data: data,
+                      success: function(responseHtml) {
+                      
+                          if (responseHtml != '') {
+                              $('#comments').prepend(responseHtml);  
+                              $('#commentform-content').val('');
+                              $('.empty').hide();                   
+                          }
+                          
+                      },
+                      error: function() {
+                          console.log('Error!');
                       }
-                  },
-                  error: function() {
-                      console.log('Error!');
-                  }
-             });
-         };
-         
-         /* Update */
-         if ($('#buttonForm').attr('class') == 'btn btn-primary') {
-             var commentId = $('#commentForm').attr('data-id');
-             console.log(commentId);
-             $.ajax({
-                  url: '/comments/update?id='+commentId,
-                  type: 'POST',
-                  data: data,
-                  success: function(responseHtml) {
-                  
-                      if (responseHtml != '') {
-                          $('div.list-group > div#comment-'+commentId).replaceWith(responseHtml);  
-                          $('#commentForm').trigger('reset');
-                          $('#buttonForm').attr('class', 'btn btn-success');
-                          $('#buttonForm').text('Оставить комментарий');
-                          $('#commentForm').removeAttr('data-id');
+                 });
+             };
+             
+             /* Update */
+             if ($('#buttonForm').attr('class') == 'btn btn-primary') {
+                 var commentId = $('#commentForm').attr('data-id');
+                 console.log(commentId);
+                 $.ajax({
+                      url: '/comments/update?id='+commentId,
+                      type: 'POST',
+                      data: data,
+                      success: function(responseHtml) {
+                      
+                          if (responseHtml != '') {
+                              $('div.list-group > div#comment-'+commentId).replaceWith(responseHtml);  
+                              $('#commentform-content').val('');
+                              $('#buttonForm').attr('class', 'btn btn-success');
+                              $('#buttonForm').text('Оставить комментарий');
+                              $('#commentForm').removeAttr('data-id');
+                          }
+                      
+                      },
+                      error: function() {
+                          console.log('Error!');
                       }
-                  
-                  },
-                  error: function() {
-                      console.log('Error!');
-                  }
-             });
+                 });
+             };
          };
     });
 
@@ -213,31 +213,5 @@ $this->params['breadcrumbs'][] = $this->title;
         }
     });
 
-    //TODO: РАБОТАЕТ НЕ ПРАВИЛЬНО. всегда подставляет при клике имя из сессии, стирая даже уже набранное.
-    //TODO: а вообще убери это из js и один раз вставляй имя из сессии в форму при загрузке страницы в браузере. Соответственно тебе и твой actionTwo не понадобится
-    /* GET NAME FROM SESSION */
-    $(document).on('click', 'input#commentform-name', function(e) {
-        
-        e.preventDefault();
-        
-        $.ajax({
-            url: '/comments/two',
-            type: 'POST',
-            data: {},
-            dataType: 'json',
-            success: function(jsonResponse) {
-            
-                if (jsonResponse) {
-                    $('#commentform-name').val(jsonResponse);
-                }
-                
-            },
-            error: function() {
-                console.log('Error!');
-            }
-        });
-        
-
-    });
 ", \yii\web\View::POS_END);
 ?>

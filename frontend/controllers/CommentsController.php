@@ -2,7 +2,6 @@
 
 namespace frontend\controllers;
 
-use frontend\components\helpers\StopWordsHelper;
 use Yii;
 use common\models\Comment;
 use frontend\components\forms\CommentForm;
@@ -16,8 +15,6 @@ use yii\filters\VerbFilter;
 class CommentsController extends Controller
 {
     /**
-     * //TODO: очень и очень круто "детали реализации" выносить в константы
-     * //TODO: детали реализации это на первый взгляд это непонятные/неочевидные числа и слова внутри кода
      * @var int
      */
     const MAX_NUMBER_OF_SECONDS_FOR_DELETING_COMMENT = 600;
@@ -59,9 +56,8 @@ class CommentsController extends Controller
         $formModel->setModel(new Comment());
 
         // save comment with data from request
-        //TODO: $this->findWord($formModel->name) - это не должно вызываться в экшне
-        if ($formModel->load(Yii::$app->request->post()) && $this->findWord($formModel->name)
-            && $this->findWord($formModel->content) && $formModel->save($articleId)) {
+        if ($formModel->load(Yii::$app->request->post()) && $formModel->validate()
+            && $formModel->save($articleId)) {
 
             //set 'name' to session
             $_SESSION['name'] = $formModel->name;
@@ -131,18 +127,12 @@ class CommentsController extends Controller
         $formModel = new CommentForm(['scenario' => CommentForm::SCENARIO_UPDATE]);
 
         $formModel->setModel($this->findModel($id), true);
-        //set article id for save
-        //TODO: $article_id  - бесполезная переменная, так как она уже есть $formModel
-        //TODO: ты ее достаешь ИЗ $formModel и потом обратно задаешь В форму в $formModel->save($articleId)
-        $articleId = $formModel->model->news_id;
         // if comment belongs to current user
-        //TODO: здесь бесполезно проверять наличие $formModel так как ты выше объявил этот объект и его  в принципе не может не быть
-        if ($formModel && $formModel->model->user_id == Yii::$app->user->id) {
+        if ($formModel->model->user_id == Yii::$app->user->id) {
 
             //load form from post array to model and save to DB
-            //TODO: $this->findWord($formModel->name) - это не должно вызываться в экшне
-            if ($formModel->load(Yii::$app->request->post()) && $this->findWord($formModel->name)
-                && $this->findWord($formModel->content) && $formModel->save($articleId)) {
+            if ($formModel->load(Yii::$app->request->post()) && $formModel->validate()
+                && $formModel->save($formModel->model->news_id)) {
 
                 //set 'name' to session
                 $_SESSION['name'] = $formModel->name;
@@ -210,53 +200,5 @@ class CommentsController extends Controller
         }
 
         throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
-    }
-
-    /**
-     * Finding "BAD" words in the string
-     * If isn't found "BAD" words in the string then return true
-     * @param string $str
-     * @return bool
-     */
-    //TODO: вынеси это в rules Класса Формы. Этому точно не место в контроллере.
-    //TODO: все что можно назвать "валидацией" должно быть там, где находится остальная валидация для данных из формы
-    protected function findWord($str)
-    {
-        //include array with "BAD" words
-        $words = StopWordsHelper::getCensuredWords();
-
-        foreach ($words as $item) {
-
-            //check if there is a "BAD" word in the string
-            if (preg_match("/\b".$item."\b/i", $str)){
-                //if there is
-                return false;
-            }
-
-        }
-
-        //if there isn't found "BAD" words in the string
-        return true;
-    }
-
-    /**
-     * Get "Name" value from session
-     * @return mixed
-     *
-     * TODO: а почему он называет Two, а не так, чтобы было понятно что он делает?
-     * TODO: например, actionGetSessionName
-     */
-    public function actionTwo()
-    {
-        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-
-        // if request isn't AJAX or user isn't authorized
-        if(!Yii::$app->request->isAjax || Yii::$app->user->isGuest) {
-            // return empty string to ajax-callback function
-            return [];
-        }
-        //TODO:добавил проверку иначе ошибка так как массив пустой длч нового пользователя
-        //TODO: всегда, когда используешь элемент массива проверяй есть ли он. Так как его может не быть и будет ошибка.
-        return isset($_SESSION['name']) ? $_SESSION['name'] : '';
     }
 }

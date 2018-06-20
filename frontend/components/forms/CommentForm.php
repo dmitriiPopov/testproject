@@ -11,6 +11,8 @@ namespace frontend\components\forms;
 
 use common\components\BaseForm;
 use common\models\Comment;
+use frontend\components\helpers\StopWordsHelper;
+use Yii;
 
 /**
  * Class CommentForm
@@ -35,10 +37,12 @@ class CommentForm extends BaseForm
     public function rules()
     {
         return [
+            ['name', 'findWord'],
+            ['content', 'findWord'],
             [['name'], 'trim'],
             [['name', 'content'], 'required'],
-            [['name'], 'string', 'max' => 30, 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE]],
-            [['content'], 'string', 'max' => 200, 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE]],
+            [['name'], 'string', 'min' =>1, 'max' => 30, 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE]],
+            [['content'], 'string', 'min' =>1, 'max' => 200, 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE]],
         ];
     }
 
@@ -74,5 +78,26 @@ class CommentForm extends BaseForm
         }
 
         return true;
+    }
+
+    /**
+     * Finding "BAD" words in the string
+     * If isn't found "BAD" words in the string
+     */
+    public function findWord($attribute)
+    {
+        //include array with "BAD" words
+        $words = StopWordsHelper::getCensuredWords();
+        //var_dump($words);die;
+        foreach ($words as $item) {
+
+            //check if there is a "BAD" word in the string
+            if (preg_match("/\b".$item."\b/i", $this->$attribute)){
+                //if there is
+                $this->addError($this->$attribute,'Censured word!');
+            }
+
+        }
+
     }
 }

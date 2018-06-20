@@ -28,7 +28,7 @@ use yii\helpers\Html;
     'id'      => 'commentForm',
 ]) ?>
 
-<?= $form->field($commentForm, 'name')->textInput(['placeholder' => 'Name'])->label(false); ?>
+<?= $form->field($commentForm, 'name')->textInput(['placeholder' => 'Name', 'value' => isset($_SESSION['name']) ? $_SESSION['name'] : ''])->label(false); ?>
 
 <?= $form->field($commentForm, 'content')->textarea(['placeholder' => 'Message'])->label(false); ?>
 
