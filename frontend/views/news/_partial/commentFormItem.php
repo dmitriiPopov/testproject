@@ -14,6 +14,7 @@ use yii\helpers\Html;
 <?php $form = \yii\widgets\ActiveForm::begin([
     'action'  => [
         //action in CommentsController (create or update)
+        // TODO: зачем передавать сюда переменную $commentScenario, когда у тебя уже сюда передан весь объект формы $commentForm, из которого ты можешь получить эту информацию?
         'comments/'.$commentScenario,
         //article id
         'articleId' => $article->id,

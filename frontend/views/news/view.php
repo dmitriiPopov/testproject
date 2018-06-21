@@ -102,12 +102,21 @@ $this->params['breadcrumbs'][] = $this->title;
 
          e.preventDefault();
 
+         // if form fields are NOT filled and valid
+         if (!commentFormJsValidate())
+         {
+            // interrupt submitting form
+            return false;
+         }
+
          var data = $(this).serializeArray();
 
-         //check form fields      
-         if (data[1].value != '' || data[2].value != '') {
+         //TODO: костыль
+         //if (data[1].value != '' || data[2].value != '') {
              
              /* Create */
+             //TODO: это костыльное условие тоже использовать не нужно
+             //TODO: используй аттрибут action у тега form
              if ($('#buttonForm').attr('class') == 'btn btn-success') {
                  $.ajax({
                       url: '/comments/create?articleId=".$article->id."',
@@ -129,6 +138,8 @@ $this->params['breadcrumbs'][] = $this->title;
              };
              
              /* Update */
+              //TODO: это костыльное условие тоже использовать не нужно
+             //TODO: используй аттрибут action у тега form, а не класс кнопки. Подменяй и манипулируй action у тега form
              if ($('#buttonForm').attr('class') == 'btn btn-primary') {
                  var commentId = $('#commentForm').attr('data-id');
                  console.log(commentId);
@@ -152,7 +163,7 @@ $this->params['breadcrumbs'][] = $this->title;
                       }
                  });
              };
-         };
+         //};
     });
 
     /* GET COMMENT DATA AND PUT IN FORM */
@@ -212,6 +223,27 @@ $this->params['breadcrumbs'][] = $this->title;
             });      
         }
     });
+
+
+//TODO: используй простую js-валидацию написанную вручную. Пока не используй никаких непонятных для тебя оберток yiijsvalidation и прочее
+    function commentFormJsValidate()
+    {
+        var nameValue    = $('#commentform-name').val();
+        var contentValue = $('#commentform-content').val();
+
+        console.log(nameValue, contentValue);
+
+        if (nameValue === '' || contentValue === '')
+        {
+            // TODO: здесь тебе нужно отобразить валидационные ошибки
+            //TODO: выведи их под соответвующими полями и подсвети соответствующие поля
+
+            return false;
+        }
+
+
+        return true;
+    }
 
 ", \yii\web\View::POS_END);
 ?>

@@ -24,6 +24,13 @@ use Yii;
  */
 class CommentForm extends BaseForm
 {
+    /**
+     * Article which is commented by selected comment
+     * @var int
+     */
+    //TODO: используй этот articleID
+    public $articleId;
+
     /*
      * @var string
      */
@@ -36,13 +43,15 @@ class CommentForm extends BaseForm
 
     public function rules()
     {
+        // Валидаторы и фильтры выполняются в указанном порядке
         return [
-            ['name', 'findWord'],
-            ['content', 'findWord'],
             [['name'], 'trim'],
-            [['name', 'content'], 'required'],
+            // TODO: сначала валидируем на заполненность
+            [['name', 'content', 'articleId'], 'required', 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE]],
             [['name'], 'string', 'min' =>1, 'max' => 30, 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE]],
             [['content'], 'string', 'min' =>1, 'max' => 200, 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE]],
+            //TODO: а потом уже на плохие слова, так как нет смысла валидировать на плохие слова, если данные не пришли из формы
+            [['name', 'content'], 'findWord', 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE]],
         ];
     }
 
@@ -84,6 +93,8 @@ class CommentForm extends BaseForm
      * Finding "BAD" words in the string
      * If isn't found "BAD" words in the string
      */
+    //TODO: а почему ты назвал валидатор "findWord"? Это же переводится "Найти слово"? Какое же слово нужно найти и зачем?))
+    //TODO: метод/функция должен иметь название из которого понятно, что он делает, например "CensureWordsValidator"
     public function findWord($attribute)
     {
         //include array with "BAD" words

@@ -6,6 +6,7 @@ use Yii;
 use common\models\Comment;
 use frontend\components\forms\CommentForm;
 use yii\web\Controller;
+use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
@@ -46,7 +47,7 @@ class CommentsController extends Controller
         // if request isn't AJAX or user isn't authorized
         if(!Yii::$app->request->isAjax || Yii::$app->user->isGuest) {
             // return empty string to ajax-callback function
-            return '';
+            throw new ForbiddenHttpException();
         }
 
         //init form model instance
@@ -55,8 +56,15 @@ class CommentsController extends Controller
         // create new instance of Comment model for saving below
         $formModel->setModel(new Comment());
 
+        //TODO: реализуй так установку $articleId в форму
+        //TODO: а еще лучше перед этим убедись, что новость существует и потом объект Common\models\News запихни в форму как $formModel->setArticleModel($model) и используй объект статьи внутри - вот это будет уже ООП ))))
+        $formModel->articleId = $articleId;
+
         // save comment with data from request
         if ($formModel->load(Yii::$app->request->post()) && $formModel->validate()
+                // TODO: используй ООП
+                // TODO: заполни объект (как указано выше), а потом дергай его
+                // TODO: должно быть так $formModel->save()
             && $formModel->save($articleId)) {
 
             //set 'name' to session
@@ -132,6 +140,9 @@ class CommentsController extends Controller
 
             //load form from post array to model and save to DB
             if ($formModel->load(Yii::$app->request->post()) && $formModel->validate()
+                // TODO: Все равное неверно! используй ООП
+                // TODO: заполни объект (как ты уже сделал здесь выше), а потом дергай его
+                // TODO: должно быть так $formModel->save(). А внутри ты уже обращаешься к $this->model->news_id
                 && $formModel->save($formModel->model->news_id)) {
 
                 //set 'name' to session
