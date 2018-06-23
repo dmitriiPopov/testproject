@@ -30,11 +30,10 @@ class NewsController extends Controller
     /**
      * Displays article
      * @param integer $id
-     * @param integer $commentId
      * @return mixed
      * @throws NotFoundHttpException
      */
-    public function actionView($id, $commentId = null)
+    public function actionView($id)
     {
         //get data for selected article (by `id`)
         /**@var $article News*/
@@ -56,21 +55,8 @@ class NewsController extends Controller
 //                'pageSize' => 3,
 //            ],
         ]);
-
-       // var_dump($comments);die;
-
-        //check isset id comment's
-        if ($commentId) {
-            //set comment's form data from DB
-            $commentForm = Comment::findOne($commentId);
-            //set scenario
-            $scenario    = CommentForm::SCENARIO_UPDATE;
-        } else {
-            //create new comment's form
-            $commentForm = new CommentForm();
-            //set scenario
-            $scenario    = CommentForm::SCENARIO_CREATE;
-        }
+        //create comment form with scenario Create
+        $commentForm = new CommentForm(['scenario' => CommentForm::SCENARIO_CREATE]);
 
         return $this->render('view', [
             'article'          => $article,
@@ -80,8 +66,6 @@ class NewsController extends Controller
             'tagsOfNews'       => ArrayHelper::map($article->getTags()->andWhere(['display' => Tags::DISPLAY_ON])->all(), 'id', 'id'),
             'comments'         => $comments,
             'commentForm'      => $commentForm,
-            'commentScenario'  => $scenario,
-            'commentId'        => $commentId,
         ]);
     }
 }

@@ -9,8 +9,6 @@
  * @var $tagsOfNews[]
  * @var $comments yii\data\ActiveDataProvider
  * @var $commentForm
- * @var $commentScenario
- * @var $commentId
  */
 
 
@@ -60,8 +58,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         <?= $this->render('_partial/commentFormItem', [
                             'article'         => $article,
                             'commentForm'     => $commentForm,
-                            'commentScenario' => $commentScenario,
-                            'commentId'       => $commentId,
                         ]); ?>
                         <!-- END form widget -->
                     </div>
@@ -110,15 +106,12 @@ $this->params['breadcrumbs'][] = $this->title;
          }
 
          var data = $(this).serializeArray();
-
-         //TODO: костыль
-         //if (data[1].value != '' || data[2].value != '') {
+            
              
-             /* Create */
-             //TODO: это костыльное условие тоже использовать не нужно
-             //TODO: используй аттрибут action у тега form
-             if ($('#buttonForm').attr('class') == 'btn btn-success') {
-                 $.ajax({
+         /* Create */
+         if ($('#commentForm').attr('action') == '/comments/create?articleId=".$article->id."') {
+         
+                $.ajax({
                       url: '/comments/create?articleId=".$article->id."',
                       type: 'POST',
                       data: data,
@@ -134,16 +127,15 @@ $this->params['breadcrumbs'][] = $this->title;
                       error: function() {
                           console.log('Error!');
                       }
-                 });
-             };
+                });
+         };
              
-             /* Update */
-              //TODO: это костыльное условие тоже использовать не нужно
-             //TODO: используй аттрибут action у тега form, а не класс кнопки. Подменяй и манипулируй action у тега form
-             if ($('#buttonForm').attr('class') == 'btn btn-primary') {
-                 var commentId = $('#commentForm').attr('data-id');
-                 console.log(commentId);
-                 $.ajax({
+         /* Update */
+         if ($('#commentForm').attr('action') == '/comments/update?id='+$('#commentForm').attr('data-id')) {
+         
+                var commentId = $('#commentForm').attr('data-id');
+//                 console.log(commentId);
+                $.ajax({
                       url: '/comments/update?id='+commentId,
                       type: 'POST',
                       data: data,
@@ -155,15 +147,15 @@ $this->params['breadcrumbs'][] = $this->title;
                               $('#buttonForm').attr('class', 'btn btn-success');
                               $('#buttonForm').text('Оставить комментарий');
                               $('#commentForm').removeAttr('data-id');
+                              $('#commentForm').attr('action', '/comments/create?articleId=".$article->id."');
                           }
                       
                       },
                       error: function() {
                           console.log('Error!');
                       }
-                 });
-             };
-         //};
+                });
+         };
     });
 
     /* GET COMMENT DATA AND PUT IN FORM */
@@ -185,6 +177,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     
                         $('#commentform-name').val(jsonResponse['name']);
                         $('#commentform-content').val(jsonResponse['content']);
+                        $('#commentForm').attr('action', '/comments/update?id='+commentId);
                         $('#commentForm').attr('data-id', commentId);
                         $('#buttonForm').attr('class', 'btn btn-primary');
                         $('#buttonForm').text('Изменить комментарий');
@@ -231,16 +224,20 @@ $this->params['breadcrumbs'][] = $this->title;
         var nameValue    = $('#commentform-name').val();
         var contentValue = $('#commentform-content').val();
 
-        console.log(nameValue, contentValue);
+//        console.log(nameValue, contentValue);
 
         if (nameValue === '' || contentValue === '')
         {
-            // TODO: здесь тебе нужно отобразить валидационные ошибки
-            //TODO: выведи их под соответвующими полями и подсвети соответствующие поля
+            if (nameValue === '') {
+                $('div.field-commentform-name > div.help-block').text('Name cannot be blank.');
+                $('div.field-commentform-name').attr('class', 'form-group field-commentform-name required has-error');
+            } else {
+                $('div.field-commentform-content > div.help-block').text('Content cannot be blank.');
+                $('div.field-commentform-content').attr('class', 'form-group field-commentform-content required has-error');
+            }
 
             return false;
         }
-
 
         return true;
     }

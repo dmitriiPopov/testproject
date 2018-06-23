@@ -2,9 +2,7 @@
 
 /*
  * @var $article
- * @var $commentForm
- * @var $commentScenario
- * @var $commentId
+ * @var $commentForm \frontend\components\forms\CommentForm
  */
 
 use yii\helpers\Html;
@@ -14,17 +12,13 @@ use yii\helpers\Html;
 <?php $form = \yii\widgets\ActiveForm::begin([
     'action'  => [
         //action in CommentsController (create or update)
-        // TODO: зачем передавать сюда переменную $commentScenario, когда у тебя уже сюда передан весь объект формы $commentForm, из которого ты можешь получить эту информацию?
-        'comments/'.$commentScenario,
+        'comments/'.$commentForm->getScenario(),
         //article id
         'articleId' => $article->id,
-        //comment id
-        'id'        => $commentId ? $commentId : null,
     ],
     'options' => [
-        'class'           => 'form-horizontal contact-form',
-        'role'            => 'form',
-        'data-comment-id' => $commentId ? $commentId : null,
+        'class'     => 'form-horizontal contact-form',
+        'role'      => 'form',
     ],
     'id'      => 'commentForm',
 ]) ?>

@@ -11,8 +11,8 @@ namespace frontend\components\forms;
 
 use common\components\BaseForm;
 use common\models\Comment;
+use common\models\News;
 use frontend\components\helpers\StopWordsHelper;
-use Yii;
 
 /**
  * Class CommentForm
@@ -28,8 +28,13 @@ class CommentForm extends BaseForm
      * Article which is commented by selected comment
      * @var int
      */
-    //TODO: используй этот articleID
     public $articleId;
+
+    /**
+     * User which is commented by selected comment
+     * @var int
+     */
+    public $userId;
 
     /*
      * @var string
@@ -47,11 +52,11 @@ class CommentForm extends BaseForm
         return [
             [['name'], 'trim'],
             // TODO: сначала валидируем на заполненность
-            [['name', 'content', 'articleId'], 'required', 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE]],
+            [['name', 'content', 'articleId', 'userId'], 'required', 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE]],
             [['name'], 'string', 'min' =>1, 'max' => 30, 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE]],
             [['content'], 'string', 'min' =>1, 'max' => 200, 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE]],
             //TODO: а потом уже на плохие слова, так как нет смысла валидировать на плохие слова, если данные не пришли из формы
-            [['name', 'content'], 'findWord', 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE]],
+            [['name', 'content'], 'censureWordsValidator', 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE]],
         ];
     }
 
@@ -65,17 +70,16 @@ class CommentForm extends BaseForm
         ];
     }
 
-    /*
-     * @param integer $articleId
-     */
-    public function save($articleId, $runValidation = true, $attributeNames = null)
+    public function save($runValidation = true, $attributeNames = null)
     {
         //set attributes to AR model
         $this->model->setAttributes($this->attributes);
 
         //set other attributes
-        $this->model->user_id = \Yii::$app->user->id;
-        $this->model->news_id = $articleId;
+        //$this->model->user_id = \Yii::$app->user->id;
+        $this->model->user_id = $this->userId;
+        //$this->model->news_id = $articleId;
+        $this->model->news_id = $this->articleId;
         $this->model->enabled = Comment::ENABLED_ON;
 
         //save AR model
@@ -90,12 +94,33 @@ class CommentForm extends BaseForm
     }
 
     /**
-     * Finding "BAD" words in the string
-     * If isn't found "BAD" words in the string
+     * @param $model Comment
+     * @param boolean $setAttributes
+     * @return void
      */
-    //TODO: а почему ты назвал валидатор "findWord"? Это же переводится "Найти слово"? Какое же слово нужно найти и зачем?))
-    //TODO: метод/функция должен иметь название из которого понятно, что он делает, например "CensureWordsValidator"
-    public function findWord($attribute)
+    public function setModel($model, $setAttributes = false)
+    {
+        //call parent function
+        parent::setModel($model, $setAttributes);
+        //check scenario Create
+        if ($this->getScenario() == self::SCENARIO_CREATE) {
+            //set user id
+            $this->userId    = \Yii::$app->user->id;
+        }
+        //check scenario Update
+        if ($this->getScenario() == self::SCENARIO_UPDATE) {
+            //set article id
+            $this->articleId = $model->news_id;
+            //set user id
+            $this->userId    = $model->user_id;
+        }
+    }
+
+    /**
+     * Finding "BAD" words in the string
+     * @param $attribute
+     */
+    public function censureWordsValidator($attribute)
     {
         //include array with "BAD" words
         $words = StopWordsHelper::getCensuredWords();
@@ -110,5 +135,16 @@ class CommentForm extends BaseForm
 
         }
 
+    }
+
+    /**
+     * Set article id
+     * @param $article News
+     */
+    public function setArticleModel($article)
+    {
+        if (isset($article)) {
+            $this->articleId = $article->id;
+        }
     }
 }

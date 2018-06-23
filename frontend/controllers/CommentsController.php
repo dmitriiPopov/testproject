@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use common\models\News;
 use Yii;
 use common\models\Comment;
 use frontend\components\forms\CommentForm;
@@ -46,7 +47,7 @@ class CommentsController extends Controller
     {
         // if request isn't AJAX or user isn't authorized
         if(!Yii::$app->request->isAjax || Yii::$app->user->isGuest) {
-            // return empty string to ajax-callback function
+
             throw new ForbiddenHttpException();
         }
 
@@ -56,16 +57,16 @@ class CommentsController extends Controller
         // create new instance of Comment model for saving below
         $formModel->setModel(new Comment());
 
-        //TODO: реализуй так установку $articleId в форму
-        //TODO: а еще лучше перед этим убедись, что новость существует и потом объект Common\models\News запихни в форму как $formModel->setArticleModel($model) и используй объект статьи внутри - вот это будет уже ООП ))))
-        $formModel->articleId = $articleId;
+        //check is set article
+        if (($article = News::findOne($articleId)) !== null) {
+            //set article id
+            $formModel->setArticleModel($article);
+        } else {
+            throw new NotFoundHttpException();
+        }
 
         // save comment with data from request
-        if ($formModel->load(Yii::$app->request->post()) && $formModel->validate()
-                // TODO: используй ООП
-                // TODO: заполни объект (как указано выше), а потом дергай его
-                // TODO: должно быть так $formModel->save()
-            && $formModel->save($articleId)) {
+        if ($formModel->load(Yii::$app->request->post()) && $formModel->validate() && $formModel->save()) {
 
             //set 'name' to session
             $_SESSION['name'] = $formModel->name;
@@ -98,8 +99,8 @@ class CommentsController extends Controller
 
         // if request isn't AJAX or user isn't authorized
         if(!Yii::$app->request->isAjax || Yii::$app->user->isGuest) {
-            // return empty string to ajax-callback function
-            return [];
+
+            throw new ForbiddenHttpException();
         }
 
         //load model
@@ -128,22 +129,18 @@ class CommentsController extends Controller
     {
         // if request isn't AJAX or user isn't authorized
         if(!Yii::$app->request->isAjax || Yii::$app->user->isGuest) {
-            // return empty string to ajax-callback function
-            return [];
+
+            throw new ForbiddenHttpException();
         }
 
         $formModel = new CommentForm(['scenario' => CommentForm::SCENARIO_UPDATE]);
 
         $formModel->setModel($this->findModel($id), true);
         // if comment belongs to current user
-        if ($formModel->model->user_id == Yii::$app->user->id) {
+        if ($formModel->userId == Yii::$app->user->id) {
 
             //load form from post array to model and save to DB
-            if ($formModel->load(Yii::$app->request->post()) && $formModel->validate()
-                // TODO: Все равное неверно! используй ООП
-                // TODO: заполни объект (как ты уже сделал здесь выше), а потом дергай его
-                // TODO: должно быть так $formModel->save(). А внутри ты уже обращаешься к $this->model->news_id
-                && $formModel->save($formModel->model->news_id)) {
+            if ($formModel->load(Yii::$app->request->post()) && $formModel->validate() && $formModel->save()) {
 
                 //set 'name' to session
                 $_SESSION['name'] = $formModel->name;
@@ -178,8 +175,8 @@ class CommentsController extends Controller
 
         // if request isn't AJAX or user isn't authorized
         if(!Yii::$app->request->isAjax || Yii::$app->user->isGuest) {
-            // return false result
-            return $result;
+
+            throw new ForbiddenHttpException();
         }
 
         $model     = $this->findModel($id);
