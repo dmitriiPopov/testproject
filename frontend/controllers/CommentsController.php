@@ -51,22 +51,45 @@ class CommentsController extends Controller
             throw new ForbiddenHttpException();
         }
 
+        //TODO: нашел ошибку. Вот как воспроизвести по пунктам:
+        /*
+         1) захожу на страницу новости
+        2) заполняю name и content и добавляю комментарий
+        3) комментарий добавляется и поле content очищается
+        4) еще раз ввожу данные в поле content, нажимаю "Оставить комментарий", но при этом появляется валидационная ошибка - https://prnt.sc/jypat5 (ЭТО НЕВЕРНО)
+         */
+
+        
+
+        //TODO: =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
+        //TODO: =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
+        //TODO: =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
+        //TODO: И ЕЩЕ ОЧЕНЬ ВАЖНОЕ ОБЪЯВЛЕНИЕ - удаляй мои TODO после того, как ты разобрался с тем, что я пометил TODO :))) Это правда очень важно
+        //TODO: =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
+        //TODO: =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
+        //TODO: =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
+
+
+        //TODO: перенес сюда. лучше как можно раньше все валидировать, чтобы не выполнять лишнего кода дальше
+
+        /**@var $article News*/
+        $article = News::findOne($articleId);
+        if (!$article)
+        {
+            throw new NotFoundHttpException();
+        }
+
         //init form model instance
         $formModel = new CommentForm(['scenario' => CommentForm::SCENARIO_CREATE]);
 
         // create new instance of Comment model for saving below
         $formModel->setModel(new Comment());
 
-        //check is set article
-        if (($article = News::findOne($articleId)) !== null) {
-            //set article id
-            $formModel->setArticleModel($article);
-        } else {
-            throw new NotFoundHttpException();
-        }
+        //set article to form model
+        $formModel->setArticleModel($article);
 
         // save comment with data from request
-        if ($formModel->load(Yii::$app->request->post()) && $formModel->validate() && $formModel->save()) {
+        if ($formModel->load(Yii::$app->request->post()) && $formModel->save()) {
 
             //set 'name' to session
             $_SESSION['name'] = $formModel->name;
@@ -129,32 +152,34 @@ class CommentsController extends Controller
     {
         // if request isn't AJAX or user isn't authorized
         if(!Yii::$app->request->isAjax || Yii::$app->user->isGuest) {
-
             throw new ForbiddenHttpException();
         }
 
         $formModel = new CommentForm(['scenario' => CommentForm::SCENARIO_UPDATE]);
 
         $formModel->setModel($this->findModel($id), true);
+
         // if comment belongs to current user
         if ($formModel->userId == Yii::$app->user->id) {
-
-            //load form from post array to model and save to DB
-            if ($formModel->load(Yii::$app->request->post()) && $formModel->validate() && $formModel->save()) {
-
-                //set 'name' to session
-                $_SESSION['name'] = $formModel->name;
-
-                // return html-code of one comment to ajax-callback
-                return $this->renderPartial(
-                    '/news/_partial/commentItem',
-                    [
-                        // set update comment ot view template
-                        'model' => $formModel->model,
-                    ]
-                );
-            }
+            throw new ForbiddenHttpException();
         }
+
+        //load form from post array to model and save to DB
+        if ($formModel->load(Yii::$app->request->post()) && $formModel->save()) {
+
+            //set 'name' to session
+            $_SESSION['name'] = $formModel->name;
+
+            // return html-code of one comment to ajax-callback
+            return $this->renderPartial(
+                '/news/_partial/commentItem',
+                [
+                    // set update comment ot view template
+                    'model' => $formModel->model,
+                ]
+            );
+        }
+
 
         // return empty string if comment hasn't been saved
         return '';
@@ -175,7 +200,6 @@ class CommentsController extends Controller
 
         // if request isn't AJAX or user isn't authorized
         if(!Yii::$app->request->isAjax || Yii::$app->user->isGuest) {
-
             throw new ForbiddenHttpException();
         }
 

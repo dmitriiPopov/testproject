@@ -111,14 +111,11 @@ class NewsController extends Controller
      */
     public function actionUpdate($id)
     {
-        // TODO: один раз запрашивается запись о новости. Незачем делать одинаковые запросы, если они отдают одну и ту же ниформацию.
         $model = $this->findModel($id);
 
         $formModel = new NewsForm(['scenario' => NewsForm::SCENARIO_UPDATE]);
 
         $formModel->setModel($model, true);
-
-        // TODO: всякие флеш месседжи и запросы к сессии должны быть тут
 
         if ($formModel->load(Yii::$app->request->post()) && $formModel->save()) {
             return $this->redirect(['view', 'id' => $formModel->model->id]);

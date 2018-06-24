@@ -42,10 +42,10 @@ class Comment extends \yii\db\ActiveRecord
             [['id', 'user_id', 'news_id', 'enabled'], 'integer'],
             [['name'], 'string', 'max' => 50],
             [['content'], 'string'],
-            [['created_at', 'updated_at'], 'safe'],
             [['id'], 'unique'],
             [['news_id'], 'exist', 'skipOnError' => true, 'targetClass' => News::className(), 'targetAttribute' => ['news_id' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
+            ['enabled', 'default', 'value' => self::ENABLED_ON],
         ];
     }
 

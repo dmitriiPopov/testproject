@@ -72,15 +72,19 @@ class CommentForm extends BaseForm
 
     public function save($runValidation = true, $attributeNames = null)
     {
+        // validate form if it's set
+        if ($runValidation && !$this->validate($attributeNames))
+        {
+            return false;
+        }
+
         //set attributes to AR model
         $this->model->setAttributes($this->attributes);
 
         //set other attributes
-        //$this->model->user_id = \Yii::$app->user->id;
         $this->model->user_id = $this->userId;
-        //$this->model->news_id = $articleId;
         $this->model->news_id = $this->articleId;
-        $this->model->enabled = Comment::ENABLED_ON;
+        //$this->model->enabled = Comment::ENABLED_ON;
 
         //save AR model
         if (!$this->model->save($runValidation, $attributeNames)) {
@@ -102,11 +106,16 @@ class CommentForm extends BaseForm
     {
         //call parent function
         parent::setModel($model, $setAttributes);
+
+        //TODO: по-хорошему "$this->userId = \Yii::$app->user->id" нужно делать на уровне контроллера, где используется CommentForm.
+        //TODO: может быть это тебе сейчас будет не очень понятно, но есть такой термин "низкая/высокая связность" - это зависимость классов от других других классов и нужно чтобы эта зависимость стремилась к нулю
+        //TODO: вот здесь ты добавил лишнюю зависимость класса CommentForm с классом \yii\web\User, всего лишь одной операцией
         //check scenario Create
         if ($this->getScenario() == self::SCENARIO_CREATE) {
             //set user id
             $this->userId    = \Yii::$app->user->id;
         }
+
         //check scenario Update
         if ($this->getScenario() == self::SCENARIO_UPDATE) {
             //set article id
@@ -139,12 +148,12 @@ class CommentForm extends BaseForm
 
     /**
      * Set article id
-     * @param $article News
+     * @param $articleModel News
      */
-    public function setArticleModel($article)
+    public function setArticleModel($articleModel)
     {
-        if (isset($article)) {
-            $this->articleId = $article->id;
+        if (isset($articleModel)) {
+            $this->articleId = $articleModel->id;
         }
     }
 }
