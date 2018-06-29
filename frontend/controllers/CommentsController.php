@@ -40,7 +40,6 @@ class CommentsController extends Controller
      * Creates a new Comment model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @param integer $articleId
-     *
      * @return string HTML-string
      */
     public function actionCreate($articleId)
@@ -51,26 +50,13 @@ class CommentsController extends Controller
             throw new ForbiddenHttpException();
         }
 
-        //TODO: нашел ошибку. Вот как воспроизвести по пунктам:
+        //TODO: НУЖНО ДИМЕ ПЕРЕПРОВЕРИТЬ!!!
         /*
          1) захожу на страницу новости
         2) заполняю name и content и добавляю комментарий
         3) комментарий добавляется и поле content очищается
         4) еще раз ввожу данные в поле content, нажимаю "Оставить комментарий", но при этом появляется валидационная ошибка - https://prnt.sc/jypat5 (ЭТО НЕВЕРНО)
          */
-
-        
-
-        //TODO: =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
-        //TODO: =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
-        //TODO: =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
-        //TODO: И ЕЩЕ ОЧЕНЬ ВАЖНОЕ ОБЪЯВЛЕНИЕ - удаляй мои TODO после того, как ты разобрался с тем, что я пометил TODO :))) Это правда очень важно
-        //TODO: =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
-        //TODO: =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
-        //TODO: =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-
-
-
-        //TODO: перенес сюда. лучше как можно раньше все валидировать, чтобы не выполнять лишнего кода дальше
 
         /**@var $article News*/
         $article = News::findOne($articleId);
@@ -81,9 +67,11 @@ class CommentsController extends Controller
 
         //init form model instance
         $formModel = new CommentForm(['scenario' => CommentForm::SCENARIO_CREATE]);
-
+        $formModel->name = isset($_SESSION['name']) ? $_SESSION['name'] : '';
         // create new instance of Comment model for saving below
         $formModel->setModel(new Comment());
+        //set user
+        $formModel->userId = Yii::$app->user->id;
 
         //set article to form model
         $formModel->setArticleModel($article);
@@ -105,7 +93,9 @@ class CommentsController extends Controller
         }
 
         // return empty string if comment hasn't been saved
-        return '';
+        return $this->renderPartial('/news/_partial/commentFormItem', [
+            'commentForm' => $formModel,
+        ]);
     }
 
     /**
@@ -117,7 +107,7 @@ class CommentsController extends Controller
      */
     public function actionOne($id)
     {
-        //TODO: https://stackoverflow.com/questions/28831860/ajax-controller-action-in-yii2
+        //https://stackoverflow.com/questions/28831860/ajax-controller-action-in-yii2
         \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
 
         // if request isn't AJAX or user isn't authorized
@@ -155,12 +145,19 @@ class CommentsController extends Controller
             throw new ForbiddenHttpException();
         }
 
+        /**@var $commentModel Comment*/
+        $commentModel = $this->findModel($id);
+        if (!$commentModel)
+        {
+            throw new NotFoundHttpException();
+        }
+
         $formModel = new CommentForm(['scenario' => CommentForm::SCENARIO_UPDATE]);
 
-        $formModel->setModel($this->findModel($id), true);
+        $formModel->setModel($commentModel, true);
 
         // if comment belongs to current user
-        if ($formModel->userId == Yii::$app->user->id) {
+        if ($formModel->userId != Yii::$app->user->id) {
             throw new ForbiddenHttpException();
         }
 
@@ -179,7 +176,6 @@ class CommentsController extends Controller
                 ]
             );
         }
-
 
         // return empty string if comment hasn't been saved
         return '';

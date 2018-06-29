@@ -57,6 +57,8 @@ class NewsController extends Controller
         ]);
         //create comment form with scenario Create
         $commentForm = new CommentForm(['scenario' => CommentForm::SCENARIO_CREATE]);
+        $commentForm->setArticleModel($article);
+        $commentForm->name = isset($_SESSION['name']) ? $_SESSION['name'] : '';
 
         return $this->render('view', [
             'article'          => $article,

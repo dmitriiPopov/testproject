@@ -9,6 +9,7 @@
  * @var $tagsOfNews[]
  * @var $comments yii\data\ActiveDataProvider
  * @var $commentForm
+ * @var string $userName
  */
 
 
@@ -56,8 +57,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <div class="comment-form col-lg-12">
                         <!-- BEGIN form widget -->
                         <?= $this->render('_partial/commentFormItem', [
-                            'article'         => $article,
-                            'commentForm'     => $commentForm,
+                            'commentForm' => $commentForm,
                         ]); ?>
                         <!-- END form widget -->
                     </div>
@@ -106,7 +106,6 @@ $this->params['breadcrumbs'][] = $this->title;
          }
 
          var data = $(this).serializeArray();
-            
              
          /* Create */
          if ($('#commentForm').attr('action') == '/comments/create?articleId=".$article->id."') {
@@ -118,11 +117,23 @@ $this->params['breadcrumbs'][] = $this->title;
                       success: function(responseHtml) {
                       
                           if (responseHtml != '') {
-                              $('#comments').prepend(responseHtml);  
-                              $('#commentform-content').val('');
-                              $('.empty').hide();                   
+                             
+                              // if form has been returned
+                              if ($(responseHtml).attr('id') == 'commentForm')
+                              {
+                                  // it means that form contents errors
+                                  $(document).find('#commentForm').html(responseHtml);
+                              }
+                              // if comment has been returned
+                              else {
+                                  // put created comment to comments list
+                                  $('#comments').prepend(responseHtml);  
+                                  $('#commentform-content').val('');
+                                  $('.empty').hide();
+                                  
+                                  //TODO: Удалить валидационные ошибки из формы
+                              } 
                           }
-                          
                       },
                       error: function() {
                           console.log('Error!');
@@ -131,10 +142,14 @@ $this->params['breadcrumbs'][] = $this->title;
          };
              
          /* Update */
-         if ($('#commentForm').attr('action') == '/comments/update?id='+$('#commentForm').attr('data-id')) {
+         if (
+            $('#commentForm').attr('action') 
+            == 
+            '/comments/update?id='+$('#commentform-id').val()
+        ) {
          
-                var commentId = $('#commentForm').attr('data-id');
-//                 console.log(commentId);
+                var commentId = $('#commentform-id').val();
+
                 $.ajax({
                       url: '/comments/update?id='+commentId,
                       type: 'POST',
@@ -146,7 +161,7 @@ $this->params['breadcrumbs'][] = $this->title;
                               $('#commentform-content').val('');
                               $('#buttonForm').attr('class', 'btn btn-success');
                               $('#buttonForm').text('Оставить комментарий');
-                              $('#commentForm').removeAttr('data-id');
+
                               $('#commentForm').attr('action', '/comments/create?articleId=".$article->id."');
                           }
                       
@@ -164,32 +179,35 @@ $this->params['breadcrumbs'][] = $this->title;
         e.preventDefault();
 
         var commentId = $(this).attr('data-id');        
-        
-        if (confirm('Are you sure you want to update this item?')) {
-            $.ajax({
-                url: '/comments/one?id='+commentId,
-                type: 'POST',
-                data: {},
-                dataType: 'json',
-                success: function(jsonResponse) {  
-                  
-                    if (jsonResponse.length != 0) {
+
+        $.ajax({
+            url: '/comments/one?id='+commentId,
+            type: 'POST',
+            data: {},
+            dataType: 'json',
+            success: function(jsonResponse) {  
+              
+                if (jsonResponse.length != 0) {
+                
+                    var commentId = jsonResponse['id'];
+                
+                    $('#commentform-id').val(jsonResponse['id']);
+                    $('#commentform-name').val(jsonResponse['name']);
+                    $('#commentform-content').val(jsonResponse['content']);
                     
-                        $('#commentform-name').val(jsonResponse['name']);
-                        $('#commentform-content').val(jsonResponse['content']);
-                        $('#commentForm').attr('action', '/comments/update?id='+commentId);
-                        $('#commentForm').attr('data-id', commentId);
-                        $('#buttonForm').attr('class', 'btn btn-primary');
-                        $('#buttonForm').text('Изменить комментарий');
-                        
-                    }
+                    $('#commentForm').attr('action', '/comments/update?id='+commentId);
                     
-                },
-                error: function() {
-                    console.log('Error!');
+                    
+                    $('#buttonForm').attr('class', 'btn btn-primary');
+                    $('#buttonForm').text('Изменить комментарий');
+                    
                 }
-            });      
-        }
+                
+            },
+            error: function() {
+                console.log('Error!');
+            }
+        });      
     });
     
     /* DELETE COMMENT */
@@ -217,14 +235,11 @@ $this->params['breadcrumbs'][] = $this->title;
         }
     });
 
-
-//TODO: используй простую js-валидацию написанную вручную. Пока не используй никаких непонятных для тебя оберток yiijsvalidation и прочее
+    
     function commentFormJsValidate()
     {
         var nameValue    = $('#commentform-name').val();
         var contentValue = $('#commentform-content').val();
-
-//        console.log(nameValue, contentValue);
 
         if (nameValue === '' || contentValue === '')
         {

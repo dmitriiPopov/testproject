@@ -25,6 +25,11 @@ use frontend\components\helpers\StopWordsHelper;
 class CommentForm extends BaseForm
 {
     /**
+     * @var integer
+     */
+    public $id;
+
+    /**
      * Article which is commented by selected comment
      * @var int
      */
@@ -51,11 +56,11 @@ class CommentForm extends BaseForm
         // Валидаторы и фильтры выполняются в указанном порядке
         return [
             [['name'], 'trim'],
-            // TODO: сначала валидируем на заполненность
+            // сначала валидируем на заполненность
             [['name', 'content', 'articleId', 'userId'], 'required', 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE]],
-            [['name'], 'string', 'min' =>1, 'max' => 30, 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE]],
+            [['name'], 'string', 'min' =>1, 'max' => 20, 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE]],
             [['content'], 'string', 'min' =>1, 'max' => 200, 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE]],
-            //TODO: а потом уже на плохие слова, так как нет смысла валидировать на плохие слова, если данные не пришли из формы
+            //а потом уже на плохие слова, так как нет смысла валидировать на плохие слова, если данные не пришли из формы
             [['name', 'content'], 'censureWordsValidator', 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE]],
         ];
     }
@@ -107,21 +112,14 @@ class CommentForm extends BaseForm
         //call parent function
         parent::setModel($model, $setAttributes);
 
-        //TODO: по-хорошему "$this->userId = \Yii::$app->user->id" нужно делать на уровне контроллера, где используется CommentForm.
-        //TODO: может быть это тебе сейчас будет не очень понятно, но есть такой термин "низкая/высокая связность" - это зависимость классов от других других классов и нужно чтобы эта зависимость стремилась к нулю
-        //TODO: вот здесь ты добавил лишнюю зависимость класса CommentForm с классом \yii\web\User, всего лишь одной операцией
-        //check scenario Create
-        if ($this->getScenario() == self::SCENARIO_CREATE) {
-            //set user id
-            $this->userId    = \Yii::$app->user->id;
-        }
-
         //check scenario Update
         if ($this->getScenario() == self::SCENARIO_UPDATE) {
             //set article id
             $this->articleId = $model->news_id;
             //set user id
             $this->userId    = $model->user_id;
+            // set comment id if it exists (primary key)
+            $this->id        = $model->id;
         }
     }
 
@@ -139,7 +137,7 @@ class CommentForm extends BaseForm
             //check if there is a "BAD" word in the string
             if (preg_match("/\b".$item."\b/i", $this->$attribute)){
                 //if there is
-                $this->addError($this->$attribute,'Censured word!');
+                $this->addError($attribute,'Censured word!');
             }
 
         }
@@ -149,6 +147,8 @@ class CommentForm extends BaseForm
     /**
      * Set article id
      * @param $articleModel News
+     *
+     * @return void
      */
     public function setArticleModel($articleModel)
     {
