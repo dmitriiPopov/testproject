@@ -45,8 +45,8 @@ use yii\helpers\Html;
 
     <div class="form-group">
         <?= ($commentForm->scenario == \frontend\components\forms\CommentForm::SCENARIO_UPDATE)
-            ? Html::submitButton('Изменить комментарий', ['id' => 'buttonForm','class' => 'btn btn-primary'])
-            : Html::submitButton('Оставить комментарий', ['id' => 'buttonForm','class' => 'btn btn-success']);
+            ? Html::submitButton('Update comment', ['id' => 'buttonForm','class' => 'btn btn-primary'])
+            : Html::submitButton('Create comment', ['id' => 'buttonForm','class' => 'btn btn-success']);
         ?>
     </div>
 

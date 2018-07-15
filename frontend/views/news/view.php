@@ -46,12 +46,12 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <!-- Comments -->
 
-            <h3>Комментарии</h3>
+            <h3>Comments</h3>
             <hr style="border: none; color: grey; background-color: grey; height: 3px;">
 
             <!-- BEGIN comment's form -->
             <?php if(Yii::$app->user->isGuest): ?>
-                <div style="font-style: italic; font-size: large; text-align: center;">Чтобы иметь возможность оставлять комментарий, нужно авторизоваться!</div>
+                <div style="font-style: italic; font-size: large; text-align: center;">For leaving comment you must be authorized!</div>
             <?php else: ?>
                 <div class="row">
                     <div class="comment-form col-lg-12">
@@ -177,7 +177,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                   $('#commentform-content').val('');
                                   
                                   $('#buttonForm').attr('class', 'btn btn-success');
-                                  $('#buttonForm').text('Оставить комментарий');
+                                  $('#buttonForm').text('Create comment');
     
                                   $('#commentForm').attr('action', '/comments/create?articleId=".$article->id."');
 
@@ -222,7 +222,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     $('#commentForm > div').removeClass('has-error');
                     
                     $('#buttonForm').attr('class', 'btn btn-primary');
-                    $('#buttonForm').text('Изменить комментарий');
+                    $('#buttonForm').text('Update comment');
                     
                 }
                 
@@ -270,7 +270,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 $('div.field-commentform-name > div.help-block').text('Name cannot be blank.');
                 $('div.field-commentform-name').attr('class', 'form-group field-commentform-name required has-error');
             } else {
-                $('div.field-commentform-content > div.help-block').text('Message cannot be blank.');
+                $('div.field-commentform-content > div.help-block').text('Content cannot be blank.');
                 $('div.field-commentform-content').attr('class', 'form-group field-commentform-content required has-error');
             }
 

@@ -15,7 +15,7 @@ use yii\widgets\ListView;
         'options'      => [
             'class' => 'text-center',
         ],
-        'emptyText' => '<p>Комментарии отсутствуют. Вы можете стать первым.</p>',
+        'emptyText' => '<p>No any comments here. You can be first.</p>',
         //pagination options
 //        'pager'        => [
 //            'nextPageLabel'  => '>',

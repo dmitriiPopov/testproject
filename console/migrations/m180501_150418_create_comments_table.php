@@ -12,6 +12,10 @@ class m180501_150418_create_comments_table extends Migration
      */
     public function up()
     {
+
+        //TODO: добавь к внешним ключам news_id и user_id ON DELETE CASCADE ON UPDATE CASCADE
+        //TODO: иначе ошибка при удалении новости (у которой есть комментарии) в админке
+
         $this->execute("
             CREATE TABLE IF NOT EXISTS `comments` (
                     `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
