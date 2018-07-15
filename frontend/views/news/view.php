@@ -130,8 +130,12 @@ $this->params['breadcrumbs'][] = $this->title;
                                   $('#comments').prepend(responseHtml);  
                                   $('#commentform-content').val('');
                                   $('.empty').hide();
+                                                                  
+                                  //delete validation errors
+                                  $('div.help-block').text('');
+                                  $('div.field-commentform-name').attr('class', 'form-group field-commentform-name required');
+                                  $('div.field-commentform-content').attr('class', 'form-group field-commentform-content required');
                                   
-                                  //TODO: Удалить валидационные ошибки из формы
                               } 
                           }
                       },
@@ -157,12 +161,29 @@ $this->params['breadcrumbs'][] = $this->title;
                       success: function(responseHtml) {
                       
                           if (responseHtml != '') {
-                              $('div.list-group > div#comment-'+commentId).replaceWith(responseHtml);  
-                              $('#commentform-content').val('');
-                              $('#buttonForm').attr('class', 'btn btn-success');
-                              $('#buttonForm').text('Оставить комментарий');
+                          
+                              // if form has been returned
+                              if ($(responseHtml).attr('id') == 'commentForm')
+                              {
+                                  // it means that form contents errors
+                                  $(document).find('#commentForm').html(responseHtml);
+                                  $('#commentForm').attr('action', '/comments/update?id='+commentId);
+                                  console.log(responseHtml);
+                              }
+                              // if comment has been returned
+                              else {
+                              
+                                  $('div.list-group > div#comment-'+commentId).replaceWith(responseHtml);  
+                                  $('#commentform-content').val('');
+                                  
+                                  $('#buttonForm').attr('class', 'btn btn-success');
+                                  $('#buttonForm').text('Оставить комментарий');
+    
+                                  $('#commentForm').attr('action', '/comments/create?articleId=".$article->id."');
 
-                              $('#commentForm').attr('action', '/comments/create?articleId=".$article->id."');
+                                  $('div.help-block').text('');                                  
+                                  $('#commentForm > div').removeClass('has-error');
+                              }
                           }
                       
                       },
@@ -197,6 +218,8 @@ $this->params['breadcrumbs'][] = $this->title;
                     
                     $('#commentForm').attr('action', '/comments/update?id='+commentId);
                     
+                    $('div.help-block').text('');
+                    $('#commentForm > div').removeClass('has-error');
                     
                     $('#buttonForm').attr('class', 'btn btn-primary');
                     $('#buttonForm').text('Изменить комментарий');
@@ -247,7 +270,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 $('div.field-commentform-name > div.help-block').text('Name cannot be blank.');
                 $('div.field-commentform-name').attr('class', 'form-group field-commentform-name required has-error');
             } else {
-                $('div.field-commentform-content > div.help-block').text('Content cannot be blank.');
+                $('div.field-commentform-content > div.help-block').text('Message cannot be blank.');
                 $('div.field-commentform-content').attr('class', 'form-group field-commentform-content required has-error');
             }
 

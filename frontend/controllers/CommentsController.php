@@ -92,7 +92,7 @@ class CommentsController extends Controller
             );
         }
 
-        // return empty string if comment hasn't been saved
+        // return if comment hasn't been saved
         return $this->renderPartial('/news/_partial/commentFormItem', [
             'commentForm' => $formModel,
         ]);
@@ -177,8 +177,10 @@ class CommentsController extends Controller
             );
         }
 
-        // return empty string if comment hasn't been saved
-        return '';
+        // return if comment hasn't been saved
+        return $this->renderPartial('/news/_partial/commentFormItem', [
+            'commentForm' => $formModel,
+        ]);
     }
 
     /**
