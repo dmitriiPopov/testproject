@@ -249,6 +249,15 @@ $this->params['breadcrumbs'][] = $this->title;
                 success: function(jsonResponse) {
                     if (jsonResponse['status'] && jsonResponse['deleted']) {
                         $('div.list-group > div#comment-'+commentId).hide();
+                        $('#commentform-content').val('');
+                                  
+                        $('#buttonForm').attr('class', 'btn btn-success');
+                        $('#buttonForm').text('Create comment');
+    
+                        $('#commentForm').attr('action', '/comments/create?articleId=".$article->id."');
+
+                        $('div.help-block').text('');                                  
+                        $('#commentForm > div').removeClass('has-error');
                     }
                 },
                 error: function() {
