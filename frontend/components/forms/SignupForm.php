@@ -12,6 +12,7 @@ class SignupForm extends Model
     public $username;
     public $email;
     public $password;
+    public $reCaptcha;
 
 
     /**
@@ -33,6 +34,8 @@ class SignupForm extends Model
 
             ['password', 'required'],
             ['password', 'string', 'min' => 6],
+
+            [['reCaptcha'], \himiklab\yii2\recaptcha\ReCaptchaValidator::className(), 'secret' => '6Ld4smUUAAAAACJiEBPtxdOCG47f_xNzgwSKfLSz', 'uncheckedMessage' => 'Please confirm that you are not a bot.']
         ];
     }
 

@@ -14,6 +14,12 @@ return [
     'bootstrap'           => ['log'],
     'modules'             => [],
     'components'          => [
+        'reCaptcha' => [
+            'name'    => 'reCaptcha',
+            'class'   => 'himiklab\yii2\recaptcha\ReCaptcha',
+            'siteKey' => '6Ld4smUUAAAAALsFHbbzSFYI9V6URxfIxibON_Ef',
+            'secret'  => '6Ld4smUUAAAAACJiEBPtxdOCG47f_xNzgwSKfLSz',
+        ],
         'request' => [
             'csrfParam' => '_csrf-backend',
         ],
