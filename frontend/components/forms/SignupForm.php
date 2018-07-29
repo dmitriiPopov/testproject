@@ -35,7 +35,7 @@ class SignupForm extends Model
             ['password', 'required'],
             ['password', 'string', 'min' => 6],
 
-            [['reCaptcha'], \himiklab\yii2\recaptcha\ReCaptchaValidator::className(), 'secret' => '6Ld4smUUAAAAACJiEBPtxdOCG47f_xNzgwSKfLSz', 'uncheckedMessage' => 'Please confirm that you are not a bot.']
+            [['reCaptcha'], \himiklab\yii2\recaptcha\ReCaptchaValidator::className(), 'secret' => \Yii::$app->params['google_recaptcha']['secretKey'], 'uncheckedMessage' => 'Please confirm that you are not a bot.']
         ];
     }
 

@@ -32,7 +32,7 @@ class LoginForm extends Model
             // password is validated by validatePassword()
             ['password', 'validatePassword'],
             //re captcha
-            [['reCaptcha'], \himiklab\yii2\recaptcha\ReCaptchaValidator::className(), 'secret' => '6Ld4smUUAAAAACJiEBPtxdOCG47f_xNzgwSKfLSz', 'uncheckedMessage' => 'Please confirm that you are not a bot.']
+            [['reCaptcha'], \himiklab\yii2\recaptcha\ReCaptchaValidator::className(), 'secret' => Yii::$app->params['google_recaptcha']['secretKey'], 'uncheckedMessage' => 'Please confirm that you are not a bot.']
         ];
     }
 

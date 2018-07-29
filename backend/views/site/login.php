@@ -25,7 +25,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                 <?= $form->field($model, 'reCaptcha')->widget(
                     \himiklab\yii2\recaptcha\ReCaptcha::className(),
-                    ['siteKey' => '6Ld4smUUAAAAALsFHbbzSFYI9V6URxfIxibON_Ef']
+                    ['siteKey' => Yii::$app->params['google_recaptcha']['siteKey']]
                 )->label('') ?>
 
                 <?= $form->field($model, 'rememberMe')->checkbox() ?>
