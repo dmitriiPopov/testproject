@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
+use common\models\Markers;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\User */
@@ -25,27 +26,112 @@ $this->params['breadcrumbs'][] = $this->title;
         ]) ?>
     </p>
 
-    <?= DetailView::widget([
-        'model'      => $model,
-        'attributes' => [
-            'id',
-            'username',
-//            'auth_key',
-//            'password_hash',
-//            'password_reset_token',
-            'email:email',
-            [
-                'attribute' => 'status',
-                'value'     => function ($data) { return $data->status === \common\models\User::STATUS_ACTIVE ? Yii::t('app', 'Active') : Yii::t('app', 'Deleted'); },
+    <?php
+    //check model is has marker
+    if ($model->marker_id) {
+        //User have marker
+        echo DetailView::widget([
+            'model'      => $model,
+            'attributes' => [
+                'id',
+                'username',
+                //            'auth_key',
+                //            'password_hash',
+                //            'password_reset_token',
+                'email:email',
+                [
+                    'attribute' => 'status',
+                    'value' => function ($data) {
+                        return $data->status === \common\models\User::STATUS_ACTIVE ? Yii::t('app', 'Active') : Yii::t('app', 'Deleted');
+                    },
+                ],
+                [
+                    'attribute' => 'marker_id',
+                    'value' => '',
+                    'contentOptions' => ['id' => 'map', 'height' => '350'],
+                ],
+                'created_at:datetime',
+                'updated_at:datetime',
+                [
+                    'attribute' => 'imagefile',
+                    'value' => $model->getImageFileLink(),
+                    'format' => ['image', ['width' => '250', 'class' => 'img-rounded']],
+                ]
             ],
-            'created_at:datetime',
-            'updated_at:datetime',
-            [
-                'attribute' => 'imagefile',
-                'value'     => $model->getImageFileLink(),
-                'format'    => ['image', ['width'=>'250', 'class'=>'img-rounded']],
-            ]
-        ],
-    ]) ?>
+        ]);
+    } else {
+        //User hasn't marker
+        echo DetailView::widget([
+            'model'      => $model,
+            'attributes' => [
+                'id',
+                'username',
+                //            'auth_key',
+                //            'password_hash',
+                //            'password_reset_token',
+                'email:email',
+                [
+                    'attribute' => 'status',
+                    'value' => function ($data) {
+                        return $data->status === \common\models\User::STATUS_ACTIVE ? Yii::t('app', 'Active') : Yii::t('app', 'Deleted');
+                    },
+                ],
+                'created_at:datetime',
+                'updated_at:datetime',
+                [
+                    'attribute' => 'imagefile',
+                    'value' => $model->getImageFileLink(),
+                    'format' => ['image', ['width' => '250', 'class' => 'img-rounded']],
+                ]
+            ],
+        ]);
+    }
+
+    ?>
 
 </div>
+
+<script>
+
+    //function for initialization
+    function initMap() {
+
+        //check model has marker
+        <?php if (Markers::findOne($model->marker_id)) : ?>
+
+            var element = document.getElementById('map');
+            //map options
+            var options = {
+                zoom: 10,
+                center: {
+                    lat: <?= Markers::findOne($model->marker_id)->latitude; ?>,
+                    lng: <?= Markers::findOne($model->marker_id)->longitude; ?>
+                }
+            };
+
+            //create map
+            var myMap = new google.maps.Map(element, options);
+
+            //create marker
+            var myMarker = new google.maps.Marker({
+                position: {
+                    lat: <?= Markers::findOne($model->marker_id)->latitude; ?>,
+                    lng: <?= Markers::findOne($model->marker_id)->longitude; ?>
+                },
+                map: myMap,
+            });
+
+        <?php endif; ?>
+
+    }
+
+</script>
+
+<!--Load the API from the specified URL
+    * The async attribute allows the browser to render the page while the API loads
+    * The key parameter will contain your own API key (which is not needed for this tutorial)
+    * The callback parameter executes the initMap() function
+    -->
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=<?= Yii::$app->params['google_map_key']; ?>&callback=initMap">
+</script>

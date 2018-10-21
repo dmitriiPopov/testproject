@@ -39,7 +39,7 @@ class User extends \yii\db\ActiveRecord
     {
         return [
             [['username', 'auth_key', 'password_hash', 'email'], 'required'],
-            [['status', 'created_at', 'updated_at'], 'integer'],
+            [['status', 'marker_id', 'created_at', 'updated_at'], 'integer'],
             [['username', 'imagefile', 'password_hash', 'password_reset_token', 'email'], 'string', 'max' => 255],
             [['auth_key'], 'string', 'max' => 32],
             [['username'], 'unique'],
@@ -68,6 +68,7 @@ class User extends \yii\db\ActiveRecord
             'password_reset_token' => 'Password Reset Token',
             'email'                => 'Email',
             'status'               => 'Status',
+            'marker_id'            => 'Marker',
             'created_at'           => 'Created At',
             'updated_at'           => 'Updated At',
         ];
@@ -81,6 +82,14 @@ class User extends \yii\db\ActiveRecord
         return [
             TimestampBehavior::className(),
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMarker()
+    {
+        return $this->hasOne(Markers::className(), ['id' => 'marker_id']);
     }
 
     public static function findByUsername($username)

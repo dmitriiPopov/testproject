@@ -10,6 +10,7 @@ namespace backend\models\user;
 
 use common\components\BaseForm;
 use common\components\UploadedFile;
+use common\models\Markers;
 use Yii;
 use yii\base\NotSupportedException;
 
@@ -49,6 +50,16 @@ class UserForm extends BaseForm
     public $avatar;
 
     /**
+     * @var double
+     */
+    public $latitude;
+
+    /**
+     * @var double
+     */
+    public $longitude;
+
+    /**
      * @return array
      */
     public function rules()
@@ -60,6 +71,7 @@ class UserForm extends BaseForm
             [['email'], 'email', 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE]],
             [['status'], 'string', 'on' => [self::SCENARIO_UPDATE]],
             [['avatar'], 'image', 'skipOnEmpty' => true, 'extensions' => 'png, jpg, jpeg', 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE]],
+            [['latitude', 'longitude'], 'double', 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE]]
         ];
     }
 
@@ -111,6 +123,28 @@ class UserForm extends BaseForm
                 . $this->model->imagefile
             );
         }
+
+        //check isset 'longitude' and 'latitude'
+        if ($this->longitude && $this->latitude) {
+            //check if marker at User model isn't found
+            if (!$this->model->marker_id) {
+                //create marker
+                $marker            = new Markers();
+                //set marker's attributes
+                $marker->longitude = $this->longitude;
+                $marker->latitude  = $this->latitude;
+            } else {
+                //search marker by id
+                $marker            = Markers::findOne(['id' => $this->model->marker_id]);
+                //set marker's attributes
+                $marker->longitude = $this->longitude;
+                $marker->latitude  = $this->latitude;
+            }
+            //save marker to DB
+            $marker->save();
+            //set marker_id at User model
+            $this->model->marker_id = $marker->id;
+        };
 
         //save AR model
         if (!$this->model->save($runValidation, $attributeNames)) {

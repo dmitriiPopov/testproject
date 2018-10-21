@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use common\models\Markers;
 use common\models\User;
 use Yii;
 use backend\models\user\UserForm;
@@ -122,7 +123,14 @@ class UserController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        //set marker id for user
+        $marker_id = $this->findModel($id)->marker_id;
+
+        //if user model delete and marker id is set
+        if ($this->findModel($id)->delete() && $marker_id) {
+            //delete marker from DB
+            Markers::findOne($marker_id)->delete();
+        }
 
         return $this->redirect(['index']);
     }
