@@ -3,5 +3,6 @@ return [
     'google_recaptcha' => [
         'siteKey'   => '6Ld4smUUAAAAALsFHbbzSFYI9V6URxfIxibON_Ef',
         'secretKey' => '6Ld4smUUAAAAACJiEBPtxdOCG47f_xNzgwSKfLSz',
+        'enabled'   => true,
     ]
 ];

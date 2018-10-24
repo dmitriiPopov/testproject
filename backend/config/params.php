@@ -4,5 +4,6 @@ return [
     'google_recaptcha' => [
         'siteKey'    => 'yourSiteKeyInParamsLocal',
         'secretKey'  => 'yourSecretKeyInParamsLocal',
+        'enabled'    => true,
     ]
 ];

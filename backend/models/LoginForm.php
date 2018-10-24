@@ -4,6 +4,7 @@ namespace backend\models;
 
 use Yii;
 use yii\base\Model;
+use himiklab\yii2\recaptcha\ReCaptchaValidator;
 
 /**
  * Login form
@@ -24,16 +25,28 @@ class LoginForm extends Model
      */
     public function rules()
     {
-        return [
+        $defaultRules = [
             // username and password are both required
             [['username', 'password'], 'required'],
             // rememberMe must be a boolean value
             ['rememberMe', 'boolean'],
             // password is validated by validatePassword()
             ['password', 'validatePassword'],
-            //re captcha
-            [['reCaptcha'], \himiklab\yii2\recaptcha\ReCaptchaValidator::className(), 'secret' => Yii::$app->params['google_recaptcha']['secretKey'], 'uncheckedMessage' => 'Please confirm that you are not a bot.']
         ];
+
+        $customRules = [];
+
+        //re captcha
+        if (Yii::$app->params['google_recaptcha']['enabled']) {
+            $customRules[] = [
+                ['reCaptcha'],
+                ReCaptchaValidator::className(),
+                'secret'           => Yii::$app->params['google_recaptcha']['secretKey'],
+                'uncheckedMessage' => 'Please confirm that you are not a bot.'
+            ];
+        }
+
+        return array_merge($defaultRules, $customRules);
     }
 
     /**
