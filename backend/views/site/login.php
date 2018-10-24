@@ -2,7 +2,7 @@
 
 /* @var $this yii\web\View */
 /* @var $form yii\bootstrap\ActiveForm */
-/* @var $model \common\models\LoginForm */
+/* @var $model \backend\models\LoginForm */
 
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
@@ -23,10 +23,13 @@ $this->params['breadcrumbs'][] = $this->title;
 
                 <?= $form->field($model, 'password')->passwordInput() ?>
 
-                <?= $form->field($model, 'reCaptcha')->widget(
-                    \himiklab\yii2\recaptcha\ReCaptcha::className(),
-                    ['siteKey' => Yii::$app->params['google_recaptcha']['siteKey']]
-                )->label('') ?>
+                <?= Yii::$app->params['google_recaptcha']['enabled']
+                    ? $form->field($model, 'reCaptcha')->widget(
+                        \himiklab\yii2\recaptcha\ReCaptcha::className(),
+                        ['siteKey' => Yii::$app->params['google_recaptcha']['siteKey']]
+                    )->label('')
+                    : ''
+                ?>
 
                 <?= $form->field($model, 'rememberMe')->checkbox() ?>
 
