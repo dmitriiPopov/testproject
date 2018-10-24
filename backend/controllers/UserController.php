@@ -129,6 +129,9 @@ class UserController extends Controller
         //if user model delete and marker id is set
         if ($this->findModel($id)->delete() && $marker_id) {
             //delete marker from DB
+            //TODO: это можно добавить в beforeDelete в ActiveRecord модель юзера. тогда при вызове $this->findModel($id)->delete() удалятся все связи.
+            //TODO: это правильно - ты не будешь в этом случае переживать за целостность данных. Просто удалишь юзера, а дальше само удалиться все связанное с ним барахлишко :)
+            //TODO: в итоге тут останется так, как было раньше (предыдущие изменения)
             Markers::findOne($marker_id)->delete();
         }
 

@@ -7,24 +7,6 @@ use yii\db\Migration;
  */
 class m181010_220227_add_marker_to_user_table extends Migration
 {
-    /**
-     * @inheritdoc
-     */
-//    public function safeUp()
-//    {
-//
-//    }
-
-    /**
-     * @inheritdoc
-     */
-//    public function safeDown()
-//    {
-//        echo "m181010_220227_add_marker_to_user_table cannot be reverted.\n";
-//
-//        return false;
-//    }
-
     // Use up()/down() to run migration code without a transaction.
     public function up()
     {
@@ -44,6 +26,8 @@ class m181010_220227_add_marker_to_user_table extends Migration
     public function down()
     {
         echo "m181010_220227_add_marker_to_user_table cannot be reverted.\n";
+
+        //TODO: тут, по хорошему, нужно было сделать rollback запрос как ты сделал в другой миграции
 
         return false;
     }

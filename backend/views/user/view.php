@@ -27,6 +27,8 @@ $this->params['breadcrumbs'][] = $this->title;
     </p>
 
     <?php
+    //TODO: ради одного поля ты дублируешь виджет с кучей параметров.
+    //TODO: нужно чтобы по этому условию дополнительно добавлялось тольео одно доп. поле в виджет DetailView
     //check model is has marker
     if ($model->marker_id) {
         //User have marker
