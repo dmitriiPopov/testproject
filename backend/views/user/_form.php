@@ -3,7 +3,7 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use \common\models\User;
-use \common\models\Markers;
+use \common\models\Marker;
 
 /* @var $this yii\web\View */
 /* @var $formModel backend\models\user\UserForm */
@@ -100,12 +100,12 @@ use \common\models\Markers;
 
         //check scenario UPDATE && model has marker
         <?php if (in_array($formModel->scenario, [$formModel::SCENARIO_UPDATE]) &&
-                Markers::findOne($formModel->model->marker_id)) : ?>
+                Marker::findOne($formModel->model->marker_id)) : ?>
             //create marker
             placeMarker(
                 {
-                    lat: <?= Markers::findOne($formModel->model->marker_id)->latitude; ?>,
-                    lng: <?= Markers::findOne($formModel->model->marker_id)->longitude; ?>
+                    lat: <?= Marker::findOne($formModel->model->marker_id)->latitude; ?>,
+                    lng: <?= Marker::findOne($formModel->model->marker_id)->longitude; ?>
                 },
                 myMap
             );

@@ -2,7 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
-use common\models\Markers;
+use common\models\Marker;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\User */
@@ -70,15 +70,15 @@ $this->params['breadcrumbs'][] = $this->title;
     function initMap() {
 
         //check model has marker
-        <?php if (Markers::findOne($model->marker_id)) : ?>
+        <?php if (Marker::findOne($model->marker_id)) : ?>
 
             var element = document.getElementById('map');
             //map options
             var options = {
                 zoom: 10,
                 center: {
-                    lat: <?= Markers::findOne($model->marker_id)->latitude; ?>,
-                    lng: <?= Markers::findOne($model->marker_id)->longitude; ?>
+                    lat: <?= Marker::findOne($model->marker_id)->latitude; ?>,
+                    lng: <?= Marker::findOne($model->marker_id)->longitude; ?>
                 }
             };
 
@@ -88,10 +88,12 @@ $this->params['breadcrumbs'][] = $this->title;
             //create marker
             var myMarker = new google.maps.Marker({
                 position: {
-                    lat: <?= Markers::findOne($model->marker_id)->latitude; ?>,
-                    lng: <?= Markers::findOne($model->marker_id)->longitude; ?>
+                    lat: <?=
+                    //TODO: пересмотри тут и везде по коду к задаче по гугл картам повторное использование Marker::findOne. Исключи его. Используй реляцию объекта класса User
+                    Marker::findOne($model->marker_id)->latitude; ?>,
+                    lng: <?= Marker::findOne($model->marker_id)->longitude; ?>
                 },
-                map: myMap,
+                map: myMap
             });
 
         <?php endif; ?>

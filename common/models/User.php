@@ -4,6 +4,7 @@ namespace common\models;
 
 use yii\behaviors\TimestampBehavior;
 use Yii;
+use common\models\Marker;
 
 /**
  * This is the model class for table "user".
@@ -18,6 +19,9 @@ use Yii;
  * @property integer $created_at
  * @property integer $updated_at
  * @property string $imagefile
+ * @property integer $marker_id
+ *
+ * @property Marker $marker
  */
 class User extends \yii\db\ActiveRecord
 {
@@ -89,7 +93,7 @@ class User extends \yii\db\ActiveRecord
      */
     public function getMarker()
     {
-        return $this->hasOne(Markers::className(), ['id' => 'marker_id']);
+        return $this->hasOne(Marker::className(), ['id' => 'marker_id']);
     }
 
     public static function findByUsername($username)
@@ -216,14 +220,23 @@ class User extends \yii\db\ActiveRecord
         parent::afterSave($insert, $changedAttributes);
     }
 
+    /**
+     * @return bool
+     * @throws \Exception
+     * @throws \Throwable
+     */
     public function beforeDelete()
     {
-        //if user model delete and marker id is set
-        if ($this->marker_id) {
-            //delete marker from DB
-            Markers::findOne($this->marker_id)->delete();
+        if (!parent::beforeDelete()) {
+            return false;
         }
 
-        return parent::beforeDelete();
+        //if user model delete and marker id is set
+        if ($this->marker) {
+            //delete marker from DB
+            $this->marker->delete();
+        }
+
+        return true;
     }
 }

@@ -10,9 +10,8 @@ namespace backend\models\user;
 
 use common\components\BaseForm;
 use common\components\UploadedFile;
-use common\models\Markers;
+use common\models\Marker;
 use Yii;
-use yii\base\NotSupportedException;
 
 /**
  * Class UserForm
@@ -129,13 +128,13 @@ class UserForm extends BaseForm
             //check if marker at User model isn't found
             if (!$this->model->marker_id) {
                 //create marker
-                $marker            = new Markers();
+                $marker            = new Marker();
                 //set marker's attributes
                 $marker->longitude = $this->longitude;
                 $marker->latitude  = $this->latitude;
             } else {
                 //search marker by id
-                $marker            = Markers::findOne(['id' => $this->model->marker_id]);
+                $marker            = Marker::findOne(['id' => $this->model->marker_id]);
                 //set marker's attributes
                 $marker->longitude = $this->longitude;
                 $marker->latitude  = $this->latitude;

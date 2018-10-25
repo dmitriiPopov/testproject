@@ -15,7 +15,7 @@ use Yii;
  *
  * @property User[] $users
  */
-class Markers extends \yii\db\ActiveRecord
+class Marker extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc

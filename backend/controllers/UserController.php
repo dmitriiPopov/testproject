@@ -2,7 +2,6 @@
 
 namespace backend\controllers;
 
-use common\models\Markers;
 use common\models\User;
 use Yii;
 use backend\models\user\UserForm;
