@@ -27,67 +27,38 @@ $this->params['breadcrumbs'][] = $this->title;
     </p>
 
     <?php
-    //TODO: ради одного поля ты дублируешь виджет с кучей параметров.
-    //TODO: нужно чтобы по этому условию дополнительно добавлялось тольео одно доп. поле в виджет DetailView
-    //check model is has marker
-    if ($model->marker_id) {
-        //User have marker
-        echo DetailView::widget([
-            'model'      => $model,
-            'attributes' => [
-                'id',
-                'username',
-                //            'auth_key',
-                //            'password_hash',
-                //            'password_reset_token',
-                'email:email',
-                [
-                    'attribute' => 'status',
-                    'value' => function ($data) {
-                        return $data->status === \common\models\User::STATUS_ACTIVE ? Yii::t('app', 'Active') : Yii::t('app', 'Deleted');
-                    },
-                ],
-                [
-                    'attribute' => 'marker_id',
-                    'value' => '',
-                    'contentOptions' => ['id' => 'map', 'height' => '350'],
-                ],
-                'created_at:datetime',
-                'updated_at:datetime',
-                [
-                    'attribute' => 'imagefile',
-                    'value' => $model->getImageFileLink(),
-                    'format' => ['image', ['width' => '250', 'class' => 'img-rounded']],
-                ]
+
+    //User have marker
+    echo DetailView::widget([
+        'model'      => $model,
+        'attributes' => [
+            'id',
+            'username',
+            //            'auth_key',
+            //            'password_hash',
+            //            'password_reset_token',
+            'email:email',
+            [
+                'attribute' => 'status',
+                'value'     => function ($data) {
+                    return $data->status === \common\models\User::STATUS_ACTIVE ? Yii::t('app', 'Active') : Yii::t('app', 'Deleted');
+                },
             ],
-        ]);
-    } else {
-        //User hasn't marker
-        echo DetailView::widget([
-            'model'      => $model,
-            'attributes' => [
-                'id',
-                'username',
-                //            'auth_key',
-                //            'password_hash',
-                //            'password_reset_token',
-                'email:email',
-                [
-                    'attribute' => 'status',
-                    'value' => function ($data) {
-                        return $data->status === \common\models\User::STATUS_ACTIVE ? Yii::t('app', 'Active') : Yii::t('app', 'Deleted');
-                    },
-                ],
-                'created_at:datetime',
-                'updated_at:datetime',
-                [
-                    'attribute' => 'imagefile',
-                    'value' => $model->getImageFileLink(),
-                    'format' => ['image', ['width' => '250', 'class' => 'img-rounded']],
-                ]
+            [
+                'attribute'      => 'marker_id',
+                'value'          => '',
+                'contentOptions' => ['id' => 'map', 'height' => '350', 'hidden' => $model->marker_id ? false : true],
+                'captionOptions' => ['hidden' => $model->marker_id ? false : true],
             ],
-        ]);
-    }
+            'created_at:datetime',
+            'updated_at:datetime',
+            [
+                'attribute' => 'imagefile',
+                'value'     => $model->getImageFileLink(),
+                'format'    => ['image', ['width' => '250', 'class' => 'img-rounded']],
+            ]
+        ],
+    ]);
 
     ?>
 

@@ -215,4 +215,15 @@ class User extends \yii\db\ActiveRecord
         }
         parent::afterSave($insert, $changedAttributes);
     }
+
+    public function beforeDelete()
+    {
+        //if user model delete and marker id is set
+        if ($this->marker_id) {
+            //delete marker from DB
+            Markers::findOne($this->marker_id)->delete();
+        }
+
+        return parent::beforeDelete();
+    }
 }

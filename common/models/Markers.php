@@ -55,7 +55,6 @@ class Markers extends \yii\db\ActiveRecord
      */
     public function getUsers()
     {
-        //TODO: тут  hasOne так как у каждого пользователя будет уникальная точка на карте (так как ты для каждого пользователя создаешь новую точку)
-        return $this->hasMany(User::className(), ['marker_id' => 'id']);
+        return $this->hasOne(User::className(), ['marker_id' => 'id']);
     }
 }
