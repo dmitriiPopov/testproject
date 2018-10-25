@@ -47,8 +47,8 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute'      => 'marker_id',
                 'value'          => '',
-                'contentOptions' => ['id' => 'map', 'height' => '350', 'hidden' => $model->marker_id ? false : true],
-                'captionOptions' => ['hidden' => $model->marker_id ? false : true],
+                'contentOptions' => ['id' => 'map', 'height' => '350', 'hidden' => $model->marker ? false : true],
+                'captionOptions' => ['hidden' => $model->marker ? false : true],
             ],
             'created_at:datetime',
             'updated_at:datetime',
@@ -70,15 +70,15 @@ $this->params['breadcrumbs'][] = $this->title;
     function initMap() {
 
         //check model has marker
-        <?php if (Marker::findOne($model->marker_id)) : ?>
+        <?php if ($model->marker) : ?>
 
             var element = document.getElementById('map');
             //map options
             var options = {
                 zoom: 10,
                 center: {
-                    lat: <?= Marker::findOne($model->marker_id)->latitude; ?>,
-                    lng: <?= Marker::findOne($model->marker_id)->longitude; ?>
+                    lat: <?= $model->marker->latitude; ?>,
+                    lng: <?= $model->marker->longitude; ?>
                 }
             };
 
@@ -88,10 +88,8 @@ $this->params['breadcrumbs'][] = $this->title;
             //create marker
             var myMarker = new google.maps.Marker({
                 position: {
-                    lat: <?=
-                    //TODO: пересмотри тут и везде по коду к задаче по гугл картам повторное использование Marker::findOne. Исключи его. Используй реляцию объекта класса User
-                    Marker::findOne($model->marker_id)->latitude; ?>,
-                    lng: <?= Marker::findOne($model->marker_id)->longitude; ?>
+                    lat: <?= $model->marker->latitude; ?>,
+                    lng: <?= $model->marker->longitude; ?>
                 },
                 map: myMap
             });

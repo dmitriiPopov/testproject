@@ -126,7 +126,7 @@ class UserForm extends BaseForm
         //check isset 'longitude' and 'latitude'
         if ($this->longitude && $this->latitude) {
             //check if marker at User model isn't found
-            if (!$this->model->marker_id) {
+            if (!$this->model->marker) {
                 //create marker
                 $marker            = new Marker();
                 //set marker's attributes
@@ -134,7 +134,7 @@ class UserForm extends BaseForm
                 $marker->latitude  = $this->latitude;
             } else {
                 //search marker by id
-                $marker            = Marker::findOne(['id' => $this->model->marker_id]);
+                $marker            = $this->model->marker;
                 //set marker's attributes
                 $marker->longitude = $this->longitude;
                 $marker->latitude  = $this->latitude;
