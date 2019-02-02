@@ -50,9 +50,9 @@ return [
             'enableStrictParsing' => true,
             'rules'               => [
 
-                'news/category/<categoryId:\d+>/tag/<tagId:\d+>' => 'site/index',
+                'news/category/<categoryId:\d+>/tag/<selectedTags:\w+>' => 'site/index',
                 'news/category/<categoryId:\d+>'                 => 'site/index',
-                'news/tag/<tagId:\d+>'                           => 'site/index',
+                'news/tag/<selectedTags:\w+>'                    => 'site/index',
                 'news/page/<page:\d+>-<per-page:\d>'             => 'site/index',
                 'news'                                           => 'site/index',
                 '/'                                              => 'site/index',

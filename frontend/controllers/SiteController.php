@@ -72,23 +72,28 @@ class SiteController extends Controller
     /**
      * Displays homepage.
      * @param integer $categoryId NULL - all news; integer - news for selected category;
-     * @param integer $tagId      NULL - all news
+     * @param string $selectedTags NULL - all news
      * @return mixed
      * @throws NotFoundHttpException
      */
-    public function actionIndex($categoryId = null, $tagId = null)
+    public function actionIndex($categoryId = null, $selectedTags = null)
     {
-        $selectedTag = $selectedCategory = null;
+        $selectedCategory = null;
+        $selectedTagsArray = $selectedTagsIdArray = array();
 
         //check tag if it's set
-        if ($tagId) {
-            //selected tag
-            $selectedTag = Tags::find()
-                ->andWhere(['id' => $tagId, 'display' => Tags::DISPLAY_ON])
-                ->one();
-            //if tag is not found
-            if (!$selectedTag) {
-                throw new NotFoundHttpException();
+        if ($selectedTags) {
+
+            $selectedTagsIdArray = explode('+', $selectedTags);
+            //selected tag and add to array
+            //var_dump($selectedTagsIdArray);die;
+            foreach ($selectedTagsIdArray as $tagId) {
+
+                if (!array_push($selectedTagsArray, Tags::find()
+                    ->andWhere(['id' => $tagId, 'display' => Tags::DISPLAY_ON])->one())) {
+                    //if tag is not found
+                    throw new NotFoundHttpException();
+                }
             }
         }
 
@@ -107,7 +112,7 @@ class SiteController extends Controller
         $newsFinder = new NewsFinder();
 
         $newsFinder->category = $selectedCategory;
-        $newsFinder->tag      = $selectedTag;
+        $newsFinder->tags     = $selectedTagsIdArray;
 
         $dataProvider = $newsFinder->getDataProvider();
 
@@ -122,7 +127,7 @@ class SiteController extends Controller
             'categories'       => $categories,
             'tags'             => $tags,
             'selectedCategory' => $selectedCategory,
-            'selectedTag'      => $selectedTag,
+            'selectedTags'     => $selectedTagsArray,
         ]);
     }
 

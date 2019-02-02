@@ -3,12 +3,12 @@
 use yii\widgets\ListView;
 
 /**
- * @var $this yii\web\View
- * @var $dataProvider yii\data\ActiveDataProvider
- * @var $categories common\models\Category[]
- * @var $tags common\models\Tags[]
- * @var $selectedCategory  common\models\Category
- * @var $selectedTag  common\models\Tags
+ * @var $this               yii\web\View
+ * @var $dataProvider       yii\data\ActiveDataProvider
+ * @var $categories         common\models\Category[]
+ * @var $tags               common\models\Tags[]
+ * @var $selectedCategory   common\models\Category
+ * @var $selectedTags       common\models\Tags []
  */
 
 $this->title = 'My Yii Application';
@@ -20,8 +20,13 @@ $this->title = 'My Yii Application';
     //check selected category
     if (isset($selectedCategory)) { ?>
         <h1 class="page-header text-justify">News from category "<?= $selectedCategory->title; ?>"</h1><?php
-    } elseif (isset($selectedTag)) { ?>
-        <h1 class="page-header text-justify">News with tag "<?= $selectedTag->name; ?>"</h1><?php
+    } elseif (!empty($selectedTags)) {
+        $str = null;
+        foreach ($selectedTags as $tag) {
+
+            $str .= $tag->name.', ';
+        } ?>
+        <h1 class="page-header text-justify">News with tag "<?= $str; ?>"</h1><?php
     } else { ?>
         <h1 class="page-header text-justify">News</h1><?php
     }
@@ -55,7 +60,7 @@ $this->title = 'My Yii Application';
     'categories'         => $categories,
     'tags'               => $tags,
     'selectedCategory'   => $selectedCategory,
-    'selectedTag'        => $selectedTag,
+    'selectedTags'       => $selectedTags,
 ]); ?>
 <!-- Lists of categories and tags END -->
 

@@ -22,9 +22,9 @@ class NewsFinder
     public $category = null;
 
     /**
-     * @var Tags
+     * @var Tags []
      */
-    public $tag = null;
+    public $tags = null;
 
     /**
      * @return \yii\data\ActiveDataProvider
@@ -43,15 +43,16 @@ class NewsFinder
 
 
         //check tag if it's set
-        if ($this->tag) {
+        if ($this->tags) {
 
-            $tagId = $this->tag->id;
+            foreach ($this->tags as $tagId) {
 
-            $mainQuery->joinWith([
-                'newsTags' => function(\yii\db\ActiveQuery $query) use ($tagId) {
-                    $query->andWhere(['news_tags.tag_id' => $tagId]);
-                }
-            ]);
+                $mainQuery->joinWith([
+                    'newsTags' => function (\yii\db\ActiveQuery $query) use ($tagId) {
+                        $query->andWhere(['news_tags.tag_id' => $tagId]);
+                    }
+                ]);
+            }
         }
 
         //check category if it's set
