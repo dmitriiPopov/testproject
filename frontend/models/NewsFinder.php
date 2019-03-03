@@ -24,7 +24,7 @@ class NewsFinder
     /**
      * @var Tags []
      */
-    public $tags = null;
+    public $tags = [];
 
     /**
      * @return \yii\data\ActiveDataProvider
@@ -36,33 +36,28 @@ class NewsFinder
         $mainQuery = News::find()
             ->andWhere(['display' => News::DISPLAY_ON])
             ->orderBy('published_at DESC');
-        // set default selected category
-        $selectedCategory = null;
-        // set default selected tag
-        $selectedTag      = null;
-
-
-        //check tag if it's set
-        if ($this->tags) {
-
-            foreach ($this->tags as $tagId) {
-
-                $mainQuery->joinWith([
-                    'newsTags' => function (\yii\db\ActiveQuery $query) use ($tagId) {
-                        $query->andWhere(['news_tags.tag_id' => $tagId]);
-                    }
-                ]);
-            }
-        }
 
         //check category if it's set
         if ($this->category) {
             // add conditions with category ID
             $mainQuery->andWhere(['category_id' => $this->category->id]);
         }
-        //var_dump(111);
-        //print($mainQuery->createCommand()->rawSql); die();
 
+        //check tag if it's set
+        if ($this->tags) {
+
+            $mainQuery->joinWith([
+                'newsTags' => function (\yii\db\ActiveQuery $query) {
+
+                    $query->andWhere(['in', 'news_tags.tag_id', $this->tags]);
+
+                }
+            ]);
+            //condition for sampling 'AND'
+            $mainQuery->groupBy('news_tags.news_id')->andHaving("COUNT(*) = :count", [":count" => count($this->tags)]);
+        }
+
+//        print($mainQuery->createCommand()->rawSql); die();
 
         //List of news
         $dataProvider = new ActiveDataProvider([

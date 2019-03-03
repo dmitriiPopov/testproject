@@ -59,9 +59,9 @@ class CategorySearch extends Category
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
-            'enabled' => $this->enabled,
-            'display' => $this->display,
+            'id'         => $this->id,
+            'enabled'    => $this->enabled,
+            'display'    => $this->display,
             'updated_at' => $this->updated_at,
         ]);
 

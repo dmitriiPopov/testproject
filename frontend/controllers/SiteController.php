@@ -76,6 +76,10 @@ class SiteController extends Controller
      * @return mixed
      * @throws NotFoundHttpException
      */
+    //  .../news/category/1/tag/1
+    //  .../news/category/1
+    //  .../news/category/1/tag/1+2
+    // .../news/tag/1+2
     public function actionIndex($categoryId = null, $selectedTags = null)
     {
         $selectedCategory = null;
@@ -84,16 +88,13 @@ class SiteController extends Controller
         //check tag if it's set
         if ($selectedTags) {
 
-            $selectedTagsIdArray = explode('+', $selectedTags);
-            //selected tag and add to array
-            //var_dump($selectedTagsIdArray);die;
-            foreach ($selectedTagsIdArray as $tagId) {
-
-                if (!array_push($selectedTagsArray, Tags::find()
-                    ->andWhere(['id' => $tagId, 'display' => Tags::DISPLAY_ON])->one())) {
-                    //if tag is not found
-                    throw new NotFoundHttpException();
-                }
+            //break string by Id's
+            if ($selectedTagsIdArray = explode('+', $selectedTags)) {
+                //create array of tags by id
+                $selectedTagsArray = Tags::find()
+                    ->andWhere(['display' => Tags::DISPLAY_ON])
+                    ->andWhere(['in', 'id', $selectedTagsIdArray])
+                    ->all();
             }
         }
 
@@ -123,11 +124,12 @@ class SiteController extends Controller
 
 
         return $this->render('index', [
-            'dataProvider'     => $dataProvider,
-            'categories'       => $categories,
-            'tags'             => $tags,
-            'selectedCategory' => $selectedCategory,
-            'selectedTags'     => $selectedTagsArray,
+            'dataProvider'         => $dataProvider,
+            'categories'           => $categories,
+            'tags'                 => $tags,
+            'selectedCategory'     => $selectedCategory,
+            'selectedTagsArray'    => $selectedTagsArray,
+            'selectedTagsIdArray'  => $selectedTagsIdArray,
         ]);
     }
 

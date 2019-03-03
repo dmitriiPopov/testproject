@@ -3,12 +3,13 @@
 use yii\widgets\ListView;
 
 /**
- * @var $this               yii\web\View
- * @var $dataProvider       yii\data\ActiveDataProvider
- * @var $categories         common\models\Category[]
- * @var $tags               common\models\Tags[]
- * @var $selectedCategory   common\models\Category
- * @var $selectedTags       common\models\Tags []
+ * @var $this                 yii\web\View
+ * @var $dataProvider         yii\data\ActiveDataProvider
+ * @var $categories           common\models\Category[]
+ * @var $tags                 common\models\Tags[]
+ * @var $selectedCategory     common\models\Category
+ * @var $selectedTagsArray    common\models\Tags []
+ * @var $selectedTagsIdArray  integer []
  */
 
 $this->title = 'My Yii Application';
@@ -57,10 +58,11 @@ $this->title = 'My Yii Application';
 
 <!-- Lists of categories and tags BEGIN -->
 <?= $this->render('_partial/newsHeader', [
-    'categories'         => $categories,
-    'tags'               => $tags,
-    'selectedCategory'   => $selectedCategory,
-    'selectedTags'       => $selectedTags,
+    'categories'          => $categories,
+    'tags'                => $tags,
+    'selectedCategory'    => $selectedCategory,
+    'selectedTagsArray'   => $selectedTagsArray,
+    'selectedTagsIdArray' => $selectedTagsIdArray,
 ]); ?>
 <!-- Lists of categories and tags END -->
 
