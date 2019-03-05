@@ -48,13 +48,14 @@ class NewsFinder
 
             $mainQuery->joinWith([
                 'newsTags' => function (\yii\db\ActiveQuery $query) {
-
                     $query->andWhere(['in', 'news_tags.tag_id', $this->tags]);
-
                 }
             ]);
             //condition for sampling 'AND'
-            $mainQuery->groupBy('news_tags.news_id')->andHaving("COUNT(*) = :count", [":count" => count($this->tags)]);
+            $mainQuery->groupBy('news_tags.news_id')
+                //TODO: зачем здесь HAVING ???
+                ->andHaving("COUNT(*) = :count", [":count" => count($this->tags)])
+            ;
         }
 
 //        print($mainQuery->createCommand()->rawSql); die();

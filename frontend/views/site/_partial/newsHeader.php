@@ -33,7 +33,14 @@ if (!empty($selectedCategory)) {
     <!-- Tab with name "All" category BEGIN -->
     <a href="<?= Url::to(
                 ['site/index']
-                + ((!empty($selectedTagsIdArray)) ? ['selectedTags' => $urlParameters['selectedTags']] : []));
+                + (
+                    !empty($selectedTagsIdArray)
+                    ? [
+                            'selectedTags' => $urlParameters['selectedTags']
+                    ]
+                    : []
+                )
+    );
             ?>"
        class="list-group-item <?= (!empty($selectedCategory)) ? '' : 'list-group-item-success active';?>">All
     </a>
@@ -94,9 +101,18 @@ if (!empty($selectedCategory)) {
         ?>
 
         <!-- name of tag and count news with the tag -->
-        <a href="<?= Url::to(['site/index',
-                'categoryId'   => isset($urlParameters['categoryId']) ? $urlParameters['categoryId'] : [] ]
-            +  ((!empty($tagsIds)) ? ['selectedTags' => (implode('+', $tagsIds))] : [])
+        <a href="<?= Url::to(
+                [
+                        'site/index',
+                        'categoryId' => isset($urlParameters['categoryId'])
+                            ? $urlParameters['categoryId']
+                            : []
+                ] + (!empty($tagsIds)
+                    ? [
+                        'selectedTags' => implode('+', $tagsIds)
+                    ]
+                    : []
+                )
         ) ?>"
 
            class="btn <?= (isset($selectedTagsIdArray) ? in_array($tag->id, $selectedTagsIdArray) : [] ) || (!empty($tagsOfNews) && array_key_exists($tag->id, $tagsOfNews))

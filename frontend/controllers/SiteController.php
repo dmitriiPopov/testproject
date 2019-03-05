@@ -87,9 +87,9 @@ class SiteController extends Controller
 
         //check tag if it's set
         if ($selectedTags) {
-
+            $selectedTagsIdArray = explode('+', $selectedTags);
             //break string by Id's
-            if ($selectedTagsIdArray = explode('+', $selectedTags)) {
+            if (!empty($selectedTagsIdArray)) {
                 //create array of tags by id
                 $selectedTagsArray = Tags::find()
                     ->andWhere(['display' => Tags::DISPLAY_ON])
@@ -120,7 +120,7 @@ class SiteController extends Controller
         //array of categories
         $categories = Category::find()->andWhere(['display' => Category::DISPLAY_ON])->all();
         //array of tags
-        $tags       = Tags::find()->andWhere(['display' => Tags::DISPLAY_ON])->all();
+        $tags = Tags::find()->andWhere(['display' => Tags::DISPLAY_ON])->all();
 
 
         return $this->render('index', [
