@@ -53,7 +53,7 @@ class NewsFinder
             ]);
             //condition for sampling 'AND'
             $mainQuery->groupBy('news_tags.news_id')
-                //TODO: зачем здесь HAVING ???
+                //TODO: зачем здесь HAVING ??? - потому что только так работает условие "И"
                 ->andHaving("COUNT(*) = :count", [":count" => count($this->tags)])
             ;
         }
