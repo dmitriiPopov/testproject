@@ -110,10 +110,11 @@ class SiteController extends Controller
             }
         }
 
-        $newsFinder = new NewsFinder();
-
-        $newsFinder->category = $selectedCategory;
-        $newsFinder->tags     = $selectedTagsIdArray;
+        $searchQuery = Yii::$app->request->get('searchQuery', '');
+        $newsFinder  = new NewsFinder();
+        $newsFinder->category    = $selectedCategory;
+        $newsFinder->tags        = $selectedTagsIdArray;
+        $newsFinder->searchQuery = $searchQuery;
 
         $dataProvider = $newsFinder->getDataProvider();
 
@@ -130,6 +131,7 @@ class SiteController extends Controller
             'selectedCategory'     => $selectedCategory,
             'selectedTagsArray'    => $selectedTagsArray,
             'selectedTagsIdArray'  => $selectedTagsIdArray,
+            'searchQuery'          => $searchQuery
         ]);
     }
 

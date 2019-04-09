@@ -23,3 +23,6 @@
 ####### testproject ########
 ## to publish news in particular time ##
 */1 * * * * php /var/www/vhosts/testproject/yii news/publish
+## to indexer Sphinx ##
+0   0 * * * /usr/bin/indexer --rotate --config /etc/sphinxsearch/sphinx.conf --all
+*/1 * * * * /usr/bin/indexer --rotate --config /etc/sphinxsearch/sphinx.conf news_delta

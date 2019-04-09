@@ -19,6 +19,12 @@ return [
             'siteKey' => $params['google_recaptcha']['siteKey'],
             'secret'  => $params['google_recaptcha']['secretKey'],
         ],
+        'sphinx' => [
+            'class'    => 'yii\sphinx\Connection',
+            'dsn'      => 'mysql:host=127.0.0.1;port=9306;',
+            'username' => $params['sphinx']['username'],
+            'password' => $params['sphinx']['password'],
+        ],
         'request' => [
             'csrfParam' => '_csrf-frontend',
         ],

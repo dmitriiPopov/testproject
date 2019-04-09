@@ -19,7 +19,7 @@ if (!empty($selectedTagsIdArray)) {
 }
 
 if (!empty($selectedCategory)) {
-    $urlParameters['categoryId']   = $selectedCategory->id;
+    $urlParameters['categoryId'] = $selectedCategory->id;
 }
 
 ?>

@@ -34,9 +34,6 @@ config/local/local.php
 config/local/params.php
 config/local/test.php
 
-# composer
-composer.lock
-
 #data dir
 /data
 
