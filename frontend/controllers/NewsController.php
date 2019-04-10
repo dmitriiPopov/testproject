@@ -47,7 +47,7 @@ class NewsController extends Controller
         //array of categories
         $categories = Category::find()->andWhere(['display' => Category::DISPLAY_ON])->all();
         //array of tags
-        $tags       = Tags::find()->andWhere(['display' => Tags::DISPLAY_ON])->all();
+//        $tags       = Tags::find()->andWhere(['display' => Tags::DISPLAY_ON])->all();
         //Data Provider of comments for ListView
         $comments   = new ActiveDataProvider([
             'query' => Comment::find()->andWhere(['news_id' => $id, 'enabled' => Comment::ENABLED_ON])->orderBy('id DESC'),
@@ -64,8 +64,8 @@ class NewsController extends Controller
             'article'          => $article,
             'categories'       => $categories,
             'selectedCategory' => $article->getCategory()->andWhere(['display' => Category::DISPLAY_ON])->one(),
-            'tags'             => $tags,
-            'tagsOfNews'       => ArrayHelper::map($article->getTags()->andWhere(['display' => Tags::DISPLAY_ON])->all(), 'id', 'id'),
+            //'tags'             => $tags,
+            'tagsOfNews'       => ArrayHelper::map($article->getTags()->andWhere(['display' => Tags::DISPLAY_ON])->all(), 'id', 'name'),
             'comments'         => $comments,
             'commentForm'      => $commentForm,
         ]);

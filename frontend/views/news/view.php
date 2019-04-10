@@ -24,7 +24,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <div class="main-container">
     <div class="row">
-        <div class="col-md-9">
+        <div class="col-md-12">
 
             <!-- Article -->
             <article class="post">
@@ -41,8 +41,21 @@ $this->params['breadcrumbs'][] = $this->title;
                     </div>
                 </div>
             </article>
-            <hr>
             <!-- End article -->
+
+            <!--            Check news has tags-->
+            <?php if(!empty($tagsOfNews)) : ?>
+<!--                Tags of news-->
+                <div style="padding-top: 20px;">
+                    <b>Tags: </b>
+                    <?php foreach ($tagsOfNews as $tagName) : ?>
+                        <span class="badge badge-info"><?= $tagName; ?></span>
+                    <?php endforeach; ?>
+                </div>
+
+            <?php endif; ?>
+<!--            END tags of news-->
+            <hr>
 
     <!-- Comments -->
 
@@ -79,14 +92,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <!-- End comments -->
         </div>
 
-        <!-- List of categories -->
-        <?= $this->render('../site/_partial/newsHeader', [
-            'categories'       => $categories,
-            'selectedCategory' => $selectedCategory,
-            'tags'             => $tags,
-            'tagsOfNews'       => $tagsOfNews,
-        ]); ?>
-        <!-- End list of categories -->
+
 
     </div>
 </div>
